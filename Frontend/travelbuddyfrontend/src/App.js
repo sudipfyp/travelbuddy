@@ -1,14 +1,22 @@
-import logo from './logo.png';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Default from './Pages/default';
+import Login from "./Pages/login";
+import GuideLogin from "./Pages/guidelogin";
+import SellerLogin from "./Pages/sellerlogin";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>UNDER DEVELOPMENT</p>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/login/guide" element={<GuideLogin />} />
+          <Route path="/login/seller" element={<SellerLogin />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Default />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
