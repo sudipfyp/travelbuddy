@@ -30,8 +30,11 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    document.body.style.overflow = showMobileMenu ? 'hidden' : 'auto';
+    document.body.style.overflow = showMobileMenu ? "hidden" : "auto";
   }, [showMobileMenu]);
+
+  //Check cookies/token and decide whether loggedin or not
+  const [loggedin, setLoggedin] = useState(false);
 
   return (
     <div>
@@ -53,20 +56,41 @@ const Navbar = () => {
           <i className="fa fa-user" onClick={toggleDropdown}></i>
           {showDropdown && (
             <div className="dropdown" ref={dropdownRef}>
-              <a href="/">Profile</a>
-              <a href="/">Hotels</a>
-              <a href="/">Local Events</a>
-              <a href="/">Currency Exchange</a>
-              <a href="/">Translation</a>
-              <a href="/">Transportation Services</a>
-              <a href="/">Safety Guidelines</a>
-              <a href="/">Logout</a>
+              {loggedin ? (
+                <>
+                  <a href="/">Profile</a>
+                  <a href="/">Hotels</a>
+                  <a href="/">Local Events</a>
+                  <a href="/">Currency Exchange</a>
+                  <a href="/">Translation</a>
+                  <a href="/">Transportation Services</a>
+                  <a href="/">Safety Guidelines</a>
+                  <a href="/">Logout</a>
+                </>
+              ) : (
+                <>
+                  <a className="link-bg" href="/login">
+                    Login
+                  </a>
+                  <a className="link-bg" href="/register">
+                    Register
+                  </a>
+                  <a href="/">Hotels</a>
+                  <a href="/">Local Events</a>
+                  <a href="/">Currency Exchange</a>
+                  <a href="/">Translation</a>
+                  <a href="/">Transportation Services</a>
+                  <a href="/">Safety Guidelines</a>
+                  <a href="/">Logout</a>
+                </>
+              )}
             </div>
           )}
         </div>
 
         <div className="navbar-mobile" onClick={toggleMobileMenu}>
-          <span>MENU </span><i className="fa fa-bars"></i>
+          <span>MENU </span>
+          <i className="fa fa-bars"></i>
         </div>
 
         {showMobileMenu && (
@@ -75,22 +99,46 @@ const Navbar = () => {
               className="fa fa-times close-icon"
               onClick={toggleMobileMenu}
             ></i>
-            <div className="navbar-profile">
-              <i className="fa fa-user"></i>
-              <span>Profile</span>
-            </div>
-            <a href="/">Profile</a>
-            <a href="/">Place</a>
-            <a href="/">Guide</a>
-            <a href="/">Shop</a>
-            <a href="/">Feed</a>
-            <a href="/">Hotels</a>
-            <a href="/">Local Events</a>
-            <a href="/">Currency Exchange</a>
-            <a href="/">Translation</a>
-            <a href="/">Transportation</a>
-            <a href="/">Safety Guidelines</a>
-            <a href="/">Logout</a>
+
+            {loggedin ? (
+              <>
+                <div className="navbar-profile">
+                  <i className="fa fa-user"></i>
+                  <span>Name</span>
+                </div>
+                <a href="/">Profile</a>
+                <a href="/">Place</a>
+                <a href="/">Guide</a>
+                <a href="/">Shop</a>
+                <a href="/">Feed</a>
+                <a href="/">Hotels</a>
+                <a href="/">Local Events</a>
+                <a href="/">Currency Exchange</a>
+                <a href="/">Translation</a>
+                <a href="/">Transportation</a>
+                <a href="/">Safety Guidelines</a>
+                <a href="/">Logout</a>
+              </>
+            ) : (
+              <>
+                <a className="link-bg" href="/login">
+                  Login
+                </a>
+                <a className="link-bg" href="/register">
+                  Register
+                </a>
+                <a href="/">Place</a>
+                <a href="/">Guide</a>
+                <a href="/">Shop</a>
+                <a href="/">Feed</a>
+                <a href="/">Hotels</a>
+                <a href="/">Local Events</a>
+                <a href="/">Currency Exchange</a>
+                <a href="/">Translation</a>
+                <a href="/">Transportation</a>
+                <a href="/">Safety Guidelines</a>
+              </>
+            )}
           </div>
         )}
       </nav>

@@ -14,7 +14,7 @@ const terms = () => {
       </div>
 
       <p className="static-title">
-        Welcome to Trip Buddy! By using our website, you agree to comply with
+        Welcome to Travel Buddy! By using our website, you agree to comply with
         and be bound by the following terms and conditions of use. Please read
         these terms carefully before using our website.
       </p>

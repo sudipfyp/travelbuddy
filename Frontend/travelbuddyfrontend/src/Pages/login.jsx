@@ -1,15 +1,20 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "../Assets/images/logo-text.png";
 import "../Assets/styles/Styles.css";
 
 const Login = (props) => {
-  document.title = `Travel Buddy | ${props.user.toUpperCase()} LOGIN`;
+  document.title = `Travel Buddy | LOGIN`;
 
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user");
+
+  const handleRoleChange = (e) => {
+    setRole(e.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,16 +23,12 @@ const Login = (props) => {
     formData.append("email", email);
     formData.append("password", password);
 
-    let userLogin = "http://127.0.1:8000/userlogin/";
-    let guideLogin = "http://127.0.1:8000/guidelogin/";
-    let sellerLogin = "http://127.0.1:8000/sellerlogin/";
+    let userLogin = "http://127.0.1:8000/user/userlogin";
+    let guideLogin = "http://127.0.1:8000/user/guidelogin";
+    let sellerLogin = "http://127.0.1:8000/user/sellerlogin";
 
     let response = await fetch(
-      props.user === "user"
-        ? userLogin
-        : props.user === "guide"
-        ? guideLogin
-        : sellerLogin,
+      role === "user" ? userLogin : role === "guide" ? guideLogin : sellerLogin,
       {
         method: "POST",
         body: formData,
@@ -40,8 +41,8 @@ const Login = (props) => {
     console.log(parsedData);
 
     if (response.status === 200) {
-      alert(`${props.user.toUpperCase()} logged in successfully`);
-      // navigate("/profile");
+      alert(`${role.toUpperCase()} logged in successfully`);
+      navigate("/home");
     } else {
       alert("Invalid Username or Password");
     }
@@ -58,9 +59,9 @@ const Login = (props) => {
       </div>
 
       <div className="login-upper-top">
-        <p className="login-heading">{props.user.toUpperCase()} LOGIN</p>
+        <p className="login-heading">{role.toUpperCase()} LOGIN</p>
         <p className="login-sub-heading">
-          Don't have an account, <a href={`/${props.user}register`}>Sign up</a>
+          Don't have an account, <a href="/register">Sign up</a>
         </p>
       </div>
 
@@ -88,6 +89,14 @@ const Login = (props) => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
+          <label>Role:</label>
+          <select value={role} onChange={handleRoleChange}>
+            <option value="" disabled>Select Role</option>
+            <option value="user">User</option>
+            <option value="guide">Guide</option>
+            <option value="seller">Seller</option>
+          </select>
+
           <div className="login-remember-forgot">
             <div className="login-remember-me">
               <input type="checkbox" name="remember" id="remember" />
@@ -100,30 +109,6 @@ const Login = (props) => {
 
           <input type="submit" value="Sign in" />
         </form>
-      </div>
-
-      <div className="login-bottom">
-        <p>Sign in as</p>
-        <p>
-          {props.user === "user" && (
-            <>
-              <Link to="/guidelogin">Guide</Link> or{" "}
-              <Link to="/sellerlogin">Seller</Link>
-            </>
-          )}
-          {props.user === "seller" && (
-            <>
-              <Link to="/userlogin">User</Link> or{" "}
-              <Link to="/guidelogin">Guide</Link>
-            </>
-          )}
-          {props.user === "guide" && (
-            <>
-              <Link to="/userlogin">User</Link> or{" "}
-              <Link to="/sellerlogin">Seller</Link>
-            </>
-          )}
-        </p>
       </div>
     </>
   );

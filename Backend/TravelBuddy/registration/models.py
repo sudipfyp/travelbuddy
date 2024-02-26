@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+
+
 class user(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
@@ -10,8 +12,10 @@ class user(models.Model):
     preferredplace = models.CharField(max_length=200)
     image = models.ImageField(upload_to=None, null=True)
 
+
 class userProfile(models.Model):
     user = models.OneToOneField(user, on_delete=models.CASCADE)
+
 
 class guide(models.Model):
     name = models.CharField(max_length=200)
@@ -21,6 +25,7 @@ class guide(models.Model):
     tag = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     image = models.ImageField(upload_to=None, null=True)
+
 
 class seller(models.Model):
     name = models.CharField(max_length=200)

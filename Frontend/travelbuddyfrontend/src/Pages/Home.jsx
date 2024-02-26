@@ -1,60 +1,98 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "../Assets/styles/Styles.css";
+import React, { useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchData();
+
+    // eslint-disable-next-line
+  }, []);
+
+  const fetchData = async () => {
+    let api = "http://127.0.1:8000/user/profile";
+    let data = await fetch(api, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (data.status === 401) {
+      navigate("/login");
+    }
+  };
+
   return (
-    <div>
+    <>
       <Navbar />
 
-      <nav >
-        <h2 style={{'padding': '2rem'}}>Pages developed</h2>
-        
-        <div className="links">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/userlogin">Login</Link>
-          </li>
-          <li>
-            <Link to="/guidelogin">Guide Login</Link>
-          </li>
-          <li>
-            <Link to="/sellerlogin">Seller Login</Link>
-          </li>
-          <li>
-            <Link to="/userregister">Register</Link>
-          </li>
-          <li>
-            <Link to="/guideregister">Guide Register</Link>
-          </li>
-          <li>
-            <Link to="/sellerregister">Seller Register</Link>
-          </li>
-          <li>
-            <a href="/privacypolicy">Privacy Policy</a>
-          </li>
-          <li>
-            <a href="/terms">Terms and Conditions</a>
-          </li>
-          <li>
-            <a href="/aboutus">About Us</a>
-          </li>
-          <li>
-            <a href="/contactus">Contact Us</a>
-          </li>
-        </ul>
-        </div>
-      </nav>
+      <div className="home-container">
+        <div className="home-header">
+          <div className="home-headline">
+            <h1>Find your Destination!</h1>
+          </div>
 
-      <hr />
+          <div className="home-search">
+            <input type="text" placeholder="No. of Days" />
+            <select name="" id="">
+              <option value="" disabled>
+                Preferences
+              </option>
+              <option value="">Natural</option>
+              <option value="">Cultural</option>
+              <option value="">Historical</option>
+              <option value="">Religious</option>
+              <option value="">Adventure</option>
+              <option value="">Hills</option>
+            </select>
+            <button>Search</button>
+          </div>
+        </div>
+
+        <div className="home-header-image"></div>
+
+        <div className="home-header-image-section">
+          <div className="home-header-section-div">1</div>
+          <div className="home-header-section-div">1</div>
+          <div className="home-header-section-div">1</div>
+          <div className="home-header-section-div">1</div>
+        </div>
+
+        <div className="home-header-headline">
+          <h2>Trending Destinations</h2>
+
+          <div className="home-header-section">
+            <div className="home-header-section-div">1</div>
+            <div className="home-header-section-div">1</div>
+            <div className="home-header-section-div">1</div>
+            <div className="home-header-section-div">1</div>
+          </div>
+
+          <p className="see-more">
+            <a href="/">See More</a>
+          </p>
+        </div>
+
+        <div className="home-header-headline">
+          <h2>Trending Products</h2>
+
+          <div className="home-header-section">
+            <div className="home-header-section-div">1</div>
+            <div className="home-header-section-div">1</div>
+            <div className="home-header-section-div">1</div>
+            <div className="home-header-section-div">1</div>
+          </div>
+
+          <p className="see-more">
+            <a href="/">See More</a>
+          </p>
+        </div>
+      </div>
 
       <Footer />
-    </div>
+    </>
   );
 };
 
