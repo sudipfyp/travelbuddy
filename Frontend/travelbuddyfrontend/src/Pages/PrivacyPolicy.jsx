@@ -4,7 +4,7 @@ import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
 const PrivacyPolicy = () => {
-  document.title = "Travel Buddy | Privacy Policy";
+  document.title = "TravelBuddy ● Privacy Policy";
 
   return (
     <>

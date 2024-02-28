@@ -4,7 +4,7 @@ import Logo from "../Assets/images/logo-text.png";
 import "../Assets/styles/Styles.css";
 
 const Login = (props) => {
-  document.title = `Travel Buddy | LOGIN`;
+  document.title = "TravelBuddy ● Login";
 
   const navigate = useNavigate();
 

@@ -4,7 +4,7 @@ import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
 const About = () => {
-  document.title = "Travel Buddy | About Us";
+  document.title = "TravelBuddy ● About Us";
 
   return (
     <>

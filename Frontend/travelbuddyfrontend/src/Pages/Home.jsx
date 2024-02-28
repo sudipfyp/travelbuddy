@@ -1,29 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchData();
-
-    // eslint-disable-next-line
-  }, []);
-
-  const fetchData = async () => {
-    let api = "http://127.0.1:8000/user/profile";
-    let data = await fetch(api, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    if (data.status === 401) {
-      navigate("/login");
-    }
-  };
-
   return (
     <>
       <Navbar />

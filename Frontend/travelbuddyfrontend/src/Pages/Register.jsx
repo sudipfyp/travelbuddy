@@ -3,7 +3,7 @@ import Logo from "../Assets/images/logo-text.png";
 import "../Assets/styles/Styles.css";
 
 const Register = () => {
-  document.title = "Travel Buddy | REGISTER";
+  document.title = "TravelBuddy ● Register";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
