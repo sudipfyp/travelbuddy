@@ -8,15 +8,16 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [tag, setTag] = useState("Natural");
+  const [tag, setTag] = useState("natural");
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [shopAddress, setShopAddress] = useState("");
   const [shopName, setShopName] = useState("");
   const [address, setAddress] = useState("");
   const [nationalty, setNationality] = useState("Nepal");
-  const [place, setPlace] = useState("Natural");
+  const [place, setPlace] = useState("natural");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
+  const [charge, setCharge] = useState("");
 
   const handleRoleChange = (e) => {
     setRole(e.target.value);
@@ -35,6 +36,7 @@ const Register = () => {
 
     formData.append("phone", phone);
     formData.append("tag", tag);
+    formData.append("charge", charge);
 
     formData.append("shop_name", shopName);
     formData.append("registration_number", registrationNumber);
@@ -60,8 +62,8 @@ const Register = () => {
 
     console.log(parsedData);
 
-    if (parsedData.id) {
-      alert(`${role.toUpperCase()}  registered successfully`);
+    if (data.status === 201) {
+      alert(`${role.toUpperCase()} registered successfully`);
       setName("");
       setEmail("");
       setAddress("");
@@ -73,7 +75,7 @@ const Register = () => {
       setShopName("");
       setRegistrationNumber("");
       setShopAddress("");
-
+      setCharge("");
     } else {
       if (parsedData.email) {
         alert(parsedData.email);
@@ -107,9 +109,9 @@ const Register = () => {
 
       <div className="register-form">
         <form onSubmit={handleSubmit}>
-          <div className="register-row">
+          <div className="register-row ">
             <div className="register-column">
-              <label htmlFor="role">Role</label>
+              <label htmlFor="role">Select your Role</label>
               <br />
               <select
                 name="role"
@@ -118,11 +120,27 @@ const Register = () => {
                 value={role}
                 onChange={handleRoleChange}
               >
-                <option value="user">User</option>
+                <option value="user">Tourist</option>
                 <option value="guide">Guide</option>
                 <option value="seller">Seller</option>
               </select>
             </div>
+
+            {role === "guide" ? (
+              <div className="register-column">
+                <label htmlFor="charge">Charge</label>
+                <br />
+                <input
+                  type="number"
+                  name="charge"
+                  id="charge"
+                  placeholder="Your Charge"
+                  required
+                  value={charge}
+                  onChange={(e) => setCharge(e.target.value)}
+                />
+              </div>
+            ) : null}
           </div>
 
           <div className="register-row">

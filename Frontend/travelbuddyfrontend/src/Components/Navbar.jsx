@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../Assets/styles/Styles.css";
 import Logo from "../Assets/images/logo-text.png";
 
@@ -15,8 +16,9 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const iconRef = useRef(null);
   //Check cookies/token and decide whether loggedin or not
-  const [loggedin, setLoggedin] = useState(false);
-  // const [loggedin, setLoggedin] = useState(true);
+  const [loggedin, setLoggedin] = useState();
+
+  const Navigate = useNavigate();
 
   const toggleDropdown = () => {
     setShowDropdown((ShowDropdown) => !ShowDropdown);
@@ -61,6 +63,35 @@ const Navbar = () => {
     setOpen(false);
   };
 
+  const userCheck = async () => {
+    let response = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.status === 200) {
+      setLoggedin(true);
+    }
+  };
+
+  useEffect(() => {
+    userCheck();
+  }, []);
+
+  const logout = async () => {
+    let response = await fetch("http://127.0.1:8000/user/logout", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.status === 200) {
+      setLoggedin(false);
+      alert("Logged out successfully");
+      handleClose();
+      Navigate("/login")
+    }
+  };
+
   return (
     <div>
       <nav className="navbar">
@@ -71,10 +102,18 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-center">
-          <a href="/place">Place</a>
-          <a href="/guide">Guide</a>
-          <a href="/shop">Shop</a>
-          <a href="/feed">Feed</a>
+          <NavLink to="/place" activeclassname="active">
+            Place
+          </NavLink>
+          <NavLink to="/guide" activeclassname="active">
+            Guide
+          </NavLink>
+          <NavLink to="/product" activeclassname="active">
+            Shop
+          </NavLink>
+          <NavLink to="/feed" activeclassname="active">
+            Feed
+          </NavLink>
         </div>
 
         <div className="navbar-right">
@@ -84,13 +123,15 @@ const Navbar = () => {
               {loggedin ? (
                 <>
                   <a href="/profile">Profile</a>
-                  <a href="/hotels">Hotels</a>
+                  <a href="/hotel">Hotels</a>
                   <a href="/localevents">Local Events</a>
                   <a href="/currencyexchange">Currency Exchange</a>
                   <a href="/translation">Translation</a>
                   <a href="/transportation">Transportation Services</a>
                   <a href="/safetyguidelines">Safety Guidelines</a>
-                  <button className="logout-button" onClick={handleOpen}>Logout</button>
+                  <button className="logout-button" onClick={handleOpen}>
+                    Logout
+                  </button>
                 </>
               ) : (
                 <>
@@ -100,7 +141,7 @@ const Navbar = () => {
                   <a className="link-bg" href="/register">
                     Register
                   </a>
-                  <a href="/hotels">Hotels</a>
+                  <a href="/hotel">Hotels</a>
                   <a href="/localevents">Local Events</a>
                   <a href="/currencyexchange">Currency Exchange</a>
                   <a href="/translation">Translation</a>
@@ -133,15 +174,17 @@ const Navbar = () => {
                 <a href="/profile">Profile</a>
                 <a href="/place">Place</a>
                 <a href="/guide">Guide</a>
-                <a href="/shop">Shop</a>
+                <a href="/product">Shop</a>
                 <a href="/feed">Feed</a>
-                <a href="/hotels">Hotels</a>
+                <a href="/hotel">Hotels</a>
                 <a href="/localevents">Local Events</a>
                 <a href="/currencyexchange">Currency Exchange</a>
                 <a href="/translation">Translation</a>
                 <a href="/transportation">Transportation Services</a>
                 <a href="/safetyguidelines">Safety Guidelines</a>
-                <button className="logout-button" onClick={handleOpen}>Logout</button>
+                <button className="logout-button" onClick={handleOpen}>
+                  Logout
+                </button>
               </>
             ) : (
               <>
@@ -153,9 +196,9 @@ const Navbar = () => {
                 </a>
                 <a href="/place">Place</a>
                 <a href="/guide">Guide</a>
-                <a href="/shop">Shop</a>
+                <a href="/product">Shop</a>
                 <a href="/feed">Feed</a>
-                <a href="/hotels">Hotels</a>
+                <a href="/hotel">Hotels</a>
                 <a href="/localevents">Local Events</a>
                 <a href="/currencyexchange">Currency Exchange</a>
                 <a href="/translation">Translation</a>
@@ -183,7 +226,7 @@ const Navbar = () => {
             <Button autoFocus onClick={handleClose}>
               No
             </Button>
-            <Button autoFocus onClick={handleClose} >
+            <Button autoFocus onClick={logout}>
               Yes
             </Button>
           </DialogActions>

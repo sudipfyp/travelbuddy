@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-PROJECT_APPS = ['registration', 'hotelbooking', 'place']
-THIRD_PARTY_APPS = [ 'corsheaders', 'rest_framework']
+PROJECT_APPS = ['registration', 'hotelbooking', 'place', 'guidehire']
+THIRD_PARTY_APPS = ['corsheaders', 'rest_framework']
 INSTALLED_APPS += PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
@@ -84,8 +85,8 @@ DATABASES = {
         'NAME': 'travelbuddy',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST':'localhost',
-        'PORT' :'3306',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -140,6 +141,13 @@ REST_FRAMEWORK = {
     # ...
 }
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
@@ -148,3 +156,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

@@ -1,20 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../Assets/images/logo-text.png";
 import "../Assets/styles/Styles.css";
 
 const Login = (props) => {
-  document.title = "TravelBuddy ● Login";
-
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
 
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+    let parsedData = await data.json();
+    if (data.status === 200) {
+      // navigate(`/${parsedData.role}homepage`);
+      navigate("/profile");
+    }
   };
+
+  useEffect(() => {
+    document.title = "TravelBuddy ● Login";
+
+    userCheck();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,26 +34,21 @@ const Login = (props) => {
     formData.append("email", email);
     formData.append("password", password);
 
-    let userLogin = "http://127.0.1:8000/user/userlogin";
-    let guideLogin = "http://127.0.1:8000/user/guidelogin";
-    let sellerLogin = "http://127.0.1:8000/user/sellerlogin";
+    let login = "http://127.0.1:8000/user/login";
 
-    let response = await fetch(
-      role === "user" ? userLogin : role === "guide" ? guideLogin : sellerLogin,
-      {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      }
-    );
+    let response = await fetch(login, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
 
     let parsedData = await response.json();
 
     console.log(parsedData);
 
     if (response.status === 200) {
-      alert(`${role.toUpperCase()} logged in successfully`);
-      navigate("/home");
+      alert(`${parsedData.role.toUpperCase()} logged in successfully`);
+      navigate("/profile");
     } else {
       alert("Invalid Username or Password");
     }
@@ -59,7 +65,7 @@ const Login = (props) => {
       </div>
 
       <div className="login-upper-top">
-        <p className="login-heading">{role.toUpperCase()} LOGIN</p>
+        <p className="login-heading">LOGIN</p>
         <p className="login-sub-heading">
           Don't have an account, <a href="/register">Sign up</a>
         </p>
@@ -88,14 +94,6 @@ const Login = (props) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
-          <label>Role:</label>
-          <select value={role} onChange={handleRoleChange}>
-            <option value="" disabled>Select Role</option>
-            <option value="user">User</option>
-            <option value="guide">Guide</option>
-            <option value="seller">Seller</option>
-          </select>
 
           <div className="login-remember-forgot">
             <div className="login-remember-me">

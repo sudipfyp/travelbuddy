@@ -11,6 +11,7 @@ class user(models.Model):
     nationality = models.CharField(max_length=200)
     preferredplace = models.CharField(max_length=200)
     image = models.ImageField(upload_to=None, null=True)
+    identifier = models.CharField(max_length = 50, default = "user")
 
 
 class userProfile(models.Model):
@@ -25,6 +26,8 @@ class guide(models.Model):
     tag = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     image = models.ImageField(upload_to=None, null=True)
+    identifier = models.CharField(max_length = 45, default = "guide")
+    charge = models.IntegerField()
 
 
 class seller(models.Model):
@@ -35,3 +38,4 @@ class seller(models.Model):
     shop_address = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     image = models.ImageField(upload_to=None, null=True)
+    identifier = models.CharField(max_length = 50, default = "seller")

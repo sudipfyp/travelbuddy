@@ -20,10 +20,24 @@ import CurrencyExchange from "./Pages/CurrencyExchange";
 import Translation from "./Pages/Translation";
 import Transportation from "./Pages/Transportation";
 import SafetyGuidelines from "./Pages/SafetyGuidelines";
+import ScrollToTop from "./Components/Scroll";
+import Rates from "./Assets/data/Currency.json";
+import ProductDetails from "./Components/ProductDetails";
+import PlaceDetails from "./Components/PlaceDetails";
+import GuideDetails from "./Components/GuideDetails";
+import LocalEventsDetails from "./Components/LocalEventsDetails";
+import HotelDetails from "./Components/HotelDetails";
+import SeeMore from "./Components/SeeMore";
+import GuideHire from "./Pages/GuideHire";
+
+import Add from "./Pages/Add";
+
+import CurrencyExchangeAPI from "./Pages/CurrencyExchangeAPI";
 
 const App = () => {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -36,14 +50,34 @@ const App = () => {
         <Route path="/editprofile" element={<EditProfile />} />
         <Route path="/place" element={<Place />} />
         <Route path="/guide" element={<Guide />} />
-        <Route path="/shop" element={<Shop />} />
+        <Route path="/product" element={<Shop />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/hotels" element={<Hotels />} />
+        <Route path="/hotel" element={<Hotels />} />
         <Route path="/localevents" element={<LocalEvents />} />
-        <Route path="/currencyexchange" element={<CurrencyExchange />} />
+        <Route path="/currencyexchange" element={<CurrencyExchange data={Rates} />} />
         <Route path="/translation" element={<Translation />} />
         <Route path="/transportation" element={<Transportation />} />
         <Route path="/safetyguidelines" element={<SafetyGuidelines />} />
+        <Route path="/productdetails/:id" element={<ProductDetails />} />
+        <Route path="/placedetails/:id" element={<PlaceDetails />} />
+        <Route path="/guidedetails/:id" element={<GuideDetails />} />
+        <Route path="/localeventsdetails/:id" element={<LocalEventsDetails />} />
+        <Route path="/hoteldetails/:id" element={<HotelDetails />} />
+        <Route path="/place/:headerheadline" element={<SeeMore />} />
+        <Route path="/guide/:headerheadline" element={<SeeMore />} />
+        <Route path="/product/:headerheadline" element={<SeeMore />} />
+        <Route path="/hotel/:headerheadline" element={<SeeMore />} />
+        <Route path="/localevents/:headerheadline" element={<SeeMore />} />
+        <Route path="/guidehire/:id" element={<GuideHire />} />
+
+
+        <Route path="/add" element={<Add />} />
+
+        
+        <Route
+          path="/currencyexchangeapi"
+          element={<CurrencyExchangeAPI data={Rates} />}
+        />
       </Routes>
     </Router>
   );
