@@ -11,6 +11,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 const Navbar = () => {
+  const [user, setUser] = useState({});
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dropdownRef = useRef(null);
@@ -71,6 +72,8 @@ const Navbar = () => {
 
     if (response.status === 200) {
       setLoggedin(true);
+      let data = await response.json();
+      setUser(data);
     }
   };
 
@@ -169,7 +172,7 @@ const Navbar = () => {
               <>
                 <div className="navbar-profile">
                   <i className="fa fa-user"></i>
-                  <span>Name</span>
+                  <span>{user.role}</span>
                 </div>
                 <a href="/profile">Profile</a>
                 <a href="/place">Place</a>

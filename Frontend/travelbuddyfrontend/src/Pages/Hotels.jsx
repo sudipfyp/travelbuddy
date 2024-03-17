@@ -6,8 +6,6 @@ import Display from "../Components/Display";
 import DivItem from "../Components/DivItem";
 
 const Hotels = () => {
-  document.title = "TravelBuddy ● Hotels";
-
   const [highratedhotels, setHighRatedHotels] = useState([]);
   const [premiumhotels, setPremiumHotels] = useState([]);
   const [budgethotels, setBudgetHotels] = useState([]);
@@ -16,14 +14,14 @@ const Hotels = () => {
   const [bhaktapurhotels, setBhaktapurHotels] = useState([]);
 
   useEffect(() => {
+    document.title = "TravelBuddy ● Hotels";
+
     const getHotels = async () => {
       let response = await fetch("http://127.0.1:8000/hotel/list");
       let parsedData = await response.json();
       let hotelData = parsedData;
 
-      let highrated = hotelData
-        .filter((item) => item.rating > 3)
-        .slice(0, 4);
+      let highrated = hotelData.filter((item) => item.rating > 3).slice(0, 4);
       setHighRatedHotels(highrated);
 
       let premium = hotelData.filter((item) => item.noOfRoom > 10).slice(0, 4);

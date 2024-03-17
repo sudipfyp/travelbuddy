@@ -4,11 +4,20 @@ from .serializer import *
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import guide, seller, user
+from .models import guide, seller, user, admin
 
 from .utils import verify_access_token
 
 # Create your views here.
+
+
+class AdminRegisteration(APIView):
+    def post(self, request):
+        serializer = AdminModelSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg': 'registered successfully'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserRegistration(CreateAPIView):
@@ -64,10 +73,10 @@ class loginUser(APIView):
             emailid = request.data.get('email')
             password = request.data.get('password')
             role = ""
+            adminData = admin.objects.filter(email=emailid, password=password)
             userData = user.objects.filter(email=emailid, password=password)
             guideData = guide.objects.filter(email=emailid, password=password)
-            sellerdata = seller.objects.filter(
-                email=emailid, password=password)
+            sellerdata = seller.objects.filter(email=emailid, password=password)
 
             if len(userData) > 0:
                 refresh = RefreshToken.for_user(user=userData[0])
@@ -83,6 +92,11 @@ class loginUser(APIView):
                 refresh = RefreshToken.for_user(user=sellerdata[0])
                 refresh["role"] = "seller"
                 role = "seller"
+                access_token = str(refresh.access_token)
+            elif len(adminData) > 0:
+                refresh = RefreshToken.for_user(user=adminData[0])
+                refresh["role"] = "admin"
+                role = "admin"
                 access_token = str(refresh.access_token)
             else:
                 return Response({'msg': 'Invalid Id or password'}, status=status.HTTP_404_NOT_FOUND)
@@ -123,6 +137,8 @@ class UserCheck(APIView):
                 return Response({"role": "guide"}, status=status.HTTP_200_OK)
             elif payload['role'].lower() == "user":
                 return Response({"role": "user"}, status=status.HTTP_200_OK)
+            elif payload['role'].lower() == "admin":
+                return Response({"role": "admin"}, status=status.HTTP_200_OK)
             return Response({"msg": "Un-authorized user"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({"msg": "Login first"}, status=status.HTTP_403_FORBIDDEN)
 

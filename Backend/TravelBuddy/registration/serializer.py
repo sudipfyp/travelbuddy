@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from .models import user, guide, seller
+from .models import user, guide, seller, admin
 
+
+
+class AdminModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = admin
+        fields = '__all__'
 
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,6 +35,12 @@ class SellerModelSerializer(serializers.ModelSerializer):
         fields = ['name', 'email', 'shop_name',
                   'registration_number', 'shop_address', 'password', 'image']
 
+
+class AdminLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length = 100)
+    class Meta:
+        model = admin
+        fields = ['email', 'password']
 
 class UserLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=100)

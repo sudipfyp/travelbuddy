@@ -16,8 +16,11 @@ const Login = (props) => {
     });
     let parsedData = await data.json();
     if (data.status === 200) {
-      // navigate(`/${parsedData.role}homepage`);
-      navigate("/profile");
+      if (parsedData.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/");
+      }
     }
   };
 
@@ -48,7 +51,12 @@ const Login = (props) => {
 
     if (response.status === 200) {
       alert(`${parsedData.role.toUpperCase()} logged in successfully`);
-      navigate("/profile");
+
+      if (parsedData.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/");
+      }
     } else {
       alert("Invalid Username or Password");
     }

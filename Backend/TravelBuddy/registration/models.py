@@ -1,7 +1,10 @@
 from django.db import models
 
 # Create your models here.
-
+class admin(models.Model):
+    name = models.CharField( max_length=200)
+    email = models.EmailField( max_length=200, unique = True)
+    password = models.CharField(max_length = 200)
 
 class user(models.Model):
     name = models.CharField(max_length=200)
@@ -10,7 +13,7 @@ class user(models.Model):
     password = models.CharField(max_length=200)
     nationality = models.CharField(max_length=200)
     preferredplace = models.CharField(max_length=200)
-    image = models.ImageField(upload_to=None, null=True)
+    image = models.ImageField(upload_to="user", null=True)
     identifier = models.CharField(max_length = 50, default = "user")
 
 
@@ -25,7 +28,7 @@ class guide(models.Model):
     phone = models.CharField(max_length=200)
     tag = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
-    image = models.ImageField(upload_to=None, null=True)
+    image = models.ImageField(upload_to="guide", null=True)
     identifier = models.CharField(max_length = 45, default = "guide")
     charge = models.IntegerField()
 
@@ -37,5 +40,5 @@ class seller(models.Model):
     registration_number = models.CharField(max_length=200)
     shop_address = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
-    image = models.ImageField(upload_to=None, null=True)
+    image = models.ImageField(upload_to="seller", null=True)
     identifier = models.CharField(max_length = 50, default = "seller")

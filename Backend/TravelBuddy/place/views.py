@@ -9,13 +9,12 @@ from .models import Place
 from registration.utils import verify_access_token
 
 
-## Allowing seller to add the places, will change logic and allow admin only to add places later
 class PlaceAddView(APIView):
     def post(self, request):
         token = request.COOKIES.get("token", None)
         verification, payload = verify_access_token(token) 
         if verification:
-            if payload['role'].lower() == "seller":
+            if payload['role'].lower() == "admin":
                 serailizer = PlaceModelSerializer(data = request.data)
                 if serailizer.is_valid():
                         name = request.data.get('name')
@@ -36,7 +35,7 @@ class PlaceEditView(APIView):
         token = request.COOKIES.get("token", None)
         verification, payload = verify_access_token(token) 
         if verification:
-            if payload['role'].lower() == "seller":
+            if payload['role'].lower() == "admin":
                 serailizer = PlaceModelSerializer(data = request.data)
                 if serailizer.is_valid():
                         name = request.data.get('name')
@@ -58,7 +57,7 @@ class PlaceDeleteView(APIView):
         token = request.COOKIES.get("token", None)
         verification, payload = verify_access_token(token) 
         if verification:
-            if payload['role'].lower() == "seller":
+            if payload['role'].lower() == "admin":
                 try:
                     Place.objects.get(id = kwargs['id']).delete()
                     return Response({"msg":"Delete Successful"}, status=status.HTTP_200_OK)

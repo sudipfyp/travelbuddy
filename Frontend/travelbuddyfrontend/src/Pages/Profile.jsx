@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../Assets/styles/Styles.css";
 import Navbar from "../Components/Navbar";
 import { useNavigate } from "react-router-dom";
@@ -11,11 +11,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 const Profile = () => {
-  document.title = "TravelBuddy ● Profile";
-
   const navigate = useNavigate();
+  const [profile, setProfile] = useState({});
 
   useEffect(() => {
+    document.title = "TravelBuddy ● Profile";
     fetchData();
 
     // eslint-disable-next-line
@@ -27,6 +27,13 @@ const Profile = () => {
       method: "GET",
       credentials: "include",
     });
+
+    data = await data.json();
+    setProfile(data);
+
+    // From here we can get user_id
+    // console.log(profile.data.user_id);
+    
 
     if (data.status === 401) {
       navigate("/login");

@@ -9,7 +9,7 @@ class Hotel(models.Model):
     latitude = models.TextField()
     longitude = models.TextField()
     address =  models.TextField()
-    image = models.ImageField( upload_to=None, null = True)
+    image = models.ImageField( upload_to='hotel', null = True)
     rating = models.IntegerField(default = 0)
     noOfRoom = models.IntegerField()
     owner = models.ForeignKey(seller, on_delete=models.CASCADE, related_name = "hotel_seller")

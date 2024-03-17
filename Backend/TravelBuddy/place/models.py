@@ -10,5 +10,5 @@ class Place(models.Model):
     longitude = models.TextField()
     tag = models.TextField()
     description = models.TextField()
-    image = models.ImageField(null=True, upload_to='image/place')
+    image = models.ImageField(upload_to='place', null=True)
     identifier = models.CharField(max_length=50, default="place")

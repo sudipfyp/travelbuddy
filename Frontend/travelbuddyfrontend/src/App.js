@@ -29,8 +29,13 @@ import LocalEventsDetails from "./Components/LocalEventsDetails";
 import HotelDetails from "./Components/HotelDetails";
 import SeeMore from "./Components/SeeMore";
 import GuideHire from "./Pages/GuideHire";
-
-import Add from "./Pages/Add";
+import Dashboard from "./Pages/Admin-Dashboard";
+import AdminUsers from "./Pages/Admin-Users";
+import AdminShops from "./Pages/Admin-Shops";
+import AdminLocalEvents from "./Pages/Admin-LocalEvents";
+import AdminHotels from "./Pages/Admin-Hotels";
+import AdminTransportation from "./Pages/Admin-Transportation";
+import AdminPlace from "./Pages/Admin-Place";
 
 import CurrencyExchangeAPI from "./Pages/CurrencyExchangeAPI";
 
@@ -69,10 +74,14 @@ const App = () => {
         <Route path="/hotel/:headerheadline" element={<SeeMore />} />
         <Route path="/localevents/:headerheadline" element={<SeeMore />} />
         <Route path="/guidehire/:id" element={<GuideHire />} />
-
-
-        <Route path="/add" element={<Add />} />
-
+        <Route path="/admin-dashboard" element={<Dashboard />} />
+        <Route path="/admin-users" element={<AdminUsers />} />
+        <Route path="/admin-shops" element={<AdminShops />} />
+        <Route path="/admin-localevents" element={<AdminLocalEvents />} />
+        <Route path="/admin-hotels" element={<AdminHotels />} />
+        <Route path="/admin-transportation" element={<AdminTransportation />} />
+        <Route path="/admin-place" element={<AdminPlace />} />
+        
         
         <Route
           path="/currencyexchangeapi"

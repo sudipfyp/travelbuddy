@@ -43,7 +43,7 @@ import Image from '../Assets/images/logo-text.png'
 
 const DivItem = ({ item }) => {
   return (
-    <div className="divItem" style={{'marginBottom': '1rem'}}>
+    <div className="divitem">
       <a
         href={
           item.identifier === "place"
