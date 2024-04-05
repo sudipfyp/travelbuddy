@@ -13,7 +13,12 @@ class UserModelSerializer(serializers.ModelSerializer):
         model = user
         fields = ['name', 'email', 'address', 'password',
                   'nationality', 'preferredplace', 'image']
-
+        
+class UserDataModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = user
+        fields = ['name', 'email', 'address', 
+                  'nationality', 'preferredplace', 'image']
 
 class GuideModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,9 +37,12 @@ class GuideDataModelSerializer(serializers.ModelSerializer):
 class SellerModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = seller
-        fields = ['name', 'email', 'shop_name',
-                  'registration_number', 'shop_address', 'password', 'image']
+        fields = ['name', 'email', 'password', 'image']
 
+class SellerDataModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = seller
+        fields = ['name', 'email', 'image']
 
 class AdminLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length = 100)

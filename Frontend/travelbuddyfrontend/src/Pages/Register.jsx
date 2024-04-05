@@ -140,6 +140,12 @@ const Register = () => {
                   onChange={(e) => setCharge(e.target.value)}
                 />
               </div>
+            ) : role === "user" ? (
+              <div className="register-column">
+                <label htmlFor="phone">Image</label>
+                <br />
+                <input type="file" name="image" id="image" required />
+              </div>
             ) : null}
           </div>
 

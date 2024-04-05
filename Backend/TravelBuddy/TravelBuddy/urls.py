@@ -25,8 +25,10 @@ urlpatterns = [
     path('hotel/', include('hotelbooking.urls')),
     path('place/', include('place.urls')),
     path('guide/', include('guidehire.urls')),
+    path('shop/', include('shop.urls')),
+    path('event/', include('event.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL,
+#                           document_root=settings.MEDIA_ROOT)

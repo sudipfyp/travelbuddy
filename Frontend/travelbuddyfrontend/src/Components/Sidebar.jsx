@@ -17,8 +17,12 @@ const Sidebar = () => {
       credentials: "include",
     });
 
+    let parsedData = await data.json();
+
     if (data.status === 200) {
-      console.log("User is logged in");
+      if (parsedData.role !== "admin") {
+        navigate("/login");
+      }
     }
 
     if (data.status === 403) {
@@ -69,37 +73,37 @@ const Sidebar = () => {
             <ul>
               <li>
                 <NavLink to="/admin-dashboard">
-                  <i class="fa-solid fa-home" /> Dashboard
+                  <i className="fa-solid fa-home" /> Dashboard
                 </NavLink>
               </li>
               <li>
                 <NavLink to="/admin-users">
-                  <i class="fa-solid fa-users" /> Users
+                  <i className="fa-solid fa-users" /> Users
                 </NavLink>
               </li>
               <li>
                 <NavLink to="/admin-place">
-                  <i class="fa-solid fa-location-crosshairs" /> Places
+                  <i className="fa-solid fa-location-crosshairs" /> Places
                 </NavLink>
               </li>
               <li>
                 <NavLink to="/admin-shops">
-                  <i class="fa-solid fa-shopping-bag" /> Shops
+                  <i className="fa-solid fa-shopping-bag" /> Shops
                 </NavLink>
               </li>
               <li>
                 <NavLink to="/admin-hotels">
-                  <i class="fa-solid fa-bed" /> Hotels
+                  <i className="fa-solid fa-bed" /> Hotels
                 </NavLink>
               </li>
               <li>
                 <NavLink to="/admin-localevents">
-                  <i class="fa-solid fa-calendar" /> Local Events
+                  <i className="fa-solid fa-calendar" /> Local Events
                 </NavLink>
               </li>
               <li>
                 <NavLink to="/admin-transportation">
-                  <i class="fa-solid fa-bus" /> Transportation
+                  <i className="fa-solid fa-bus" /> Transportation
                 </NavLink>
               </li>
             </ul>

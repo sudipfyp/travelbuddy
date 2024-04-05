@@ -157,3 +157,44 @@ class GuideDetailView(APIView):
             return Response({"msg": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = GuideDataModelSerializer(guideObj, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ProfileView(APIView):
+    def get(self, request):
+        token = request.COOKIES.get("token", None)
+        verification, payload = verify_access_token(token)
+        if verification:
+            if payload['role'].lower() == "seller":
+                sellerObj = seller.objects.filter(id=payload['user_id'])
+                serializer = SellerDataModelSerializer(sellerObj, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            elif payload['role'].lower() == "guide":
+                guideObj = guide.objects.filter(id=payload['user_id'])
+                serializer = GuideDataModelSerializer(guideObj, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            elif payload['role'].lower() == "user":
+                userObj = user.objects.filter(id=payload['user_id'])
+                serializer = UserDataModelSerializer(userObj, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            return Response({"msg": "Un-authorized user"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"msg": "Login first"}, status=status.HTTP_401_UNAUTHORIZED) 
+
+
+class GuideList(APIView):
+    def get(self, request):
+        guideObj = guide.objects.all()
+        serializer = GuideDataModelSerializer(guideObj, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class SellerList(APIView):
+    def get(self, request):
+        sellerObj = seller.objects.all()
+        serializer = SellerDataModelSerializer(sellerObj, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserList(APIView):
+    def get(self, request):
+        userObj = user.objects.all()
+        serializer = UserDataModelSerializer(userObj, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

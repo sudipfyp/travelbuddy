@@ -38,6 +38,7 @@ class GuideHireProposal(APIView):
     def get(self, request, *args, **kwargs):
         token = request.COOKIES.get("token", None)
         verification, payload = verify_access_token(token) 
+        print("token:  ",token)
         if verification:
             if payload['role'].lower() == "guide":
                 guideId = payload['user_id']

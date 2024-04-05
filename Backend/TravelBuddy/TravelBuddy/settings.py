@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-PROJECT_APPS = ['registration', 'hotelbooking', 'place', 'guidehire']
+PROJECT_APPS = ['registration', 'hotelbooking', 'place', 'guidehire', 'shop', 'event']
 THIRD_PARTY_APPS = ['corsheaders', 'rest_framework']
 INSTALLED_APPS += PROJECT_APPS + THIRD_PARTY_APPS
 
@@ -133,7 +133,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = 'static/images'
-MEDIA_URL = '/images/'
+MEDIA_URL = 'http://localhost:8000/static/images/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

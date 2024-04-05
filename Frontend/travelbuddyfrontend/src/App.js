@@ -19,7 +19,7 @@ import LocalEvents from "./Pages/LocalEvents";
 import CurrencyExchange from "./Pages/CurrencyExchange";
 import Translation from "./Pages/Translation";
 import Transportation from "./Pages/Transportation";
-import SafetyGuidelines from "./Pages/SafetyGuidelines";
+import TravelTips from "./Pages/TravelTips";
 import ScrollToTop from "./Components/Scroll";
 import Rates from "./Assets/data/Currency.json";
 import ProductDetails from "./Components/ProductDetails";
@@ -36,6 +36,7 @@ import AdminLocalEvents from "./Pages/Admin-LocalEvents";
 import AdminHotels from "./Pages/Admin-Hotels";
 import AdminTransportation from "./Pages/Admin-Transportation";
 import AdminPlace from "./Pages/Admin-Place";
+import GuideHomepage from "./Pages/GuideHomepage";
 
 import CurrencyExchangeAPI from "./Pages/CurrencyExchangeAPI";
 
@@ -62,11 +63,11 @@ const App = () => {
         <Route path="/currencyexchange" element={<CurrencyExchange data={Rates} />} />
         <Route path="/translation" element={<Translation />} />
         <Route path="/transportation" element={<Transportation />} />
-        <Route path="/safetyguidelines" element={<SafetyGuidelines />} />
+        <Route path="/traveltips" element={<TravelTips />} />
         <Route path="/productdetails/:id" element={<ProductDetails />} />
         <Route path="/placedetails/:id" element={<PlaceDetails />} />
         <Route path="/guidedetails/:id" element={<GuideDetails />} />
-        <Route path="/localeventsdetails/:id" element={<LocalEventsDetails />} />
+        <Route path="/localeventdetails/:id" element={<LocalEventsDetails />} />
         <Route path="/hoteldetails/:id" element={<HotelDetails />} />
         <Route path="/place/:headerheadline" element={<SeeMore />} />
         <Route path="/guide/:headerheadline" element={<SeeMore />} />
@@ -81,6 +82,7 @@ const App = () => {
         <Route path="/admin-hotels" element={<AdminHotels />} />
         <Route path="/admin-transportation" element={<AdminTransportation />} />
         <Route path="/admin-place" element={<AdminPlace />} />
+        <Route path="/guidehomepage" element={<GuideHomepage />} />
         
         
         <Route

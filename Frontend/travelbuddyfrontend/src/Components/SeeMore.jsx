@@ -38,17 +38,17 @@ const SeeMore = () => {
       setNaturalScenarioPlace(naturalScenarioPlace);
 
       let kathmanduDistrictPlace = placeData.filter(
-        (item) => item.location === "ktm"
+        (item) => item.district === "Kathmandu"
       );
       setKathmanduDistrictPlace(kathmanduDistrictPlace);
 
       let lalitpurDistrictPlace = placeData.filter(
-        (item) => item.location === "llt"
+        (item) => item.district === "Lalitpur"
       );
       setLalitpurDistrictPlace(lalitpurDistrictPlace);
 
       let bhaktapurDistrictPlace = placeData.filter(
-        (item) => item.location === "bkt"
+        (item) => item.district === "Bhaktapur"
       );
       setBhaktapurDistrictPlace(bhaktapurDistrictPlace);
     };
@@ -137,6 +137,57 @@ const SeeMore = () => {
       setBhaktapurDistrictGuides(bhaktapurDistrictGuides);
     };
     getGuides();
+  }, []);
+
+  const [events, setEvents] = useState([]);
+  const [currentEvents, setCurrentEvents] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+  const [popularEvents, setPopularEvents] = useState([]);
+
+  useEffect(() => {
+    document.title = "TravelBuddy ● Local Events";
+
+    const getCurrentEvents = async () => {
+      let response = await fetch("http://127.0.1:8000/event/current-event");
+      let parsedData = await response.json();
+      let currentEvents = parsedData;
+
+      setCurrentEvents(currentEvents);
+    };
+
+    const getUpcomingEvents = async () => {
+      let response = await fetch("http://127.0.1:8000/event/upcomming-event");
+      let parsedData = await response.json();
+      let upcomingEvents = parsedData;
+
+      setUpcomingEvents(upcomingEvents);
+    };
+
+    const getPastEvents = async () => {
+      let response = await fetch("http://127.0.1:8000/event/past-event");
+      let parsedData = await response.json();
+      let pastEvents = parsedData;
+
+      setPastEvents(pastEvents);
+    };
+
+    const events = async () => {
+      let response = await fetch("http://127.0.1:8000/event/list");
+      let parsedData = await response.json();
+      let events = parsedData;
+
+      setEvents(events);
+
+      let popularEvents = events
+        .filter((item) => item.tag === "popular")
+      setPopularEvents(popularEvents);
+    };
+
+    getCurrentEvents();
+    getUpcomingEvents();
+    getPastEvents();
+    events();
   }, []);
 
   return (
@@ -343,7 +394,62 @@ const SeeMore = () => {
           ) : category === "product" ? (
             <>Product</>
           ) : category === "localevents" ? (
-            <>Local Events</>
+            <>
+              <Search
+                headline="Enjoy the Events!"
+                placeholder="Search for the events"
+              />
+
+              {headerheadline === "popular" ? (
+                <>
+                  <h2>Popular</h2>
+                  <div className="common-header-section">
+                    {popularEvents.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "happening-now" ? (
+                <>
+                  <h2>Happening Now</h2>
+                  <div className="common-header-section">
+                    {currentEvents.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "upcoming-events" ? (
+                <>
+                  <h2>Upcoming Events</h2>
+                  <div className="common-header-section">
+                    {upcomingEvents.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "past-events" ? (
+                <>
+                  <h2>Past Events</h2>
+                  <div className="common-header-section">
+                    {pastEvents.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "all-events" ? (
+                <>
+                  <h2>All Events</h2>
+                  <div className="common-header-section">
+                    {events.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                "No such category found"
+              )}
+            
+            </>
           ) : (
             "Error: No such category found"
           )}

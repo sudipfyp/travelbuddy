@@ -1,5 +1,66 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@500&family=Poppins&family=Tangerine:wght@700&display=swap");
 
+
+
+.guide-hire-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.guide-hire-card {
+  width: 45%; /* Adjust this value to control the number of cards per row */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.guide-hire-card h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.guide-hire-card p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.guide-hire-card button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.guide-hire-card button:first-child {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+.guide-hire-card button:last-child {
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-left: 10px;
+}
+
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #b7b6b6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #02cea4;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #02b994;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -109,6 +170,55 @@ body {
     max-width: 100%;
   }
 }
+
+/* TravelTips.css */
+.tips-container {
+  padding: 2rem;
+  width: 90%;
+  margin: auto;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.travel-tips > h2{
+  color: #02cea4;
+  margin-bottom: 1rem;
+}
+
+.travel-tips > p {
+  margin-bottom: 1rem;
+}
+
+.travel-tips > .tips-collection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin-bottom: 2rem;
+}
+
+.tipsss:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s;
+}
+
+@media screen and (max-width: 768px) {
+  .tips-container {
+    width: 100%;
+    padding: 0;
+  }
+
+  .travel-tips > h2 {
+    margin-top: 1rem;
+  }
+
+  .travel-tips {
+    width: 90%;
+    margin: auto;
+  }
+  
+}
+
 
 /* Navbar.css */
 .navbar {
@@ -654,12 +764,16 @@ body {
 
 
 .home-header-section-div:nth-child(1),
-.home-header-section-div:nth-child(3) {
+.home-header-section-div:nth-child(3),
+.home-header-section-div:nth-child(2):hover,
+.home-header-section-div:nth-child(4):hover {
   transform: rotate(-2deg);
 }
 
 .home-header-section-div:nth-child(2),
-.home-header-section-div:nth-child(4) {
+.home-header-section-div:nth-child(4),
+.home-header-section-div:nth-child(1):hover,
+.home-header-section-div:nth-child(3):hover {
   transform: rotate(2deg);
 }
 
@@ -1039,6 +1153,12 @@ body {
   outline: none;
 }
 
+.register-form form input[type="file"] {
+  height: 30px;
+  padding: 10px 0 0 15px;
+  width: 78%;
+}
+
 .register-form form select {
   width: 83%;
 }
@@ -1109,8 +1229,12 @@ body {
     width: 95%;
   }
 
+  .register-form form input[type="file"] {
+    width: 94%;
+  }
+
   .register-form form select {
-    width: 100%;
+    width: 97%;
   }
 
   .register-form form input[type="submit"] {
@@ -1512,6 +1636,7 @@ hr {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: none;
+  cursor: pointer;
 }
 
 .details-container .details-top .details-container-right .details-action p {
@@ -1558,6 +1683,18 @@ hr {
   a {
   margin-bottom: 0.5rem;
   font-size: 2rem;
+}
+
+.details-map {
+  width: 100%;
+  height: 50vh;
+  margin-top: 1rem;
+}
+
+.details-map-route {
+  width: 100%;
+  height: 80vh;
+  margin-top: 1rem;
 }
 
 @media screen and (max-width: 1000px) {
@@ -1861,6 +1998,7 @@ hr {
 
 .add-place-form input[type="text"],
 .add-place-form input[type="file"],
+.add-place-form input[type="date"],
 .add-place-form input[type="submit"] {
   margin-bottom: 10px;
   padding: 8px;

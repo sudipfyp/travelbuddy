@@ -6,6 +6,7 @@ from django.db import models
 class Place(models.Model):
     name = models.CharField(max_length=50)
     location = models.TextField()
+    district = models.TextField()
     latitude = models.TextField()
     longitude = models.TextField()
     tag = models.TextField()

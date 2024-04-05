@@ -55,6 +55,7 @@ const GuideHire = () => {
 
     if (response.status === 200) {
       alert("Request sent successfully");
+      navigate(`/guidedetails/${guide.id}`);
     } else {
       alert("Request failed");
     }
@@ -72,29 +73,38 @@ const GuideHire = () => {
     <>
       <div className="guide-hire-container">
         <div className="ghc-left">
-          {/* <img src={guide.image} alt="" /> */}
-          <img src={Image} alt="" />
-
-          <p>Name: {guide.name}</p>
+          <img src={guide.image} alt="" />
+          <br />
+          <h3>Name: {guide.name}</h3>
         </div>
 
         <div className="ghc-right">
-          <form onSubmit={handleGuideHire}>
-            <input
-              type="number"
-              placeholder="Number of days"
-              onChange={(e) => setNoOfDays(e.target.value)}
-            />
-            <br />
-            <input
-              type="text"
-              placeholder="Places interested"
-              onChange={(e) => setPlacesInterested(e.target.value)}
-            />
-            <br />
-            <p>Charge (per day): {guide.charge}</p>
-            <button type="submit">Send Request</button>
-          </form>
+          {/* {guide.identifier === "guide" ? (
+            <div className="ghc-right-top">
+              <h3>Your request is pending</h3>
+            </div>
+          ) : ( */}
+            <div className="ghc-right-top">
+              <h3>Guide Hire</h3>
+              <br />
+              <form onSubmit={handleGuideHire}>
+                <input
+                  type="number"
+                  placeholder="Number of days"
+                  onChange={(e) => setNoOfDays(e.target.value)}
+                />
+                <br />
+                <input
+                  type="text"
+                  placeholder="Places interested"
+                  onChange={(e) => setPlacesInterested(e.target.value)}
+                />
+                <br />
+                <p>Charge (per day): {guide.charge}</p>
+                <button type="submit">Send Request</button>
+              </form>
+            </div>
+          {/* )} */}
         </div>
       </div>
     </>

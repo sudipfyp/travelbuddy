@@ -1,70 +1,101 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import Search from "../Components/Search";
+import Display from "../Components/Display";
+import DivItem from "../Components/DivItem";
 
 const LocalEvents = () => {
-  document.title = "TravelBuddy ● Local Events";
+  const [events, setEvents] = useState([]);
+  const [currentEvents, setCurrentEvents] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+  const [popularEvents, setPopularEvents] = useState([]);
+
+  useEffect(() => {
+    document.title = "TravelBuddy ● Local Events";
+
+    const getCurrentEvents = async () => {
+      let response = await fetch("http://127.0.1:8000/event/current-event");
+      let parsedData = await response.json();
+      let currentEvents = parsedData;
+
+      setCurrentEvents(currentEvents.slice(0, 4));
+    };
+
+    const getUpcomingEvents = async () => {
+      let response = await fetch("http://127.0.1:8000/event/upcomming-event");
+      let parsedData = await response.json();
+      let upcomingEvents = parsedData;
+
+      setUpcomingEvents(upcomingEvents.slice(0, 4));
+    };
+
+    const getPastEvents = async () => {
+      let response = await fetch("http://127.0.1:8000/event/past-event");
+      let parsedData = await response.json();
+      let pastEvents = parsedData;
+
+      setPastEvents(pastEvents.slice(0, 4));
+    };
+
+    const events = async () => {
+      let response = await fetch("http://127.0.1:8000/event/list");
+      let parsedData = await response.json();
+      let events = parsedData;
+
+      setEvents(events.slice(0, 4))
+
+      let popularEvents = events
+        .filter((item) => item.tag === "popular")
+      setPopularEvents(popularEvents.slice(0, 4));
+    };
+
+    getCurrentEvents();
+    getUpcomingEvents();
+    getPastEvents();
+    events();
+  }, []);
+
   return (
     <>
       <Navbar />
-      
+
       <div className="common-container">
-        <div className="common-header">
-          <div className="common-headline">
-            <h1>Enjoy the Events!</h1>
-          </div>
+        <Search
+          headerheadline="Enjoy the Events!"
+          placeholder="Search for the events"
+        />
 
-          <div className="common-search">
-            <input type="text" placeholder="Search for the events" />
+        <Display
+          headerheadline="Popular"
+          data={popularEvents}
+          component={DivItem}
+        />
 
-            <button>Search</button>
-          </div>
-        </div>
+        <Display
+          headerheadline="Happening Now"
+          data={currentEvents}
+          component={DivItem}
+        />
 
-        <div className="common-header-headline">
-          <h2>Popular</h2>
+        <Display
+          headerheadline="Upcoming Events"
+          data={upcomingEvents}
+          component={DivItem}
+        />
 
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
+        <Display
+          headerheadline="Past Events"
+          data={pastEvents}
+          component={DivItem}
+        />
 
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-
-        <div className="common-header-headline">
-          <h2>Happening Now</h2>
-
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-
-        <div className="common-header-headline">
-          <h2>Upcoming Events</h2>
-
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
+        <Display
+          headerheadline="All Events"
+          data={events}
+          component={DivItem}
+        />
       </div>
 
       <Footer />

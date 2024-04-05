@@ -18,7 +18,11 @@ const Login = (props) => {
     if (data.status === 200) {
       if (parsedData.role === "admin") {
         navigate("/admin-dashboard");
-      } else {
+      }
+      else if (parsedData.role === "guide") {
+        navigate("/guidehomepage");
+      }
+      else {
         navigate("/");
       }
     }
@@ -54,7 +58,11 @@ const Login = (props) => {
 
       if (parsedData.role === "admin") {
         navigate("/admin-dashboard");
-      } else {
+      }
+      else if (parsedData.role === "guide") {
+        navigate("/guidehomepage");
+      }
+      else {
         navigate("/");
       }
     } else {

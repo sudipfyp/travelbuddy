@@ -131,7 +131,7 @@ const Navbar = () => {
                   <a href="/currencyexchange">Currency Exchange</a>
                   <a href="/translation">Translation</a>
                   <a href="/transportation">Transportation Services</a>
-                  <a href="/safetyguidelines">Safety Guidelines</a>
+                  <a href="/traveltips">Travel Tips</a>
                   <button className="logout-button" onClick={handleOpen}>
                     Logout
                   </button>
@@ -149,7 +149,7 @@ const Navbar = () => {
                   <a href="/currencyexchange">Currency Exchange</a>
                   <a href="/translation">Translation</a>
                   <a href="/transportation">Transportation Services</a>
-                  <a href="/safetyguidelines">Safety Guidelines</a>
+                  <a href="/traveltips">Travel Tips</a>
                 </>
               )}
             </div>
@@ -184,7 +184,7 @@ const Navbar = () => {
                 <a href="/currencyexchange">Currency Exchange</a>
                 <a href="/translation">Translation</a>
                 <a href="/transportation">Transportation Services</a>
-                <a href="/safetyguidelines">Safety Guidelines</a>
+                <a href="/traveltips">Travel Tips</a>
                 <button className="logout-button" onClick={handleOpen}>
                   Logout
                 </button>
@@ -206,7 +206,7 @@ const Navbar = () => {
                 <a href="/currencyexchange">Currency Exchange</a>
                 <a href="/translation">Translation</a>
                 <a href="/transportation">Transportation Services</a>
-                <a href="/safetyguidelines">Safety Guidelines</a>
+                <a href="/traveltips">Travel Tips</a>
               </>
             )}
           </div>

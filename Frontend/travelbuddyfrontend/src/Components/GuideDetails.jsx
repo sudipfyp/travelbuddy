@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import Loader from './Loader';
+import Loader from "./Loader";
 
 const GuideDetails = () => {
   const { id } = useParams();
@@ -12,7 +12,6 @@ const GuideDetails = () => {
     fetch(`http://127.0.0.1:8000/user/guide/detail/${id}`)
       .then((response) => response.json())
       .then((data) => setGuide(data[0]));
-    console.log(guide);
   }, []);
 
   if (!guide) {
@@ -31,19 +30,8 @@ const GuideDetails = () => {
         <div className="details-top">
           <div className="details-container-left">
             <div className="images-top">
-              <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
+              <img src={guide.image} alt="" />
             </div>
-            {/* <div className="images-bottom">
-                <div className="image-bottom">
-                  <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
-                </div>
-                <div className="image-bottom">
-                  <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
-                </div>
-                <div className="image-bottom">
-                  <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
-                </div>
-              </div> */}
           </div>
           <div className="details-container-right">
             <div className="details-title">{guide.name}</div>

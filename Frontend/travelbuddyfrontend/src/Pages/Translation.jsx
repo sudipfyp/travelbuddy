@@ -1,55 +1,12 @@
-// import React from "react";
-// import Navbar from "../Components/Navbar";
-// import Footer from "../Components/Footer";
-
-// const Translation = () => {
-//   document.title = "TravelBuddy ● Translation";
-//   return (
-//     <>
-//       <Navbar />
-
-//       <div className="common-container">
-//         <div className="common-header">
-//           <div className="common-headline">
-//             <h1>Communicate Easily!</h1>
-//           </div>
-//         </div>
-
-//         <div className="language-translate">
-//           <div className="language-wrapper">
-//             <div className="language-top">
-//               <textarea spellcheck="false" name="" id="" placeholder="Enter text"></textarea>
-//               <div className="lang-line"></div>
-//               <textarea spellcheck="false" name="" id="" placeholder="Translate"></textarea>
-//             </div>
-
-//             <div className="language-bottom">
-//               <select>
-//                 <option value="en">English</option>
-//                 <option value="ne">Nepali</option>
-//               </select>
-
-//               <i class="fas fa-exchange-alt" />
-
-//               <select>
-//                 <option value="en">English</option>
-//                 <option value="ne">Nepali</option>
-//               </select>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       <Footer />
-//     </>
-//   );
-// };
-
-// export default Translation;
-
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 const countries = {
   "am-ET": "Amharic",
@@ -148,8 +105,8 @@ const countries = {
   "wo-SN": "Wolof",
   "xh-ZA": "Xhosa",
   "yi-YD": "Yiddish",
-  "zu-ZA": "Zulu"
-}
+  "zu-ZA": "Zulu",
+};
 
 const Translation = () => {
   document.title = "TravelBuddy ● Translation";
@@ -207,7 +164,6 @@ const Translation = () => {
         console.error("Error fetching translation:", error);
       });
   }, [inputText, fromLanguage, toLanguage]);
-  
 
   return (
     <>
@@ -241,7 +197,9 @@ const Translation = () => {
             <div className="language-bottom">
               <select value={fromLanguage} onChange={handleFromLanguageChange}>
                 {Object.entries(countries).map(([code, name]) => (
-                  <option key={code} value={code}>{name}</option>
+                  <option key={code} value={code}>
+                    {name}
+                  </option>
                 ))}
               </select>
 
@@ -249,12 +207,95 @@ const Translation = () => {
 
               <select value={toLanguage} onChange={handleToLanguageChange}>
                 {Object.entries(countries).map(([code, name]) => (
-                  <option key={code} value={code}>{name}</option>
+                  <option key={code} value={code}>
+                    {name}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
         </div>
+
+        <br />
+        <br />
+
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ color: "#02cea4" }}>S.N</TableCell>
+                <TableCell style={{ color: "#02cea4" }}>
+                  Commonly used Nepali Phrase
+                </TableCell>
+                <TableCell style={{ color: "#02cea4" }}>
+                  Translation in English
+                </TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              <TableRow>
+                <TableCell>1.</TableCell>
+                <TableCell>नमस्ते</TableCell>
+                <TableCell>Hi/Hello</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>2.</TableCell>
+                <TableCell>धन्यवाद</TableCell>
+                <TableCell>Thank you</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>3.</TableCell>
+                <TableCell>कृपया</TableCell>
+                <TableCell>Please</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>4.</TableCell>
+                <TableCell>शुभकामना</TableCell>
+                <TableCell>Best wishes</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>5.</TableCell>
+                <TableCell>बिदाई</TableCell>
+                <TableCell>Goodbye</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>6.</TableCell>
+                <TableCell>तपाईंलाई कस्तो छ?</TableCell>
+                <TableCell>How are you?</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>7.</TableCell>
+                <TableCell>म सन्चै छु।</TableCell>
+                <TableCell>I am fine</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>8.</TableCell>
+                <TableCell>तपाईं राम्रो देखिनुभएको छ।</TableCell>
+                <TableCell>You are looking good.</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>9.</TableCell>
+                <TableCell>मलाई माफ गर्नुहोस्।</TableCell>
+                <TableCell>I am Sorry.</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>10.</TableCell>
+                <TableCell>मलाई नेपाल मन पर्छ।</TableCell>
+                <TableCell>I love Nepal.</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
 
       <Footer />

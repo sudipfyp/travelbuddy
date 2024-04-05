@@ -48,9 +48,9 @@ const Home = () => {
       let response = await fetch("http://127.0.1:8000/user/guide/list");
       let parsedData = await response.json();
 
-      let guideData = parsedData;
+      let guideData = parsedData.slice(0, 4);
       // .filter((item) => item.tag === "natural")
-      // .slice(0, 4);
+  
       setTrendingGuides(guideData);
       console.log(guideData);
     };
@@ -66,17 +66,17 @@ const Home = () => {
     };
     getHotels();
 
-    // const getEvents = async () => {
-    //   let response = await fetch("http://127.0.1:8000/event/list");
-    //   let parsedData = await response.json();
+    const getEvents = async () => {
+      let response = await fetch("http://127.0.1:8000/event/list");
+      let parsedData = await response.json();
 
-    //   let eventData = parsedData
-    //     .filter((item) => item.tag === "recommended")
-    //     .slice(0, 4);
-    //   setLocalEvents(eventData);
-    //   console.log(eventData);
-    // };
-    // getEvents();
+      let eventData = parsedData
+        .filter((item) => item.tag === "popular")
+        .slice(0, 4);
+      setLocalEvents(eventData);
+      console.log(eventData);
+    };
+    getEvents();
   }, []);
 
   return (
@@ -136,7 +136,7 @@ const Home = () => {
 
           <div className="home-header-section">
             {trendingDestinations.map((item) => (
-              <a href={`/placedetails/${item.id}`}>
+              <a href={`/placedetails/${item.id}`} key={item.id}>
                 <Card sx={{ maxWidth: 300 }}>
                   <CardActionArea>
                     <CardMedia
@@ -168,7 +168,7 @@ const Home = () => {
 
           <div className="home-header-section">
             {trendingProducts.map((item) => (
-              <a href={`/productdetails/${item.id}`}>
+              <a href={`/productdetails/${item.id}`} key={item.id}>
                 <Card sx={{ maxWidth: 300 }}>
                   <CardActionArea>
                     <CardMedia
@@ -200,7 +200,7 @@ const Home = () => {
 
           <div className="home-header-section">
             {trendingGuides.map((item) => (
-              <a href={`/guidedetails/${item.id}`}>
+              <a href={`/guidedetails/${item.id}`} key={item.id}>
                 <Card sx={{ maxWidth: 300 }}>
                   <CardActionArea>
                     <CardMedia
@@ -232,7 +232,7 @@ const Home = () => {
 
           <div className="home-header-section">
             {trendingHotels.map((item) => (
-              <a href={`/hoteldetails/${item.id}`}>
+              <a href={`/hoteldetails/${item.id}`} key={item.id}>
                 <Card sx={{ maxWidth: 300 }}>
                   <CardActionArea>
                     <CardMedia
@@ -264,7 +264,7 @@ const Home = () => {
 
           <div className="home-header-section">
             {localEvents.map((item) => (
-              <a href={`/localeventsdetails/${item.id}`}>
+              <a href={`/localeventdetails/${item.id}`} key={item.id}>
                 <Card sx={{ maxWidth: 300 }}>
                   <CardActionArea>
                     <CardMedia

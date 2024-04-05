@@ -43,7 +43,7 @@ class HotelListView(ListAPIView):
         if len(HotelDataObject) == 0:
             return Response({"msg": "Hotel Not Found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = HotelModelSerializer(
-            HotelDataObject, many=True, context={"request": self.request})
+            HotelDataObject, many=True, context={"request": self.request} )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

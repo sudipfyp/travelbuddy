@@ -56,11 +56,32 @@ const Contact = () => {
           <h2>
             <i className="fa fa-phone"> Contact Us</i>
           </h2>
-          <form>
-            <input type="text" placeholder="Your Name" />
-            <input type="email" placeholder="Your Email" />
-            <input type="text" placeholder="Subject" />
-            <textarea placeholder="Your Message"></textarea>
+          {/* using google form for contact form */}
+          <form action="https://docs.google.com/forms/d/e/1FAIpQLScZWAtLjMaBOEr3JPj2F1YEfgDDMKEj0tG7wnD4heO86hd5Cw/formResponse">
+            <input
+              type="text"
+              name="entry.1205416855"
+              placeholder="Your Name"
+              required
+            />
+            <input
+              type="email"
+              name="entry.1659688759"
+              placeholder="Your Email"
+              required
+            />
+            <input
+              type="text"
+              name="entry.1402444127"
+              placeholder="Subject"
+              required
+            />
+            <textarea
+              name="entry.156632992"
+              placeholder="Your Message"
+              required
+            ></textarea>
+
             <button type="submit">Submit</button>
           </form>
         </div>
