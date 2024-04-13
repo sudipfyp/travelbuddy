@@ -14,6 +14,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import DialogContentText from "@mui/material/DialogContentText";
+import swal from "sweetalert";
 
 const AdminLocalEvents = () => {
   const [eventName, setEventName] = useState("");
@@ -49,7 +50,19 @@ const AdminLocalEvents = () => {
     });
     let parsedData = await response.json();
     console.log(parsedData);
-    setRefresh((prev) => !prev);
+
+    if (response.status === 200) {
+      swal("Event Added Successfully!", "", "success");
+      setRefresh((prev) => !prev);
+      setEventName("");
+      setEventDescription("");
+      setEventStartDate("");
+      setEventEndDate("");
+      setEventLocation("");
+      setEventTag("");
+    } else {
+      swal("Failed to Add Event!", "", "error");
+    }
   };
 
   useEffect(() => {
@@ -105,8 +118,14 @@ const AdminLocalEvents = () => {
     );
     let parsedData = await response.json();
     console.log(parsedData);
-    setRefresh((prev) => !prev);
-    setOpen(false);
+
+    if (response.status === 200) {
+      swal("Event Updated Successfully!", "", "success");
+      setRefresh((prev) => !prev);
+      setOpen(false);
+    } else {
+      swal("Failed to Update Event!", "", "error");
+    }
   };
 
   const handleDelete = async (event) => {
@@ -119,7 +138,13 @@ const AdminLocalEvents = () => {
     );
     let parsedData = await response.json();
     console.log(parsedData);
-    setRefresh((prev) => !prev);
+
+    if (response.status === 200) {
+      swal("Event Deleted Successfully!", "", "success");
+      setRefresh((prev) => !prev);
+    } else {
+      swal("Failed to Delete Event!", "", "error");
+    }
   };
 
   return (
@@ -143,7 +168,9 @@ const AdminLocalEvents = () => {
                     type="text"
                     id="name"
                     name="name"
+                    value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
+                    required
                   />
                 </div>
 
@@ -154,7 +181,9 @@ const AdminLocalEvents = () => {
                     type="text"
                     id="location"
                     name="location"
+                    value={eventLocation}
                     onChange={(e) => setEventLocation(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -167,7 +196,9 @@ const AdminLocalEvents = () => {
                     type="date"
                     id="startdate"
                     name="startdate"
+                    value={eventStartDate}
                     onChange={(e) => setEventStartDate(e.target.value)}
+                    required
                   />
                 </div>
 
@@ -178,7 +209,9 @@ const AdminLocalEvents = () => {
                     type="date"
                     id="enddate"
                     name="enddate"
+                    value={eventEndDate}
                     onChange={(e) => setEventEndDate(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -187,12 +220,18 @@ const AdminLocalEvents = () => {
                 <div className="place-row">
                   <label htmlFor="tag">Tag:</label>
                   <br />
-                  <input
-                    type="text"
+                  <select
+                    required
                     id="tag"
                     name="tag"
+                    value={eventTag}
                     onChange={(e) => setEventTag(e.target.value)}
-                  />
+                  >
+                    <option disabled>Select tag</option>
+                    <option value="recommended">Popular</option>
+                    <option value="heritage">Heritage</option>
+                    <option value="natural">Natural</option>
+                  </select>
                 </div>
 
                 <div className="place-row">
@@ -201,6 +240,7 @@ const AdminLocalEvents = () => {
                   <input
                     type="file"
                     onChange={(e) => setEventImage(e.target.files[0])}
+                    required
                   />
                   <br />
                 </div>
@@ -212,7 +252,9 @@ const AdminLocalEvents = () => {
                 type="text"
                 id="description"
                 name="description"
+                value={eventDescription}
                 onChange={(e) => setEventDescription(e.target.value)}
+                required
               />
 
               <input type="submit" value="Add Event" />
@@ -302,7 +344,16 @@ const AdminLocalEvents = () => {
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
                   />
-
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Description"
+                    type="text"
+                    fullWidth
+                    value={eventDescription}
+                    onChange={(e) => setEventDescription(e.target.value)}
+                  />
                   <TextField
                     margin="dense"
                     id="location"
@@ -312,7 +363,6 @@ const AdminLocalEvents = () => {
                     value={eventLocation}
                     onChange={(e) => setEventLocation(e.target.value)}
                   />
-
                   <TextField
                     margin="dense"
                     id="startdate"
@@ -322,7 +372,6 @@ const AdminLocalEvents = () => {
                     value={eventStartDate}
                     onChange={(e) => setEventStartDate(e.target.value)}
                   />
-
                   <TextField
                     margin="dense"
                     id="enddate"
@@ -332,7 +381,6 @@ const AdminLocalEvents = () => {
                     value={eventEndDate}
                     onChange={(e) => setEventEndDate(e.target.value)}
                   />
-
                   <TextField
                     margin="dense"
                     id="tag"
@@ -342,11 +390,10 @@ const AdminLocalEvents = () => {
                     value={eventTag}
                     onChange={(e) => setEventTag(e.target.value)}
                   />
-
+                  Image
                   <TextField
                     margin="dense"
                     id="image"
-                    label="Image"
                     type="file"
                     fullWidth
                     onChange={(e) => setEventImage(e.target.files[0])}

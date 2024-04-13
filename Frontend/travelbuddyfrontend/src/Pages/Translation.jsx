@@ -109,7 +109,9 @@ const countries = {
 };
 
 const Translation = () => {
-  document.title = "TravelBuddy ● Translation";
+  useEffect(() => {
+    document.title = "TravelBuddy ● Translation";
+  }, []);
 
   // State variables
   const [inputText, setInputText] = useState("");

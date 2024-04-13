@@ -27,6 +27,9 @@ urlpatterns = [
     path('guide/', include('guidehire.urls')),
     path('shop/', include('shop.urls')),
     path('event/', include('event.urls')),
+    path('guide/req/', include('guidefind.urls')),
+    path('transportation/', include('transportation.urls')),
+    path('rate/', include('rating.urls')),
 ]
 
 # if settings.DEBUG:

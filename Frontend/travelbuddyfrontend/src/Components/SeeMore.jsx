@@ -9,6 +9,8 @@ const SeeMore = () => {
   const category = window.location.href.split("/").slice(-2)[0];
   const { headerheadline } = useParams();
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [recommendedPlace, setRecommendedPlace] = useState([]);
   const [culturalHeritagesPlace, setCulturalHeritagesPlace] = useState([]);
   const [naturalScenarioPlace, setNaturalScenarioPlace] = useState([]);
@@ -23,37 +25,50 @@ const SeeMore = () => {
       let placeData = parsedData;
 
       let recommendedPlace = placeData.filter(
-        (item) => item.tag === "recommended"
+        (item) =>
+          item.tag === "recommended" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setRecommendedPlace(recommendedPlace);
 
       let culturalHeritagesPlace = placeData.filter(
-        (item) => item.tag === "heritage"
+        (item) =>
+          item.tag === "heritage" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setCulturalHeritagesPlace(culturalHeritagesPlace);
 
       let naturalScenarioPlace = placeData.filter(
-        (item) => item.tag === "natural"
+        (item) =>
+          item.tag === "natural" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setNaturalScenarioPlace(naturalScenarioPlace);
 
       let kathmanduDistrictPlace = placeData.filter(
-        (item) => item.district === "Kathmandu"
+        (item) =>
+          item.district === "Kathmandu" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setKathmanduDistrictPlace(kathmanduDistrictPlace);
 
       let lalitpurDistrictPlace = placeData.filter(
-        (item) => item.district === "Lalitpur"
+        (item) =>
+          item.district === "Lalitpur" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setLalitpurDistrictPlace(lalitpurDistrictPlace);
 
       let bhaktapurDistrictPlace = placeData.filter(
-        (item) => item.district === "Bhaktapur"
+        (item) =>
+          item.district === "Bhaktapur" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setBhaktapurDistrictPlace(bhaktapurDistrictPlace);
     };
     getPlaces();
-  }, []);
+  }, [searchTerm]);
 
   const [highRatedHotels, setHighRatedHotels] = useState([]);
   const [premiumHotels, setPremiumHotels] = useState([]);
@@ -68,32 +83,50 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let hotelData = parsedData;
 
-      let highRatedHotels = hotelData.filter((item) => item.rating > 3);
+      let highRatedHotels = hotelData.filter(
+        (item) =>
+          item.noOfRoom > 30 &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
       setHighRatedHotels(highRatedHotels);
 
-      let premiumHotels = hotelData.filter((item) => item.noOfRoom > 10);
+      let premiumHotels = hotelData.filter(
+        (item) =>
+          item.noOfRoom > 10 &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
       setPremiumHotels(premiumHotels);
 
-      let budgetHotels = hotelData.filter((item) => item.rating < 4);
+      let budgetHotels = hotelData.filter(
+        (item) =>
+          item.noOfRoom < 7 &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
       setBudgetHotels(budgetHotels);
 
       let kathmanduHotels = hotelData.filter(
-        (item) => item.address === "Kathmandu"
+        (item) =>
+          item.address === "Kathmandu" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setKathmanduHotels(kathmanduHotels);
 
       let lalitpurHotels = hotelData.filter(
-        (item) => item.address === "Lalitpur"
+        (item) =>
+          item.address === "Lalitpur" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setLalitpurHotels(lalitpurHotels);
 
       let bhaktapurHotels = hotelData.filter(
-        (item) => item.address === "Bhaktapur"
+        (item) =>
+          item.address === "Bhaktapur" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setBhaktapurHotels(bhaktapurHotels);
     };
     getHotels();
-  }, []);
+  }, [searchTerm]);
 
   const [highlyRatedGuides, setHighlyRatedGuides] = useState([]);
   const [adventureGuides, setAdventureGuides] = useState([]);
@@ -108,36 +141,50 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let guideData = parsedData;
 
-      let highlyRatedGuides = guideData.filter((item) => item.identifier === "guide");
+      let highlyRatedGuides = guideData.filter(
+        (item) =>
+          item.identifier === "guide" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
       setHighlyRatedGuides(highlyRatedGuides);
 
       let adventureGuides = guideData.filter(
-        (item) => item.tag === "adventure"
+        (item) =>
+          item.tag === "adventure" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setAdventureGuides(adventureGuides);
 
       let culturalExpertGuides = guideData.filter(
-        (item) => item.tag === "cultural"
+        (item) =>
+          item.tag === "cultural" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setCulturalExpertGuides(culturalExpertGuides);
 
       let kathmanduDistrictGuides = guideData.filter(
-        (item) => item.address === "Kathmandu"
+        (item) =>
+          item.address === "Kathmandu" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setKathmanduDistrictGuides(kathmanduDistrictGuides);
 
       let lalitpurDistrictGuides = guideData.filter(
-        (item) => item.address === "Lalitpur"
+        (item) =>
+          item.address === "Lalitpur" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setLalitpurDistrictGuides(lalitpurDistrictGuides);
 
       let bhaktapurDistrictGuides = guideData.filter(
-        (item) => item.address === "Bhaktapur"
+        (item) =>
+          item.address === "Bhaktapur" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setBhaktapurDistrictGuides(bhaktapurDistrictGuides);
     };
     getGuides();
-  }, []);
+  }, [searchTerm]);
 
   const [events, setEvents] = useState([]);
   const [currentEvents, setCurrentEvents] = useState([]);
@@ -146,14 +193,16 @@ const SeeMore = () => {
   const [popularEvents, setPopularEvents] = useState([]);
 
   useEffect(() => {
-    document.title = "TravelBuddy ● Local Events";
-
     const getCurrentEvents = async () => {
       let response = await fetch("http://127.0.1:8000/event/current-event");
       let parsedData = await response.json();
       let currentEvents = parsedData;
 
-      setCurrentEvents(currentEvents);
+      setCurrentEvents(
+        currentEvents.filter((item) =>
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     };
 
     const getUpcomingEvents = async () => {
@@ -161,7 +210,11 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let upcomingEvents = parsedData;
 
-      setUpcomingEvents(upcomingEvents);
+      setUpcomingEvents(
+        upcomingEvents.filter((item) =>
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     };
 
     const getPastEvents = async () => {
@@ -169,7 +222,11 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let pastEvents = parsedData;
 
-      setPastEvents(pastEvents);
+      setPastEvents(
+        pastEvents.filter((item) =>
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     };
 
     const events = async () => {
@@ -179,8 +236,7 @@ const SeeMore = () => {
 
       setEvents(events);
 
-      let popularEvents = events
-        .filter((item) => item.tag === "popular")
+      let popularEvents = events.filter((item) => item.tag === "popular");
       setPopularEvents(popularEvents);
     };
 
@@ -188,7 +244,66 @@ const SeeMore = () => {
     getUpcomingEvents();
     getPastEvents();
     events();
-  }, []);
+  }, [searchTerm]);
+
+  const [popularProducts, setPopularProducts] = useState([]);
+  const [handCraftedProducts, setHandCraftedProducts] = useState([]);
+  const [decorationsProducts, setDecorationsProducts] = useState([]);
+  const [clothingProducts, setClothingProducts] = useState([]);
+  const [ornamentsProducts, setOrnamentsProducts] = useState([]);
+  const [historicalItemsProducts, setHistoricalItemsProducts] = useState([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      let response = await fetch("http://127.0.1:8000/shop/product/listall");
+      let parsedData = await response.json();
+      let productData = parsedData;
+
+      let popularProducts = productData.filter(
+        (item) =>
+          item.tag === "popular" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setPopularProducts(popularProducts);
+
+      let handCraftedProducts = productData.filter(
+        (item) =>
+          item.tag === "handcrafted" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setHandCraftedProducts(handCraftedProducts);
+
+      let decorationsProducts = productData.filter(
+        (item) =>
+          item.tag === "decoration" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setDecorationsProducts(decorationsProducts);
+
+      let clothingProducts = productData.filter(
+        (item) =>
+          item.tag === "clothing" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setClothingProducts(clothingProducts);
+
+      let ornamentsProducts = productData.filter(
+        (item) =>
+          item.tag === "ornament" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setOrnamentsProducts(ornamentsProducts);
+
+      let historicalItemsProducts = productData.filter(
+        (item) =>
+          item.tag === "historical" &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setHistoricalItemsProducts(historicalItemsProducts);
+    };
+
+    getProducts();
+  }, [searchTerm]);
 
   return (
     <>
@@ -198,10 +313,19 @@ const SeeMore = () => {
         <div className="common-header-headline">
           {category === "place" ? (
             <>
-              <Search
-                headline="Explore the Beauty!"
-                placeholder="Search for the places"
-              />
+              <div className="common-header">
+                <div className="common-headline">
+                  <h1>Explore the Beauty!</h1>
+                </div>
+
+                <div className="common-search">
+                  <input
+                    type="text"
+                    placeholder="Search for the places"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
 
               {headerheadline === "recommended" ? (
                 <>
@@ -263,14 +387,23 @@ const SeeMore = () => {
             </>
           ) : category === "hotel" ? (
             <>
-              <Search
-                headline="Stay Comfortably!"
-                placeholder="Search for the hotels"
-              />
+              <div className="common-header">
+                <div className="common-headline">
+                  <h1>Stay Comfortably!</h1>
+                </div>
 
-              {headerheadline === "highly-rated" ? (
+                <div className="common-search">
+                  <input
+                    type="text"
+                    placeholder="Search for the Hotels"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {headerheadline === "popular" ? (
                 <>
-                  <h2>Highly Rated</h2>
+                  <h2>Popular</h2>
                   <div className="common-header-section">
                     {highRatedHotels.map((item, index) => (
                       <DivItem key={index} item={item} />
@@ -328,10 +461,19 @@ const SeeMore = () => {
             </>
           ) : category === "guide" ? (
             <>
-              <Search
-                headline="Travel with the pros!"
-                placeholder="Search for the Guides"
-              />
+              <div className="common-header">
+                <div className="common-headline">
+                  <h1>Travel with the pros!</h1>
+                </div>
+
+                <div className="common-search">
+                  <input
+                    type="text"
+                    placeholder="Search for the Guides"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
 
               {headerheadline === "highly-rated" ? (
                 <>
@@ -392,13 +534,94 @@ const SeeMore = () => {
               )}
             </>
           ) : category === "product" ? (
-            <>Product</>
+            <>
+              <div className="common-header">
+                <div className="common-headline">
+                  <h1>Crafted with Love!</h1>
+                </div>
+
+                <div className="common-search">
+                  <input
+                    type="text"
+                    placeholder="Search for the Products"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {headerheadline === "popular" ? (
+                <>
+                  <h2>Popular</h2>
+                  <div className="common-header-section">
+                    {popularProducts.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "hand-crafted" ? (
+                <>
+                  <h2>Hand Crafted</h2>
+                  <div className="common-header-section">
+                    {handCraftedProducts.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "decorations" ? (
+                <>
+                  <h2>Decorations</h2>
+                  <div className="common-header-section">
+                    {decorationsProducts.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "clothing" ? (
+                <>
+                  <h2>Clothing</h2>
+                  <div className="common-header-section">
+                    {clothingProducts.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "ornaments" ? (
+                <>
+                  <h2>Ornaments</h2>
+                  <div className="common-header-section">
+                    {ornamentsProducts.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : headerheadline === "historical-items" ? (
+                <>
+                  <h2>Historical Items</h2>
+                  <div className="common-header-section">
+                    {historicalItemsProducts.map((item, index) => (
+                      <DivItem key={index} item={item} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                "No such category found"
+              )}
+            </>
           ) : category === "localevents" ? (
             <>
-              <Search
-                headline="Enjoy the Events!"
-                placeholder="Search for the events"
-              />
+              <div className="common-header">
+                <div className="common-headline">
+                  <h1>Enjoy the Events!</h1>
+                </div>
+
+                <div className="common-search">
+                  <input
+                    type="text"
+                    placeholder="Search for the Events"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
 
               {headerheadline === "popular" ? (
                 <>
@@ -448,7 +671,6 @@ const SeeMore = () => {
               ) : (
                 "No such category found"
               )}
-            
             </>
           ) : (
             "Error: No such category found"

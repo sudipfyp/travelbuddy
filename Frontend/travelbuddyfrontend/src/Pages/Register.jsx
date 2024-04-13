@@ -1,23 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../Assets/images/logo-text.png";
 import "../Assets/styles/Styles.css";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 
 const Register = () => {
-  document.title = "TravelBuddy ● Register";
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+    let parsedData = await data.json();
+    if (data.status === 200) {
+      if (parsedData.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (parsedData.role === "guide") {
+        navigate("/guide/complete");
+      } else {
+        navigate("/");
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.title = "TravelBuddy ● Register";
+
+    userCheck();
+  }, []);
+
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [tag, setTag] = useState("natural");
-  const [registrationNumber, setRegistrationNumber] = useState("");
-  const [shopAddress, setShopAddress] = useState("");
-  const [shopName, setShopName] = useState("");
   const [address, setAddress] = useState("");
-  const [nationalty, setNationality] = useState("Nepal");
-  const [place, setPlace] = useState("natural");
+  const [nationalty, setNationality] = useState("");
+  const [place, setPlace] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
-  const [charge, setCharge] = useState("");
+  const [role, setRole] = useState("seller");
+  const [image, setImage] = useState("");
 
   const handleRoleChange = (e) => {
     setRole(e.target.value);
@@ -35,12 +56,7 @@ const Register = () => {
     formData.append("password", password);
 
     formData.append("phone", phone);
-    formData.append("tag", tag);
-    formData.append("charge", charge);
-
-    formData.append("shop_name", shopName);
-    formData.append("registration_number", registrationNumber);
-    formData.append("shop_address", shopAddress);
+    formData.append("image", image);
 
     let userRegister = "http://127.0.1:8000/user/userregister";
     let guideRegister = "http://127.0.1:8000/user/guideregister";
@@ -63,7 +79,9 @@ const Register = () => {
     console.log(parsedData);
 
     if (data.status === 201) {
-      alert(`${role.toUpperCase()} registered successfully`);
+      // swal(`${role.toUpperCase()} registered successfully`, "", "success");
+      navigate(`/verify/${email}`)
+
       setName("");
       setEmail("");
       setAddress("");
@@ -71,21 +89,13 @@ const Register = () => {
       setNationality("Nepal");
       setPlace("Natural");
       setPhone("");
-      setTag("Natural");
-      setShopName("");
-      setRegistrationNumber("");
-      setShopAddress("");
-      setCharge("");
+      setImage("");
     } else {
-      if (parsedData.email) {
-        alert(parsedData.email);
-        return;
-      }
-      if (parsedData.password) {
-        alert(parsedData.password);
+      if (parsedData.msg) {
+        swal(`${parsedData.msg}`, "", "error");
         return;
       } else {
-        alert("Something went wrong");
+        swal("Something went wrong", "Please try again", "error");
       }
     }
   };
@@ -109,80 +119,68 @@ const Register = () => {
 
       <div className="register-form">
         <form onSubmit={handleSubmit}>
-          <div className="register-row ">
-            <div className="register-column">
-              <label htmlFor="role">Select your Role</label>
-              <br />
-              <select
-                name="role"
-                id="role"
-                required
-                value={role}
-                onChange={handleRoleChange}
-              >
-                <option value="user">Tourist</option>
-                <option value="guide">Guide</option>
-                <option value="seller">Seller</option>
-              </select>
-            </div>
+          {role === "user" ? (
+            <>
+              <div className="register-row ">
+                <div className="register-column">
+                  <label htmlFor="role">Select your Role</label>
+                  <br />
+                  <select
+                    name="role"
+                    id="role"
+                    required
+                    value={role}
+                    onChange={handleRoleChange}
+                  >
+                    <option value="user">Tourist</option>
+                    <option value="guide">Guide</option>
+                    <option value="seller">Seller</option>
+                  </select>
+                </div>
 
-            {role === "guide" ? (
-              <div className="register-column">
-                <label htmlFor="charge">Charge</label>
-                <br />
-                <input
-                  type="number"
-                  name="charge"
-                  id="charge"
-                  placeholder="Your Charge"
-                  required
-                  value={charge}
-                  onChange={(e) => setCharge(e.target.value)}
-                />
+                <div className="register-column">
+                  <label htmlFor="phone">Image</label>
+                  <br />
+                  <input
+                    type="file"
+                    onChange={(e) => setImage(e.target.files[0])}
+                    required
+                  />
+                </div>
               </div>
-            ) : role === "user" ? (
-              <div className="register-column">
-                <label htmlFor="phone">Image</label>
-                <br />
-                <input type="file" name="image" id="image" required />
+
+              <div className="register-row">
+                <div className="register-column">
+                  <label htmlFor="name">Name</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    placeholder="Your name"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+
+                <div className="register-column">
+                  <label htmlFor="email">Email</label>
+                  <br />
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Your Email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
               </div>
-            ) : null}
-          </div>
 
-          <div className="register-row">
-            <div className="register-column">
-              <label htmlFor="name">Name</label>
-              <br />
-              <input
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Your name"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-
-            <div className="register-column">
-              <label htmlFor="email">Email</label>
-              <br />
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Your Email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="register-row">
-            <div className="register-column">
-              {role === "user" ? (
-                <>
+              <div className="register-row">
+                <div className="register-column">
                   <label htmlFor="address">Address</label>
                   <br />
                   <input
@@ -194,41 +192,9 @@ const Register = () => {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
-                </>
-              ) : role === "seller" ? (
-                <>
-                  <label htmlFor="shopName">Shop Name</label>
-                  <br />
-                  <input
-                    type="text"
-                    name="shopName"
-                    id="shopName"
-                    placeholder="Your Shop Name"
-                    required
-                    value={shopName}
-                    onChange={(e) => setShopName(e.target.value)}
-                  />
-                </>
-              ) : (
-                <>
-                  <label htmlFor="phone">Phone</label>
-                  <br />
-                  <input
-                    type="number"
-                    name="phone"
-                    id="phone"
-                    placeholder="Your Phone Number"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                </>
-              )}
-            </div>
+                </div>
 
-            <div className="register-column">
-              {role === "user" ? (
-                <>
+                <div className="register-column">
                   <label htmlFor="nationality">Nationality</label>
                   <br />
                   <select
@@ -244,46 +210,13 @@ const Register = () => {
                     <option value="China">China</option>
                     <option value="USA">USA</option>
                     <option value="UK">UK</option>
+                    <option value="others">Other</option>
                   </select>
-                </>
-              ) : role === "seller" ? (
-                <>
-                  <label htmlFor="registrationNumber">
-                    Registration Number
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    name="registrationNumber"
-                    id="registrationNumber"
-                    placeholder="Shop Registration Number"
-                    required
-                    value={registrationNumber}
-                    onChange={(e) => setRegistrationNumber(e.target.value)}
-                  />
-                </>
-              ) : (
-                <>
-                  <label htmlFor="address">Address</label>
-                  <br />
-                  <input
-                    type="text"
-                    name="address"
-                    id="address"
-                    placeholder="Your Address"
-                    required
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                </>
-              )}
-            </div>
-          </div>
+                </div>
+              </div>
 
-          <div className="register-row">
-            <div className="register-column">
-              {role === "user" ? (
-                <>
+              <div className="register-row">
+                <div className="register-column">
                   <label htmlFor="place">Your preferred place</label>
                   <br />
                   <select
@@ -300,56 +233,198 @@ const Register = () => {
                     <option value="Adventure">Adventure</option>
                     <option value="City">City</option>
                   </select>
-                </>
-              ) : role === "seller" ? (
-                <>
-                  <label htmlFor="shopAddress">Shop Address</label>
+                </div>
+
+                <div className="register-column">
+                  <label htmlFor="password">Password</label>
+                  <br />
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+            </>
+          ) : role === "guide" ? (
+            <>
+              <div className="register-row ">
+                <div className="register-column">
+                  <label htmlFor="role">Select your Role</label>
+                  <br />
+                  <select
+                    name="role"
+                    id="role"
+                    required
+                    value={role}
+                    onChange={handleRoleChange}
+                  >
+                    <option value="user">Tourist</option>
+                    <option value="guide">Guide</option>
+                    <option value="seller">Seller</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="register-row">
+                <div className="register-column">
+                  <label htmlFor="name">Name</label>
                   <br />
                   <input
                     type="text"
-                    name="shopAddress"
-                    id="shopAddress"
-                    placeholder="Your Shop Address"
+                    name="name"
+                    id="name"
+                    placeholder="Your name"
                     required
-                    value={shopAddress}
-                    onChange={(e) => setShopAddress(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
-                </>
-              ) : (
-                <>
-                  <label htmlFor="tag">Tag</label>
+                </div>
+
+                <div className="register-column">
+                  <label htmlFor="email">Email</label>
+                  <br />
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Your Email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="register-row">
+                <div className="register-column">
+                  <label htmlFor="phone">Phone</label>
+                  <br />
+                  <input
+                    type="number"
+                    name="phone"
+                    id="phone"
+                    placeholder="Your Phone Number"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+
+                <div className="register-column">
+                  <label htmlFor="address">Address</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="address"
+                    id="address"
+                    placeholder="Your Address"
+                    required
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="register-row">
+                <div className="register-column">
+                  <label htmlFor="password">Password</label>
+                  <br />
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="register-row ">
+                <div className="register-column">
+                  <label htmlFor="role">Select your Role</label>
                   <br />
                   <select
-                    name="tag"
-                    id="tag"
+                    name="role"
+                    id="role"
                     required
-                    value={tag}
-                    onChange={(e) => setTag(e.target.value)}
+                    value={role}
+                    onChange={handleRoleChange}
                   >
-                    <option disabled>Select your area of expertise</option>
-                    <option value="natural">Natural</option>
-                    <option value="cultural">Cultural</option>
-                    <option value="histoical">Historical</option>
+                    <option value="user">Tourist</option>
+                    <option value="guide">Guide</option>
+                    <option value="seller">Seller</option>
                   </select>
-                </>
-              )}
-            </div>
+                </div>
+              </div>
 
-            <div className="register-column">
-              <label htmlFor="password">Password</label>
-              <br />
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
+              <div className="register-row">
+                <div className="register-column">
+                  <label htmlFor="name">Name</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    placeholder="Your name"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
 
+                <div className="register-column">
+                  <label htmlFor="email">Email</label>
+                  <br />
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Your Email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="register-row">
+                <div className="register-column">
+                  <label htmlFor="phone">Image</label>
+                  <br />
+                  <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    onChange={(e) => setImage(e.target.files[0])}
+                    required
+                  />
+                </div>
+
+                <div className="register-column">
+                  <label htmlFor="password">Password</label>
+                  <br />
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="register-row">
             <input type="submit" value="Sign up" />
           </div>

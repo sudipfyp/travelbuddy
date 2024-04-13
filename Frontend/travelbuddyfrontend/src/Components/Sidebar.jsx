@@ -8,6 +8,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import swal from "sweetalert";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -21,11 +22,13 @@ const Sidebar = () => {
 
     if (data.status === 200) {
       if (parsedData.role !== "admin") {
-        navigate("/login");
+        swal("Unauthorized Access", "You are not authorized to access this page", "error");
+        navigate("/");
       }
     }
 
     if (data.status === 403) {
+      swal("Unauthorized Access", "You are not authorized to access this page", "error");
       navigate("/login");
     }
   };
@@ -53,9 +56,9 @@ const Sidebar = () => {
     });
 
     if (response.status === 200) {
-      alert("Logged out successfully");
+      swal("Logout Successful", "See you soon!", "success");
       handleClose();
-      navigate("/login");
+      navigate("/");
     }
   };
 
@@ -64,7 +67,9 @@ const Sidebar = () => {
       <div className="sidebar">
         <div className="sidebar-top">
           <div className="sidebar-top-logo">
-            <img src={Logo} alt="Travel Buddy" />
+            <a href="/admin-dashboard">
+              <img src={Logo} alt="Travel Buddy" />
+            </a>
           </div>
         </div>
 
@@ -99,11 +104,6 @@ const Sidebar = () => {
               <li>
                 <NavLink to="/admin-localevents">
                   <i className="fa-solid fa-calendar" /> Local Events
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/admin-transportation">
-                  <i className="fa-solid fa-bus" /> Transportation
                 </NavLink>
               </li>
             </ul>

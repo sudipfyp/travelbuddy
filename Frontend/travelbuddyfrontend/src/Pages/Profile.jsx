@@ -9,17 +9,50 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import swal from "sweetalert";
 
 const Profile = () => {
+  const [user, setUser] = useState("");
+
   const navigate = useNavigate();
-  const [profile, setProfile] = useState({});
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role === "admin") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+        navigate("/login");
+      }
+    }
+    setUser(parsedData);
+
+    if (data.status === 403) {
+      swal(
+        "Unauthorized Access",
+        "You are not authorized to access this page",
+        "error"
+      );
+
+      navigate("/login");
+    }
+  };
 
   useEffect(() => {
+    userCheck();
     document.title = "TravelBuddy ● Profile";
-    fetchData();
-
-    // eslint-disable-next-line
   }, []);
+
+  const [profile, setProfile] = useState("");
 
   const fetchData = async () => {
     let api = "http://127.0.1:8000/user/profile";
@@ -28,28 +61,40 @@ const Profile = () => {
       credentials: "include",
     });
 
-    data = await data.json();
-    setProfile(data);
-
-    // From here we can get user_id
-    // console.log(profile.data.user_id);
-    
+    let parsedData = await data.json();
 
     if (data.status === 401) {
       navigate("/login");
     }
+    setProfile(parsedData[0]);
   };
 
-  function createData(sn, date, place, guide, rating, review) {
-    return { sn, date, place, guide, rating, review };
-  }
+  console.log(profile);
 
-  const rows = [
-    createData("1", "Feb 26 2024", "Kathmandu", "Sudip", "5", "Good"),
-    createData("2", "Feb 26 2024", "Kathmandu", "Sudip", "5", "Good"),
-    createData("3", "Feb 26 2024", "Kathmandu", "Sudip", "5", "Good"),
-    createData("4", "Feb 26 2024", "Kathmandu", "Sudip", "5", "Good"),
-  ];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const [completedGuideHirings, setCompletedGuideHirings] = useState([]);
+
+  const listGuideHirings = async () => {
+    let response = await fetch("http://127.0.1:8000/guide/hire/list/", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let data = await response.json();
+    console.log(data);
+
+    if (response.status === 200) {
+      const completed = data.filter((req) => req.status === "completed");
+      setCompletedGuideHirings(completed);
+    }
+  };
+
+  useEffect(() => {
+    listGuideHirings();
+  }, []);
 
   return (
     <>
@@ -58,47 +103,91 @@ const Profile = () => {
       <div className="profile-container">
         <div className="profile-header">
           <div className="profile-header-image">
-            <img
-              src="https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-              alt="profile"
-            />
+            <img src={profile.image} alt="profile" />
           </div>
-          <h3>Welcome</h3>
+          <h3>Welcome {profile.name}</h3>
         </div>
 
         <div className="profile-details">
-          <div className="profile-details-row">
-            <p>Name</p>
-            <p>---</p>
-          </div>
-          <div className="profile-details-row">
-            <p>Gender</p>
-            <p>---</p>
-          </div>
-          <div className="profile-details-row">
-            <p>Email</p>
-            <p>---</p>
-          </div>
-          <div className="profile-details-row">
-            <p>Phone</p>
-            <p>---</p>
-          </div>
-          <div className="profile-details-row">
-            <p>Country</p>
-            <p>---</p>
-          </div>
-          <div className="profile-details-row">
-            <p>Address</p>
-            <p>---</p>
-          </div>
+          {user.role === "user" ? (
+            <>
+              <div className="profile-details-row">
+                <p>Name</p>
+                <p>{profile.name}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Email</p>
+                <p>{profile.email}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Preferred Place</p>
+                <p>{profile.preferredplace}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Country</p>
+                <p>{profile.nationality}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Address</p>
+                <p>{profile.address}</p>
+              </div>
+            </>
+          ) : user.role === "guide" ? (
+            <>
+              <div className="profile-details-row">
+                <p>Name</p>
+                <p>{profile.name}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Email</p>
+                <p>{profile.email}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Phone</p>
+                <p>{profile.phone}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Description</p>
+                <p style={{ width: "60%" }}>{profile.description}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Rating</p>
+                <p>{profile.rating}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Charge</p>
+                <p>{profile.charge}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Address</p>
+                <p>{profile.address}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Tag</p>
+                <p>{profile.tag}</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="profile-details-row">
+                <p>Name</p>
+                <p>{profile.name}</p>
+              </div>
+              <div className="profile-details-row">
+                <p>Email</p>
+                <p>{profile.email}</p>
+              </div>
+            </>
+          )}
           <div className="profile-details-row">
             <p>Password</p>
             <p>**********</p>
           </div>
+
           <div className="profile-details-row">
             <button
               onClick={() => {
-                window.location.href = "/editprofile";
+                navigate("/editprofile");
               }}
             >
               Edit Profile
@@ -110,34 +199,30 @@ const Profile = () => {
       <hr />
 
       <div className="user-history">
-        <h4>User History</h4>
+        <h4>History</h4>
 
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 500 }} aria-label="simple table">
+        <TableContainer>
+          <Table>
             <TableHead>
               <TableRow>
-                <TableCell>S.N.</TableCell>
-                <TableCell align="right">Date</TableCell>
-                <TableCell align="right">Place</TableCell>
-                <TableCell align="right">Guide</TableCell>
-                <TableCell align="right">Rating</TableCell>
-                <TableCell align="right">Review</TableCell>
+                <TableCell style={{ color: "#02cea4" }}>Client Name</TableCell>
+                <TableCell style={{ color: "#02cea4" }}>Days</TableCell>
+                <TableCell style={{ color: "#02cea4" }}>Place</TableCell>
+                <TableCell style={{ color: "#02cea4" }}>Amount</TableCell>
+                <TableCell style={{ color: "#02cea4" }}>Email</TableCell>
+                <TableCell style={{ color: "#02cea4" }}>Status</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
-              {rows.map((row) => (
-                <TableRow
-                  key={row.name}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.sn}
-                  </TableCell>
-                  <TableCell align="right">{row.date}</TableCell>
-                  <TableCell align="right">{row.place}</TableCell>
-                  <TableCell align="right">{row.guide}</TableCell>
-                  <TableCell align="right">{row.rating}</TableCell>
-                  <TableCell align="right">{row.review}</TableCell>
+              {completedGuideHirings.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.user.name}</TableCell>
+                  <TableCell>{item.day}</TableCell>
+                  <TableCell>{item.place}</TableCell>
+                  <TableCell>Rs. {item.day * item.guide.charge}</TableCell>
+                  <TableCell>{item.user.email}</TableCell>
+                  <TableCell>{item.status}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

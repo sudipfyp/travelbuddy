@@ -35,7 +35,7 @@ const GuideDetails = () => {
           </div>
           <div className="details-container-right">
             <div className="details-title">{guide.name}</div>
-            <div className="details-description">Email: {guide.email}</div>
+            <div className="details-description">{guide.description}</div>
             <div className="guide-area">
               <p>
                 <i className="fas fa-map"></i>
@@ -53,7 +53,7 @@ const GuideDetails = () => {
             </div>
             <div className="guide-price">
               <p>
-                <i className="fa fa-money"></i> Charge per Hour: {guide.charge}
+                <i className="fa fa-money"></i> Per Day Charges: {guide.charge}
               </p>
             </div>
             <div className="details-action">
@@ -63,15 +63,10 @@ const GuideDetails = () => {
             </div>
           </div>
         </div>
-        <div className="details-bottom">
+        {/* <div className="details-bottom">
           <div className="details-bottom-title">Popular Guides</div>
-          <div className="details-bottom-suggestions">
-            <div className="details-bottom-suggestion">1</div>
-            <div className="details-bottom-suggestion">2</div>
-            <div className="details-bottom-suggestion">3</div>
-            <div className="details-bottom-suggestion">4</div>
-          </div>
-        </div>
+          
+        </div> */}
       </div>
 
       <Footer />

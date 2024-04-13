@@ -48,7 +48,7 @@ function Map({ onLocationChange, onPositionChange, onDistrictChange }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      {position && (
+      {/* {position && (
         <Marker position={position}>
           <Popup>
             Latitude: {position[0]} <br />
@@ -56,15 +56,11 @@ function Map({ onLocationChange, onPositionChange, onDistrictChange }) {
             Location: {location}
           </Popup>
         </Marker>
-      )}
+      )} */}
     </MapContainer>
 
     <div style={
       {
-        // display: 'flex',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // flexDirection: 'column',
         position: 'absolute',
         top: '50%',
         left: '50%',

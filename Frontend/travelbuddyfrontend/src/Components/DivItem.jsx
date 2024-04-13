@@ -21,7 +21,7 @@ const DivItem = ({ item }) => {
             ? `/productdetails/${item.id}`
             : item.identifier === "guide"
             ? `/guidedetails/${item.id}`
-            : `/`
+            : `/shopdetails/${item.id}`
         }
       >
         <Card sx={{ maxWidth: 300 }}>
@@ -29,8 +29,7 @@ const DivItem = ({ item }) => {
             <CardMedia
               component="img"
               height="200"
-              image={item.image} 
-              // image={Image}
+              image={item.image}
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">

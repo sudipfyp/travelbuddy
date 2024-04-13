@@ -20,10 +20,6 @@ const EditProfile = () => {
             <input type="text" name="name" id="name" value="---" />
           </div>
           <div className="profile-details-row">
-            <p>Gender</p>
-            <input type="text" name="" id="" value="---"/>
-          </div>
-          <div className="profile-details-row">
             <p>Email</p>
             <input type="text" name="" id="" value="---"/>
           </div>

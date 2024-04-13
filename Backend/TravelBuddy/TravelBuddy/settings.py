@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-PROJECT_APPS = ['registration', 'hotelbooking', 'place', 'guidehire', 'shop', 'event']
+PROJECT_APPS = ['registration', 'hotelbooking', 'place', 'guidehire', 'shop', 'event', 'guidefind', 'transportation', 'rating']
 THIRD_PARTY_APPS = ['corsheaders', 'rest_framework']
 INSTALLED_APPS += PROJECT_APPS + THIRD_PARTY_APPS
 
@@ -163,3 +163,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'travelbuddy.np@gmail.com'
+EMAIL_HOST_PASSWORD = 'uxki vywb dppc mzkh'
+
+
+

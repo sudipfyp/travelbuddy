@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
-import Image from "../Assets/images/logo.png";
 import Loader from "../Components/Loader";
+import swal from "sweetalert";
 
 const GuideHire = () => {
   const { id } = useParams();
@@ -14,17 +16,35 @@ const GuideHire = () => {
       method: "GET",
       credentials: "include",
     });
+
     let parsedData = await data.json();
+
     if (data.status === 200) {
-      console.log(parsedData);
-    } else {
-      alert("Login First");
+      if (parsedData.role !== "user") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+
+        navigate("/login");
+      }
+    }
+
+    if (data.status === 403) {
+      swal(
+        "Unauthorized Access",
+        "You are not authorized to access this page",
+        "error"
+      );
+
       navigate("/login");
     }
   };
 
   useEffect(() => {
     userCheck();
+    document.title = "TravelBuddy ● Hire Guide";
   }, []);
 
   useEffect(() => {
@@ -36,6 +56,7 @@ const GuideHire = () => {
 
   const [noOfDays, setNoOfDays] = useState("");
   const [placesInterested, setPlacesInterested] = useState("");
+  const [date, setDate] = useState("");
 
   const handleGuideHire = async (e) => {
     e.preventDefault();
@@ -43,6 +64,7 @@ const GuideHire = () => {
     let form = new FormData();
     form.append("day", noOfDays);
     form.append("place", placesInterested);
+    form.append("date", date);
 
     let response = await fetch(`http://127.0.1:8000/guide/hire/${id}/`, {
       method: "POST",
@@ -54,10 +76,10 @@ const GuideHire = () => {
     console.log(data);
 
     if (response.status === 200) {
-      alert("Request sent successfully");
+      swal("Success", "Request sent Successfully", "success");
       navigate(`/guidedetails/${guide.id}`);
     } else {
-      alert("Request failed");
+      swal("Error", "Request Failed", "error");
     }
   };
 
@@ -71,42 +93,58 @@ const GuideHire = () => {
 
   return (
     <>
+      <Navbar />
+
+      <div className="static-header">
+        <h1>Hire {guide.name}</h1>
+      </div>
+
       <div className="guide-hire-container">
         <div className="ghc-left">
           <img src={guide.image} alt="" />
           <br />
           <h3>Name: {guide.name}</h3>
+          <br />
+          <p>{guide.description}</p>
         </div>
 
         <div className="ghc-right">
-          {/* {guide.identifier === "guide" ? (
-            <div className="ghc-right-top">
-              <h3>Your request is pending</h3>
-            </div>
-          ) : ( */}
-            <div className="ghc-right-top">
-              <h3>Guide Hire</h3>
+          <div className="ghc-right-top">
+            <h3>Hire Guide</h3>
+            <br />
+            <form onSubmit={handleGuideHire}>
+              <label htmlFor="">I want to hire {guide.name} for: </label>
+              <input
+                type="number"
+                placeholder="Number of days"
+                id="days"
+                onChange={(e) => setNoOfDays(e.target.value)}
+              />
               <br />
-              <form onSubmit={handleGuideHire}>
-                <input
-                  type="number"
-                  placeholder="Number of days"
-                  onChange={(e) => setNoOfDays(e.target.value)}
-                />
-                <br />
-                <input
-                  type="text"
-                  placeholder="Places interested"
-                  onChange={(e) => setPlacesInterested(e.target.value)}
-                />
-                <br />
-                <p>Charge (per day): {guide.charge}</p>
-                <button type="submit">Send Request</button>
-              </form>
-            </div>
-          {/* )} */}
+              <label htmlFor="">I want to visit: </label>
+              <input
+                type="text"
+                placeholder="Places interested"
+                onChange={(e) => setPlacesInterested(e.target.value)}
+              />
+              <br />
+              <label htmlFor="">Are you available in?</label>
+              <input type="date" onChange={(e) => setDate(e.target.value)} />
+              <br />
+              <p>I am ready to pay Rs.{guide.charge} per Day.</p>
+
+              {noOfDays !== "" ? (
+                <p>
+                  Total Amount: Rs.{parseInt(noOfDays) * parseInt(guide.charge)}
+                </p>
+              ) : null}
+              <button type="submit">Send Request</button>
+            </form>
+          </div>
         </div>
       </div>
+
+      <Footer />
     </>
   );
 };

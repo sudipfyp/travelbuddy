@@ -1,50 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@500&family=Poppins&family=Tangerine:wght@700&display=swap");
 
-
-
-.guide-hire-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.guide-hire-card {
-  width: 45%; /* Adjust this value to control the number of cards per row */
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  padding: 15px;
-}
-
-.guide-hire-card h3 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.guide-hire-card p {
-  color: #666;
-  margin-bottom: 20px;
-}
-
-.guide-hire-card button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.guide-hire-card button:first-child {
-  background-color: #4CAF50; /* Green */
-  color: white;
-}
-
-.guide-hire-card button:last-child {
-  background-color: #f44336; /* Red */
-  color: white;
-  margin-left: 10px;
-}
-
-
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -54,11 +9,23 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #02cea4;
+  background: #02b994;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #02b994;
+  background: #02cea4;
+}
+
+.green {
+  background-color: #02b994;
+}
+
+.red {
+  background-color: red;
+}
+
+.blue {
+  background-color: #287fe8;
 }
 
 * {
@@ -113,6 +80,27 @@ body {
 }
 
 /* StaticPages.css */
+.floating {
+  position: fixed;
+  bottom: 25px;
+  right: 75px;
+  display: flex;
+  padding: 10px 15px;
+  justify-content: center;
+  align-items: center;
+  font-size: large;
+  background: #02cea4;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.floating > a {
+  color: white;
+  text-decoration: none;
+}
+
 .static-header {
   margin: auto;
   padding: 5rem 1rem;
@@ -181,7 +169,7 @@ body {
   flex-direction: column;
 }
 
-.travel-tips > h2{
+.travel-tips > h2 {
   color: #02cea4;
   margin-bottom: 1rem;
 }
@@ -216,9 +204,7 @@ body {
     width: 90%;
     margin: auto;
   }
-  
 }
-
 
 /* Navbar.css */
 .navbar {
@@ -761,7 +747,6 @@ body {
   height: auto;
   border-radius: 8px;
 }
-
 
 .home-header-section-div:nth-child(1),
 .home-header-section-div:nth-child(3),
@@ -1652,6 +1637,7 @@ hr {
   width: 80%;
   margin: auto;
   margin-top: 1rem;
+  cursor: pointer;
 }
 
 .details-container
@@ -1865,6 +1851,11 @@ hr {
   border-radius: 8px;
 }
 
+.ghc-left > p {
+  width: 80%;
+  text-align: justify;
+}
+
 .guide-hire-container .ghc-right {
   width: 50%;
   display: flex;
@@ -1872,11 +1863,26 @@ hr {
   justify-content: space-between;
 }
 
-.guide-hire-container .ghc-right input {
+.guide-hire-container .ghc-right input,
+.guide-hire-container .ghc-right select {
+  width: 100%;
   margin-bottom: 1rem;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: none;
+  border-bottom: 1px solid #ccc;
   border-radius: 4px;
+  outline: none;
+}
+
+.guide-hire-container .ghc-right textarea {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  height: 5rem;
 }
 
 .guide-hire-container .ghc-right p {
@@ -1890,6 +1896,30 @@ hr {
   color: white;
   cursor: pointer;
   border-radius: 4px;
+}
+
+@media screen and (max-width: 768px) {
+  .guide-hire-container {
+    flex-direction: column;
+  }
+
+  .guide-hire-container .ghc-left {
+    width: 100%;
+  }
+
+  .guide-hire-container .ghc-right {
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .guide-hire-container .ghc-left img {
+    width: 100%;
+  }
+
+  .guide-hire-container .ghc-right button {
+    width: 100%;
+    margin-top: 1rem;
+  }
 }
 
 /* Admin Panel */
@@ -1924,7 +1954,7 @@ hr {
   box-sizing: border-box;
 }
 
-.sidebar-top-logo {
+.sidebar-top-logo a {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1999,7 +2029,8 @@ hr {
 .add-place-form input[type="text"],
 .add-place-form input[type="file"],
 .add-place-form input[type="date"],
-.add-place-form input[type="submit"] {
+.add-place-form input[type="submit"],
+.add-place-form select {
   margin-bottom: 10px;
   padding: 8px;
   border: 1px solid #ccc;
@@ -2024,4 +2055,270 @@ hr {
 
 .add-place-form input[type="submit"]:hover {
   background-color: #02cea4;
+}
+
+/* Guide Homepage */
+.guide-container {
+  width: 90%;
+  margin: auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.guide-hire-card {
+  width: 30%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.guide-hire-card img {
+  width: 100%;
+  height: 200px;
+  border-radius: 5px;
+}
+
+.guide-hire-card > h3 {
+  margin-top: 10px;
+  color: #02cea4;
+}
+
+.guide-hire-card > p {
+  margin-top: 10px;
+  color: #282c34;
+}
+
+.guide-hire-card > .btn-group {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 1rem 0;
+}
+
+.guide-hire-card > .btn-group button {
+  padding: 5px 10px;
+  background-color: #02cea4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn {
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.guide-hire-card > .btn-group button:nth-child(1) {
+  background-color: #02b994;
+}
+
+.guide-hire-card > .btn-group button:nth-child(2) {
+  background-color: red;
+}
+
+@media screen and (max-width: 768px) {
+  .guide-hire-card {
+    width: 80%;
+    margin: 0 auto 1rem auto;
+  }
+}
+
+.verify-container {
+  width: 80%;
+  margin: auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.otp {
+  width: 30%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 20px auto;
+}
+
+.otp-form {
+  width: 30%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.otp > form {
+  display: flex;
+  flex-direction: column;
+}
+
+.otp > form input[type="text"],
+.otp > form input[type="password"],
+.otp > form textarea,
+.otp > form select,
+.otp-form > input {
+  margin-bottom: 1rem;
+  padding: 8px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+}
+
+.otp > form input[type="file"] {
+  margin-bottom: 1rem;
+  padding: 8px;
+}
+
+.otp > form > a,
+.otp-form > h5 {
+  display: flex;
+  align-self: end;
+  margin-bottom: 1rem;
+  color: #02b994;
+  cursor: pointer;
+}
+
+.otp > form > p {
+  margin-top: 1rem;
+  color: #777676;
+  padding-left: 5px;
+}
+
+.otp > form input[type="submit"],
+.otp-form > button {
+  background-color: #02b994;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  padding: 8px 0;
+}
+
+.otp > select {
+  margin-bottom: 1rem;
+  padding: 8px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .otp {
+    width: 80%;
+  }
+
+  .otp-form {
+    width: 80%;
+  }
+}
+
+.guide-apply-container {
+  width: 80%;
+  margin: auto;
+}
+
+.guide-apply-contain {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.guide-apply {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.guide-apply > .left {
+  width: 50%;
+}
+
+.guide-apply > .left > .description {
+  margin-top: 1rem;
+  text-align: justify;
+}
+
+.guide-apply > .right {
+  width: 30%;
+}
+
+.guide-apply > .right > p {
+  margin: 0.5rem 0;
+}
+
+.guide-apply > .right > input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 50%;
+}
+
+.guide-apply > .right > .button > button {
+  padding: 5px 10px;
+  background-color: #02cea4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .guide-apply {
+    flex-direction: column;
+  }
+
+  .guide-apply > .left {
+    width: 100%;
+  }
+
+  .guide-apply > .right {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .guide-apply > .right > input {
+    width: auto;
+  }
+
+  .guide-apply > .right > .button > button {
+    width: 100%;
+  }
+}
+
+.transport-container {
+  width: 40%;
+  margin: auto;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media screen and (max-width: 768px) {
+  .transport-container {
+    width: 80%;
+    flex-direction: column;
+  }
 }

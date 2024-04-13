@@ -1,11 +1,43 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import Search from "../Components/Search";
 import Display from "../Components/Display";
 import DivItem from "../Components/DivItem";
+import swal from "sweetalert";
 
 const Hotels = () => {
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState("");
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+        navigate("/login");
+      }
+      setUser(parsedData);
+    }
+  };
+
+  useEffect(() => {
+    userCheck();
+    document.title = "TravelBuddy ● Hotels";
+  }, []);
+
   const [highratedhotels, setHighRatedHotels] = useState([]);
   const [premiumhotels, setPremiumHotels] = useState([]);
   const [budgethotels, setBudgetHotels] = useState([]);
@@ -21,13 +53,14 @@ const Hotels = () => {
       let parsedData = await response.json();
       let hotelData = parsedData;
 
-      let highrated = hotelData.filter((item) => item.rating > 3).slice(0, 4);
+      console.log(hotelData);
+      let highrated = hotelData.filter((item) => item.noOfRoom > 30).slice(0, 4);
       setHighRatedHotels(highrated);
 
       let premium = hotelData.filter((item) => item.noOfRoom > 10).slice(0, 4);
       setPremiumHotels(premium);
 
-      let budget = hotelData.filter((item) => item.rating < 4).slice(0, 4);
+      let budget = hotelData.filter((item) => item.noOfRoom < 7).slice(0, 4);
       setBudgetHotels(budget);
 
       let kathmandu = hotelData
@@ -59,7 +92,7 @@ const Hotels = () => {
         />
 
         <Display
-          headerheadline="Highly Rated"
+          headerheadline="Popular"
           data={highratedhotels}
           component={DivItem}
         />
@@ -95,116 +128,11 @@ const Hotels = () => {
         />
       </div>
 
-      {/* <div className="common-container">
-        <div className="common-header">
-          <div className="common-headline">
-            <h1>Stay Comfortably!</h1>
-          </div>
-
-          <div className="common-search">
-            <input type="text" placeholder="Search for the hotels" />
-
-            <button>Search</button>
-          </div>
+      {user.role === "user" ? (
+        <div className="floating">
+          <a href="/bookingdata">View Bookings</a>
         </div>
-
-        <div className="common-header-headline">
-          <h2>Highly Rated</h2>
-
-          <div className="common-header-section">
-            {hotels.map((hotel, index) => (
-              <a href={`/productdetails/${hotel.id}`}>
-                <div key={index} className="common-header-section-div">
-                  Name: {hotel.name}
-                  <br />
-                  Address: {hotel.address}
-                  <br />
-                  ID: {hotel.id}
-                </div>
-              </a>
-            ))}
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-
-        <div className="common-header-headline">
-          <h2>Premium Stay</h2>
-
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-
-        <div className="common-header-headline">
-          <h2>Budget Friendly</h2>
-
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-
-        <div className="common-header-headline">
-          <h2>Kathmandu District</h2>
-
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-
-        <div className="common-header-headline">
-          <h2>Lalitpur District</h2>
-
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-
-        <div className="common-header-headline">
-          <h2>Bhaktapur District</h2>
-
-          <div className="common-header-section">
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-            <div className="common-header-section-div">1</div>
-          </div>
-
-          <p className="see-more">
-            <a href="/">See More</a>
-          </p>
-        </div>
-      </div> */}
+      ) : null}
 
       <Footer />
     </>

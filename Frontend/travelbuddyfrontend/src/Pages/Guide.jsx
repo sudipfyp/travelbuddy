@@ -1,12 +1,43 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import Search from "../Components/Search";
 import Display from "../Components/Display";
 import DivItem from "../Components/DivItem";
+import swal from "sweetalert";
 
 const Guide = () => {
-  document.title = "TravelBuddy ● Guide";
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState("");
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+
+        navigate("/login");
+      }
+      setUser(parsedData);
+    }
+  };
+
+  useEffect(() => {
+    userCheck();
+    document.title = "TravelBuddy ● Guide";
+  }, []);
 
   const [highlyrated, setHighlyrated] = useState([]);
   const [adventureGuides, setAdventureGuides] = useState([]);
@@ -100,6 +131,12 @@ const Guide = () => {
           component={DivItem}
         />
       </div>
+
+      {user.role === "user" ? (
+        <div className="floating">
+          <a href="/hiringdata">View Hirings</a>
+        </div>
+      ) : null}
 
       <Footer />
     </>

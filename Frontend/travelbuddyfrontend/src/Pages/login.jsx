@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../Assets/images/logo-text.png";
 import "../Assets/styles/Styles.css";
+import swal from "sweetalert";
 
 const Login = (props) => {
   const navigate = useNavigate();
@@ -18,11 +19,11 @@ const Login = (props) => {
     if (data.status === 200) {
       if (parsedData.role === "admin") {
         navigate("/admin-dashboard");
-      }
-      else if (parsedData.role === "guide") {
-        navigate("/guidehomepage");
-      }
-      else {
+      } else if (parsedData.role === "guide") {
+        navigate("/guide/complete");
+      } else if (parsedData.role === "seller") {
+        navigate("/seller/complete");
+      } else {
         navigate("/");
       }
     }
@@ -52,21 +53,25 @@ const Login = (props) => {
     let parsedData = await response.json();
 
     console.log(parsedData);
+    console.log(response);
 
     if (response.status === 200) {
-      alert(`${parsedData.role.toUpperCase()} logged in successfully`);
+      swal("Login Successful", "Welcome to Travel Buddy", "success");
 
       if (parsedData.role === "admin") {
         navigate("/admin-dashboard");
-      }
-      else if (parsedData.role === "guide") {
-        navigate("/guidehomepage");
-      }
-      else {
+      } else if (parsedData.role === "guide") {
+        navigate("/guide/complete");
+      } else if (parsedData.role === "seller") {
+        navigate("/seller/complete");
+      } else {
         navigate("/");
       }
+    } else if (response.status === 401) {
+      swal("Unverified", "Please verify your email", "error");
+      navigate(`/verify/${email}`);
     } else {
-      alert("Invalid Username or Password");
+      swal("Login Failed", "Invalid Username or Password", "error");
     }
   };
 
@@ -112,10 +117,6 @@ const Login = (props) => {
           />
 
           <div className="login-remember-forgot">
-            <div className="login-remember-me">
-              <input type="checkbox" name="remember" id="remember" />
-              <label htmlFor="remember">Remember me</label>
-            </div>
             <a className="login-forget-password" href="/forgetpassword">
               Forget Password?
             </a>

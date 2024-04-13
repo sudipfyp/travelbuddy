@@ -1,22 +1,96 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import Loader from "./Loader";
+
+import L from "leaflet";
+import "leaflet-routing-machine";
 
 const ProductDetails = () => {
-  // const { id } = useParams();
-  // const [product, setProduct] = useState(null);
+  const navigate = useNavigate();
 
-  //   useEffect(() => {
-  //       fetch(`http://127.0.0.1:8000/hotel/detail/${id}`)
-  //       .then((response) => response.json())
-  //       .then((data) => setProduct(data));
-  //   }
-  //   , [id]);
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
 
-  //   if (!product) {
-  //       return <div>Loading...</div>;
-  //   }
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user" && parsedData.role !== "seller") {
+        navigate("/login");
+      }
+      setUser(parsedData.role);
+    }
+  };
+
+  useEffect(() => {
+    userCheck();
+    document.title = "TravelBuddy ● Product";
+  }, []);
+
+  const { id } = useParams();
+  const [user, setUser] = useState("");
+  const [product, setProduct] = useState(null);
+  const [deviceLocation, setDeviceLocation] = useState(null);
+  const [showRoute, setShowRoute] = useState(false);
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/shop/product/detail/${id}`)
+      .then((response) => response.json())
+      .then((data) => setProduct(data[0]));
+
+    // Fetch device location
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setDeviceLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    }
+  }, []);
+
+  const handleGetDirection = () => {
+    setShowRoute(!showRoute);
+  };
+
+  useEffect(() => {
+    if (showRoute && product.shop && deviceLocation) {
+      // Create map
+      const map = L.map("map").setView(
+        [deviceLocation.lat, deviceLocation.lng],
+        13
+      );
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map
+      );
+
+      // Add device marker
+      L.marker([deviceLocation.lat, deviceLocation.lng]).addTo(map);
+
+      // Add destination marker
+      L.marker([product.shop.latitude, product.shop.longitude]).addTo(map);
+
+      // Initialize routing control
+      L.Routing.control({
+        waypoints: [
+          L.latLng(deviceLocation.lat, deviceLocation.lng),
+          L.latLng(product.shop.latitude, product.shop.longitude),
+        ],
+      }).addTo(map);
+    }
+  }, [showRoute, product, deviceLocation]);
+
+  if (!product) {
+    return (
+      <div className="loading">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -26,62 +100,80 @@ const ProductDetails = () => {
         <div className="details-top">
           <div className="details-container-left">
             <div className="images-top">
-              <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
-            </div>
-            <div className="images-bottom">
-              <div className="image-bottom">
-                <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
-              </div>
-              <div className="image-bottom">
-                <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
-              </div>
-              <div className="image-bottom">
-                <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
-              </div>
+              <img src={product.image} alt="" />
             </div>
           </div>
           <div className="details-container-right">
-            <div className="details-title">Product Name</div>
-            <div className="details-description">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Voluptatum blanditiis itaque hic similique quam, corporis fugit
-              dolore, vero, est esse ab dignissimos ad provident dicta porro
-              aspernatur odio. Magni, ratione. Lorem, ipsum dolor sit amet
-              consectetur adipisicing elit. Culpa provident expedita ratione
-            </div>
-            <div className="details-price">
-              <p><i className="fa fa-money"></i> Rs. 1000</p>
+            <div className="details-title">{product.name}</div>
+            <div className="details-description">{product.description}</div>
+            <div className="details-action">
+              <p>
+                <i className="fa fa-money"></i> Rs. {product.price}
+              </p>
             </div>
             <div className="details-tags">
-              <p><i className="fas fa-tag"/>Hello</p>
+              <p>
+                <i className="fas fa-tag" /> {product.tag}
+              </p>
             </div>
-            <div className="details-action">
-              <a href="/">Call</a>
-              <a href="/">Chat</a>
-              <a href="/">Visit Store</a>
+            {user !== "seller" ? (
+              <div className="details-action">
+                <a href="/">Chat with Seller</a>
+              </div>
+            ) : null}
+            <div className="details-location">
+              <p>
+                <i className="fas fa-map"> </i>
+                &nbsp;&nbsp; Address: {product.shop.address}
+              </p>
+              <button onClick={handleGetDirection}>
+                {showRoute ? "Show Location" : "Get Direction"}
+              </button>
             </div>
-            <div className="details-shop">
+            <div
+              className="details-shop"
+              onClick={() => {
+                navigate(`/shopdetails/${product.shop.id}`);
+              }}
+            >
               <div className="details-shop-img">
-                <img src="https://placehold.co/600x400/EEE/31343C" alt="" />
+                <img src={product.shop.image} alt="" />
               </div>
 
               <div className="details-shop-details">
-                <a href="/">
-                  <h3>Shop Name</h3>
-                </a>
-                <p>Shop Address</p>
+                <h2>{product.shop.name}</h2>
+                <p>Visit Store</p>
               </div>
             </div>
           </div>
         </div>
         <div className="details-bottom">
-          <div className="details-bottom-title">You may also like</div>
-          <div className="details-bottom-suggestions">
-            <div className="details-bottom-suggestion">1</div>
-            <div className="details-bottom-suggestion">2</div>
-            <div className="details-bottom-suggestion">3</div>
-            <div className="details-bottom-suggestion">4</div>
-          </div>
+          <div className="details-bottom-title">Location</div>
+
+          {showRoute ? (
+            <div className="details-map-route">
+              {/* Display route map */}
+              {deviceLocation && (
+                <div id="map" style={{ width: "100%", height: "100%" }}></div>
+              )}
+            </div>
+          ) : (
+            <div className="details-map">
+              {/* Display initial map */}
+              {deviceLocation && (
+                <iframe
+                  title="map"
+                  src={`https://gallimap.com/static/map.html?lat=${product.shop.latitude}&lng=${product.shop.longitude}&markerColor=Red&markerLabel=${product.shop.name}&accessToken=a66d666f-068e-432d-a5d1-bb93355fd045`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  aria-hidden="false"
+                  tabIndex="0"
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
 

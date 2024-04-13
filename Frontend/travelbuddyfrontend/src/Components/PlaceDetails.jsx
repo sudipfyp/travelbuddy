@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Loader from "./Loader";
@@ -8,6 +8,27 @@ import L from "leaflet";
 import "leaflet-routing-machine";
 
 const PlaceDetails = () => {
+  const navigate = useNavigate();
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user") {
+        navigate("/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    userCheck();
+  }, []);
+
   const { id } = useParams();
   const [place, setPlace] = useState(null);
   const [deviceLocation, setDeviceLocation] = useState(null);
@@ -85,7 +106,7 @@ const PlaceDetails = () => {
             <div className="details-tags">
               <p>
                 <i className="fas fa-tag"></i>
-              </p>
+              </p> 
               <p>{place.tag}</p>
             </div>
 

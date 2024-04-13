@@ -7,11 +7,11 @@ export default function Search(props) {
         <h1>{props.headline}</h1>
       </div>
 
-      <div className="common-search">
+      {/* <div className="common-search">
         <input type="text" placeholder={props.placeholder} />
 
         <button>Search</button>
-      </div>
+      </div> */}
     </div>
   );
 }

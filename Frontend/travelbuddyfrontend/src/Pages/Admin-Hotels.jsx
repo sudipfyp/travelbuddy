@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Sidebar from "../Components/Sidebar";
+import Map from "../Components/Map";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,6 +16,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import DialogContentText from "@mui/material/DialogContentText";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import swal from "sweetalert";
 
 const AdminHotels = () => {
   const [hotel, setHotel] = useState([]);
@@ -21,6 +26,32 @@ const AdminHotels = () => {
   const [openDel, setOpenDel] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [refresh, setRefresh] = useState(false);
+
+  const [openmap, setOpenmap] = useState(false);
+
+  const [location, setLocation] = useState(""); // State to hold location
+  const [position, setPosition] = useState(""); // State to hold position
+  const [district, setDistrict] = useState(""); // State to hold district
+
+  const handleLocationChange = (newLocation) => {
+    setLocation(newLocation);
+  };
+
+  const handlePositionChange = (newPosition) => {
+    setPosition(newPosition);
+  };
+
+  const handleDistrictChange = (newDistrict) => {
+    setDistrict(newDistrict);
+  };
+
+  const handleMapOpen = () => {
+    setOpenmap(true);
+  };
+
+  const handleMapClose = () => {
+    setOpenmap(false);
+  };
 
   useEffect(() => {
     const getHotels = async () => {
@@ -36,11 +67,10 @@ const AdminHotels = () => {
     setSelectedHotel(hotel);
     setHotelName(hotel.name);
     setHotelDescription(hotel.description);
-    setHotelLatitude(hotel.latitude);
-    setHotelLongitude(hotel.longitude);
-    setHotelAddress(hotel.address);
+    setPosition([hotel.latitude, hotel.longitude]);
+    setLocation(hotel.location);
+    setDistrict(hotel.address);
     setHotelNoOfRoom(hotel.noOfRoom);
-    setHotelRating(hotel.rating);
     setOpen(true);
   };
 
@@ -56,11 +86,8 @@ const AdminHotels = () => {
 
   const [hotelName, setHotelName] = useState("");
   const [hotelDescription, setHotelDescription] = useState("");
-  const [hotelLatitude, setHotelLatitude] = useState("");
-  const [hotelLongitude, setHotelLongitude] = useState("");
-  const [hotelAddress, setHotelAddress] = useState("");
   const [hotelNoOfRoom, setHotelNoOfRoom] = useState("");
-  const [hotelRating, setHotelRating] = useState("");
+  const [hotelImage, setHotelImage] = useState("");
 
   const edit = async (e) => {
     e.preventDefault();
@@ -68,11 +95,12 @@ const AdminHotels = () => {
     const formData = new FormData();
     formData.append("name", hotelName);
     formData.append("description", hotelDescription);
-    formData.append("latitude", hotelLatitude);
-    formData.append("longitude", hotelLongitude);
-    formData.append("address", hotelAddress);
+    formData.append("latitude", position[0]);
+    formData.append("longitude", position[1]);
+    formData.append("address", district);
+    formData.append("location", location);
     formData.append("noOfRoom", hotelNoOfRoom);
-    formData.append("rating", hotelRating);
+    formData.append("image", hotelImage);
 
     let response = await fetch(
       `http://127.0.1:8000/hotel/edit/${selectedHotel.id}`,
@@ -85,9 +113,13 @@ const AdminHotels = () => {
     let parsedData = await response.json();
     console.log(parsedData);
 
-    setRefresh(prev => !prev);
-
-    setOpen(false);
+    if (response.status === 200) {
+      swal("Hotel Updated", "Hotel has been updated successfully", "success");
+      setRefresh((prev) => !prev);
+      setOpen(false);
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
   };
 
   const handleDelete = async (hotel) => {
@@ -101,7 +133,24 @@ const AdminHotels = () => {
     let parsedData = await response.json();
     console.log(parsedData);
 
-    setRefresh(prev => !prev);
+    if (response.status === 200) {
+      swal("Hotel Deleted", "Hotel has been deleted successfully", "success");
+      setRefresh((prev) => !prev);
+    } else {
+      console.log(parsedData);
+      swal("Error", "Something went wrong", "error");
+    }
+  };
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 500,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
   };
 
   return (
@@ -120,11 +169,11 @@ const AdminHotels = () => {
                   <TableCell align="right">Image</TableCell>
                   <TableCell align="right">Name</TableCell>
                   <TableCell align="right">Description</TableCell>
+                  <TableCell align="right">Location</TableCell>
                   <TableCell align="right">Latitude</TableCell>
                   <TableCell align="right">Longitude</TableCell>
-                  <TableCell align="right">Address</TableCell>
+                  <TableCell align="right">District</TableCell>
                   <TableCell align="right">No. of room</TableCell>
-                  <TableCell align="right">Rating</TableCell>
                   <TableCell align="right">Owner</TableCell>
                   <TableCell align="center">Action</TableCell>
                 </TableRow>
@@ -143,11 +192,11 @@ const AdminHotels = () => {
                     </TableCell>
                     <TableCell align="right">{hotel.name}</TableCell>
                     <TableCell align="right">{hotel.description}</TableCell>
+                    <TableCell align="right">{hotel.location}</TableCell>
                     <TableCell align="right">{hotel.latitude}</TableCell>
                     <TableCell align="right">{hotel.longitude}</TableCell>
                     <TableCell align="right">{hotel.address}</TableCell>
                     <TableCell align="right">{hotel.noOfRoom}</TableCell>
-                    <TableCell align="right">{hotel.rating}</TableCell>
                     <TableCell align="right">{hotel.owner.name}</TableCell>
                     <TableCell align="center">
                       <Button
@@ -189,7 +238,7 @@ const AdminHotels = () => {
                     label="Hotel Name"
                     type="text"
                     fullWidth
-                    defaultValue={selectedHotel.name}
+                    value={hotelName}
                     onChange={(e) => setHotelName(e.target.value)}
                   />
                   <TextField
@@ -198,17 +247,48 @@ const AdminHotels = () => {
                     label="Description"
                     type="text"
                     fullWidth
-                    defaultValue={selectedHotel.description}
+                    value={hotelDescription}
                     onChange={(e) => setHotelDescription(e.target.value)}
                   />
+                  <TextField
+                    margin="dense"
+                    id="location"
+                    label="Location"
+                    type="text"
+                    fullWidth
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
+                  <Button
+                    onClick={() => {
+                      handleMapOpen();
+                    }}
+                  >
+                    Locate on map
+                  </Button>
+                  <Modal
+                    open={openmap}
+                    onClose={handleMapClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={style}>
+                      <Map
+                        onLocationChange={handleLocationChange}
+                        onPositionChange={handlePositionChange}
+                        onDistrictChange={handleDistrictChange}
+                      />
+                    </Box>
+                  </Modal>
                   <TextField
                     margin="dense"
                     id="latitude"
                     label="Latitude"
                     type="text"
                     fullWidth
-                    defaultValue={selectedHotel.latitude}
-                    onChange={(e) => setHotelLatitude(e.target.value)}
+                    value={position[0]}
+                    onChange={(e) => setPosition([e.target.value, position[1]])}
+                    disabled
                   />
                   <TextField
                     margin="dense"
@@ -216,17 +296,19 @@ const AdminHotels = () => {
                     label="Longitude"
                     type="text"
                     fullWidth
-                    defaultValue={selectedHotel.longitude}
-                    onChange={(e) => setHotelLongitude(e.target.value)}
+                    value={position[1]}
+                    onChange={(e) => setPosition([position[0], e.target.value])}
+                    disabled
                   />
                   <TextField
                     margin="dense"
                     id="address"
-                    label="Address"
+                    label="District"
                     type="text"
                     fullWidth
-                    defaultValue={selectedHotel.address}
-                    onChange={(e) => setHotelAddress(e.target.value)}
+                    value={district}
+                    onChange={(e) => setDistrict(e.target.value)}
+                    disabled
                   />
                   <TextField
                     margin="dense"
@@ -234,17 +316,8 @@ const AdminHotels = () => {
                     label="No. of Room"
                     type="text"
                     fullWidth
-                    defaultValue={selectedHotel.noOfRoom}
+                    value={hotelNoOfRoom}
                     onChange={(e) => setHotelNoOfRoom(e.target.value)}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="rating"
-                    label="Rating"
-                    type="text"
-                    fullWidth
-                    defaultValue={selectedHotel.rating}
-                    onChange={(e) => setHotelRating(e.target.value)}
                   />
                   <TextField
                     margin="dense"
@@ -252,8 +325,16 @@ const AdminHotels = () => {
                     label="Owner"
                     type="text"
                     fullWidth
-                    defaultValue={selectedHotel.owner.name}
+                    value={selectedHotel.owner.name}
                     disabled
+                  />
+                  Image
+                  <TextField
+                    margin="dense"
+                    id="image"
+                    type="file"
+                    fullWidth
+                    onChange={(e) => setHotelImage(e.target.files[0])}
                   />
                 </>
               )}

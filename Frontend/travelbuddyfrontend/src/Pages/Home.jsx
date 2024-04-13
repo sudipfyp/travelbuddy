@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import Card from "@mui/material/Card";
@@ -11,8 +12,36 @@ import Place from "../Assets/images/destination.png";
 import Product from "../Assets/images/products.png";
 import Guide from "../Assets/images/guides.png";
 import Hotel from "../Assets/images/hotels.png";
+import swal from "sweetalert";
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+        navigate("/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.title = "TravelBuddy - Your Travel Companion";
+    userCheck();
+  }, []);
+
   const [trendingDestinations, setTrendingDestinations] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [trendingGuides, setTrendingGuides] = useState([]);
@@ -32,17 +61,17 @@ const Home = () => {
     };
     getDestinations();
 
-    // const getProducts = async () => {
-    //   let response = await fetch("http://127.0.1:8000/product/list");
-    //   let parsedData = await response.json();
+    const getProducts = async () => {
+      let response = await fetch("http://127.0.1:8000/shop/product/listall");
+      let parsedData = await response.json();
 
-    //   let productData = parsedData
-    //     .filter((item) => item.tag === "recommended")
-    //     .slice(0, 4);
-    //   setTrendingProducts(productData);
-    //   console.log(productData);
-    // };
-    // getProducts();
+      let productData = parsedData
+        .filter((item) => item.tag === "popular")
+        .slice(0, 4);
+      setTrendingProducts(productData);
+      console.log(productData);
+    };
+    getProducts();
 
     const getGuides = async () => {
       let response = await fetch("http://127.0.1:8000/user/guide/list");
@@ -50,7 +79,7 @@ const Home = () => {
 
       let guideData = parsedData.slice(0, 4);
       // .filter((item) => item.tag === "natural")
-  
+
       setTrendingGuides(guideData);
       console.log(guideData);
     };

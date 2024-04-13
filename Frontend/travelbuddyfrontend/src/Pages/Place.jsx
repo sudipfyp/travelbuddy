@@ -1,11 +1,41 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import Search from "../Components/Search";
 import Display from "../Components/Display";
 import DivItem from "../Components/DivItem";
+import swal from "sweetalert";
 
 const Place = () => {
+  const navigate = useNavigate();
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+
+        navigate("/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    userCheck();
+    document.title = "TravelBuddy ● Place";
+  }, []);
+
   const [recommended, setRecommended] = useState([]);
   const [culturalHeritages, setCulturalHeritages] = useState([]);
   const [naturalScenario, setNaturalScenario] = useState([]);
@@ -14,8 +44,6 @@ const Place = () => {
   const [bhaktapurDistrict, setBhaktapurDistrict] = useState([]);
 
   useEffect(() => {
-    document.title = "TravelBuddy ● Place";
-
     const getPlaces = async () => {
       let response = await fetch("http://127.0.1:8000/place/list");
       let parsedData = await response.json();

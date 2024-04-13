@@ -1,11 +1,41 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import Search from "../Components/Search";
 import Display from "../Components/Display";
 import DivItem from "../Components/DivItem";
+import swal from "sweetalert";
 
 const LocalEvents = () => {
+  const navigate = useNavigate();
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+
+        navigate("/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    userCheck();
+    document.title = "TravelBuddy ● Local Events";
+  }, []);
+
   const [events, setEvents] = useState([]);
   const [currentEvents, setCurrentEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -13,8 +43,6 @@ const LocalEvents = () => {
   const [popularEvents, setPopularEvents] = useState([]);
 
   useEffect(() => {
-    document.title = "TravelBuddy ● Local Events";
-
     const getCurrentEvents = async () => {
       let response = await fetch("http://127.0.1:8000/event/current-event");
       let parsedData = await response.json();
@@ -44,10 +72,9 @@ const LocalEvents = () => {
       let parsedData = await response.json();
       let events = parsedData;
 
-      setEvents(events.slice(0, 4))
+      setEvents(events.slice(0, 4));
 
-      let popularEvents = events
-        .filter((item) => item.tag === "popular")
+      let popularEvents = events.filter((item) => item.tag === "popular");
       setPopularEvents(popularEvents.slice(0, 4));
     };
 
@@ -63,7 +90,7 @@ const LocalEvents = () => {
 
       <div className="common-container">
         <Search
-          headerheadline="Enjoy the Events!"
+          headline="Enjoy the Events!"
           placeholder="Search for the events"
         />
 

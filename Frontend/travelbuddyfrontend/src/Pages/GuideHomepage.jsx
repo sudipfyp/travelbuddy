@@ -2,30 +2,49 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 
 const GuideHomepage = () => {
-  const [request, setRequest] = useState([]);
-
   const navigate = useNavigate();
+  const [refresh, setRefresh] = useState(false);
 
   const userCheck = async () => {
     let data = await fetch("http://127.0.1:8000/user/usercheck", {
       method: "GET",
       credentials: "include",
     });
+
     let parsedData = await data.json();
+
     if (data.status === 200) {
-      console.log(parsedData);
-    } else {
-      alert("Login First");
+      if (parsedData.role !== "guide") {
+        swal(
+          "Unauthorized Access",
+          "You are not authorized to access this page",
+          "error"
+        );
+
+        navigate("/login");
+      }
+    }
+
+    if (data.status === 403) {
+      swal(
+        "Unauthorized Access",
+        "You are not authorized to access this page",
+        "error"
+      );
+
       navigate("/login");
     }
   };
 
   useEffect(() => {
     userCheck();
-    document.title = "Guide Homepage";
+    document.title = "TravelBuddy ● Guide Homepage";
   }, []);
+
+  const [request, setRequest] = useState([]);
 
   const listRequest = async () => {
     let response = await fetch("http://127.0.1:8000/guide/hire/list/", {
@@ -37,85 +56,87 @@ const GuideHomepage = () => {
     console.log(data);
 
     if (response.status === 200) {
-      setRequest(data);
-    } else {
-      alert("Request failed");
+      const current = data.filter((req) => req.status === "ongoing");
+      setRequest(current);
     }
   };
 
   useEffect(() => {
     listRequest();
-  }, []);
+  }, [refresh]);
 
   const acceptRequest = async (id) => {
-    let response = await fetch(
-      `http://127.0.1:8000/guide/hire/accept/${id}/`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    );
+    let response = await fetch(`http://127.0.1:8000/guide/hire/accept/${id}/`, {
+      method: "POST",
+      credentials: "include",
+    });
 
     let data = await response.json();
     console.log(data);
 
     if (response.status === 200) {
-      alert("Request accepted successfully");
-      navigate("/guidehomepage");
+      swal("Success", "Request accepted Successfully", "success");
+      setRefresh((prev) => !prev);
     } else {
-      alert("Request failed");
+      swal("Error", "Something went wrong", "error");
     }
   };
 
-  // const rejectRequest = async (id) => {
-  //   let response = await fetch(
-  //     `http://127.0.1:8000/guide/hire/reject/${id}/`,
-  //     {
-  //       method: "GET",
-  //       credentials: "include",
-  //     }
-  //   );
+  const rejectRequest = async (id) => {
+    let response = await fetch(`http://127.0.1:8000/guide/hire/reject/${id}/`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-  //   let data = await response.json();
-  //   console.log(data);
+    let data = await response.json();
+    console.log(data);
 
-  //   if (response.status === 200) {
-  //     alert("Request rejected successfully");
-  //     navigate("/guidehomepage");
-  //   } else {
-  //     alert("Request failed");
-  //   }
-  // };
+    if (response.status === 200) {
+      swal("Success", "Request rejected Successfully", "success");
+      setRefresh((prev) => !prev);
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
+  };
 
   return (
-    <div className="guide-homepage">
+    <div>
       <Navbar />
 
-      <div className="static-container">
-        <h1 className="guide-homepage-title">Guide Homepage</h1>
+      <div className="static-header">
+        <h1>Hiring Request</h1>
+      </div>
 
-        <div className="guide-hire-list">
-          {request.map((req) => {
-            return (
-              <div className="guide-hire-card">
-                <h3>{req.user.name}</h3>
-                <h3 className="guide-hire-card-title">{req.place}</h3>
-                <p className="guide-hire-card-day">{req.day}</p>
-                <p>{req.user.name}</p>
-                <button
-                  className="guide-hire-card-button-hire"
-                  onClick={() => acceptRequest(req.id)}
-                >
-                  Accept
-                </button>
-                <button
-                  className="guide-hire-card-button-cancel"
-                >
-                  Reject
-                </button>
-              </div>
-            );
-          })}
+      <div className="static-container">
+        <div className="guide-container">
+          {request.length === 0 ? (
+            <h1 style={{ margin: "auto" }}>"No pending request"</h1>
+          ) : (
+            <>
+              {request.map((req) => {
+                return (
+                  <div className="guide-hire-card">
+                    <img src={req.user.image} alt="" />
+
+                    <h3>Requested by: {req.user.name}</h3>
+
+                    <p>Interested Places: {req.place}</p>
+                    <p>No. of Days: {req.day}</p>
+                    <p>Amount: Rs. {req.guide.charge * req.day}</p>
+
+                    <div className="btn-group">
+                      <button onClick={() => acceptRequest(req.id)}>
+                        Accept
+                      </button>
+                      <button onClick={() => rejectRequest(req.id)}>
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
 

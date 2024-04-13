@@ -8,3 +8,5 @@ class GuideHire(models.Model):
     place = models.CharField(max_length = 50)
     status = models.CharField(max_length = 50, default = "ongoing")
     day = models.IntegerField()
+    date = models.DateField(null=True)
+    price = models.FloatField(null=True)

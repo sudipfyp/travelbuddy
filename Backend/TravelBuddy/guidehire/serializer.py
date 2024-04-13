@@ -5,7 +5,7 @@ from registration.serializer import UserModelSerializer, GuideModelSerializer
 class GuideHireModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = GuideHire
-        fields = ['place', 'day']
+        fields = ['place', 'day', 'date']
 
 
 class GuideHireViewModelSerializer(serializers.ModelSerializer):

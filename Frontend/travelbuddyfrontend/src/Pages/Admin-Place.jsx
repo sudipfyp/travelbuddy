@@ -18,12 +18,12 @@ import TextField from "@mui/material/TextField";
 import DialogContentText from "@mui/material/DialogContentText";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import { MenuItem, Select } from "@mui/material";
+
+import swal from "sweetalert";
 
 const AdminPlace = () => {
   const [placeName, setPlaceName] = useState("");
-  const [placeLocation, setPlaceLocation] = useState("");
-  const [placeLatitude, setPlaceLatitude] = useState("");
-  const [placeLongitude, setPlaceLongitude] = useState("");
   const [placeTag, setPlaceTag] = useState("");
   const [placeDescription, setPlaceDescription] = useState("");
   const [placeImage, setPlaceImage] = useState("");
@@ -34,7 +34,6 @@ const AdminPlace = () => {
   const [openmap, setOpenmap] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [refresh, setRefresh] = useState(false);
-
 
   const addPlace = async (e) => {
     e.preventDefault();
@@ -49,7 +48,6 @@ const AdminPlace = () => {
     formData.append("description", placeDescription);
     formData.append("image", placeImage);
 
-
     let response = await fetch("http://127.0.1:8000/place/add/", {
       method: "POST",
       body: formData,
@@ -57,7 +55,18 @@ const AdminPlace = () => {
     });
     let parsedData = await response.json();
     console.log(parsedData);
-    setRefresh((prev) => !prev);
+
+    if (response.status === 200) {
+      swal("Success", "Place added successfully", "success");
+      setRefresh((prev) => !prev);
+      setPlaceName("");
+      setLocation("");
+      setPosition("");
+      setPlaceTag("");
+      setPlaceDescription("");
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
   };
 
   useEffect(() => {
@@ -73,9 +82,8 @@ const AdminPlace = () => {
   const handleClickOpen = (place) => {
     setSelectedPlace(place);
     setPlaceName(place.name);
-    setPlaceLocation(place.location);
-    setPlaceLatitude(place.latitude);
-    setPlaceLongitude(place.longitude);
+    setLocation(place.location);
+    setPosition([place.latitude, place.longitude]);
     setPlaceTag(place.tag);
     setPlaceDescription(place.description);
     setOpen(true);
@@ -84,6 +92,9 @@ const AdminPlace = () => {
   const handleClose = () => {
     setOpen(false);
     setOpenDel(false);
+  };
+
+  const handleMapClose = () => {
     setOpenmap(false);
   };
 
@@ -97,12 +108,13 @@ const AdminPlace = () => {
 
     const formData = new FormData();
     formData.append("name", placeName);
-    formData.append("location", placeLocation);
-    formData.append("latitude", placeLatitude);
-    formData.append("longitude", placeLongitude);
+    formData.append("location", location);
+    formData.append("district", district);
+    formData.append("latitude", position[0]);
+    formData.append("longitude", position[1]);
     formData.append("tag", placeTag);
     formData.append("description", placeDescription);
-    // formData.append("image", placeImage);
+    formData.append("image", placeImage);
 
     let response = await fetch(
       `http://127.0.1:8000/place/edit/${selectedPlace.id}/`,
@@ -114,8 +126,14 @@ const AdminPlace = () => {
     );
     let parsedData = await response.json();
     console.log(parsedData);
-    setRefresh((prev) => !prev);
-    setOpen(false);
+
+    if (response.status === 200) {
+      swal("Success", "Place updated successfully", "success");
+      setRefresh((prev) => !prev);
+      setOpen(false);
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
   };
 
   const handleDelete = async (place) => {
@@ -128,7 +146,13 @@ const AdminPlace = () => {
     );
     let parsedData = await response.json();
     console.log(parsedData);
-    setRefresh((prev) => !prev);
+
+    if (response.status === 200) {
+      swal("Success", "Place deleted successfully", "success");
+      setRefresh((prev) => !prev);
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
   };
 
   const handleMapOpen = () => {
@@ -162,7 +186,6 @@ const AdminPlace = () => {
     setDistrict(newDistrict);
   };
 
-
   return (
     <>
       <div className="admin-container">
@@ -183,7 +206,9 @@ const AdminPlace = () => {
                   <input
                     type="text"
                     id="name"
+                    required
                     name="name"
+                    value={placeName}
                     onChange={(e) => setPlaceName(e.target.value)}
                   />
                 </div>
@@ -192,11 +217,12 @@ const AdminPlace = () => {
                   <label htmlFor="location">Location:</label>
                   <br />
                   <input
+                    required
                     type="text"
                     id="location"
                     name="location"
                     value={location}
-                    onChange={(e) => setPlaceLocation(e.target.value)}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                   <Button
                     onClick={() => {
@@ -207,7 +233,7 @@ const AdminPlace = () => {
                   </Button>
                   <Modal
                     open={openmap}
-                    onClose={handleClose}
+                    onClose={handleMapClose}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                   >
@@ -227,12 +253,12 @@ const AdminPlace = () => {
                   <label htmlFor="latitude">Latitude:</label>
                   <br />
                   <input
+                    required
                     type="text"
                     id="latitude"
                     name="latitude"
-                    defaultValue={position[0]}
-                    onChange={(e) => setPlaceLatitude(e.target.value)}
-                    disabled
+                    value={position[0]}
+                    onChange={(e) => setPosition([e.target.value, position[0]])}
                   />
                 </div>
 
@@ -240,12 +266,12 @@ const AdminPlace = () => {
                   <label htmlFor="longitude">Longitude:</label>
                   <br />
                   <input
+                    required
                     type="text"
                     id="longitude"
                     name="longitude"
                     value={position[1]}
-                    onChange={(e) => setPlaceLongitude(e.target.value)}
-                    disabled
+                    onChange={(e) => setPosition([position[1], e.target.value])}
                   />
                 </div>
               </div>
@@ -254,18 +280,25 @@ const AdminPlace = () => {
                 <div className="place-row">
                   <label htmlFor="tag">Tag:</label>
                   <br />
-                  <input
-                    type="text"
+                  <select
+                    required
                     id="tag"
                     name="tag"
+                    value={placeTag}
                     onChange={(e) => setPlaceTag(e.target.value)}
-                  />
+                  >
+                    <option disabled>Select tag</option>
+                    <option value="recommended">Popular</option>
+                    <option value="heritage">Heritage</option>
+                    <option value="natural">Natural</option>
+                  </select>
                 </div>
 
                 <div className="place-row">
                   <label htmlFor="image">Image:</label>
                   <br />
                   <input
+                    required
                     type="file"
                     onChange={(e) => setPlaceImage(e.target.files[0])}
                   />
@@ -276,9 +309,11 @@ const AdminPlace = () => {
               <label htmlFor="description">Description:</label>
               <br />
               <textarea
+                required
                 type="text"
                 id="description"
                 name="description"
+                value={placeDescription}
                 onChange={(e) => setPlaceDescription(e.target.value)}
               />
 
@@ -359,60 +394,78 @@ const AdminPlace = () => {
             <DialogContent>
               {selectedPlace && (
                 <>
+                  Name
                   <TextField
                     autoFocus
                     margin="dense"
                     id="name"
-                    label="Name"
                     type="text"
                     fullWidth
                     value={placeName}
                     onChange={(e) => setPlaceName(e.target.value)}
                   />
+                  Location
                   <TextField
                     margin="dense"
                     id="location"
-                    label="Location"
                     type="text"
                     fullWidth
-                    value={placeLocation}
-                    onChange={(e) => setPlaceLocation(e.target.value)}
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
+                  <Button
+                    onClick={() => {
+                      handleMapOpen();
+                    }}
+                  >
+                    Locate on map
+                  </Button>
+                  <br />
+                  Latitude
                   <TextField
                     margin="dense"
                     id="latitude"
-                    label="Latitude"
                     type="text"
                     fullWidth
-                    value={placeLatitude}
-                    onChange={(e) => setPlaceLatitude(e.target.value)}
+                    value={position[0]}
+                    disabled
                   />
+                  Longitude
                   <TextField
                     margin="dense"
                     id="longitude"
-                    label="Longitude"
                     type="text"
                     fullWidth
-                    value={placeLongitude}
-                    onChange={(e) => setPlaceLongitude(e.target.value)}
+                    value={position[1]}
+                    disabled
                   />
-                  <TextField
+                  Tag
+                  <Select
                     margin="dense"
-                    id="tag"
-                    label="Tag"
-                    type="text"
                     fullWidth
                     value={placeTag}
                     onChange={(e) => setPlaceTag(e.target.value)}
-                  />
+                  >
+                    <MenuItem value="recommended">Popular</MenuItem>
+                    <MenuItem value="heritage">Heritage</MenuItem>
+                    <MenuItem value="natural">Natural</MenuItem>
+                  </Select>
+                  Description
                   <TextField
                     margin="dense"
                     id="description"
-                    label="Description"
                     type="textarea"
                     fullWidth
                     value={placeDescription}
                     onChange={(e) => setPlaceDescription(e.target.value)}
+                  />
+                  Image
+                  <TextField
+                    margin="dense"
+                    id="image"
+                    type="file"
+                    fullWidth
+                    onChange={(e) => setPlaceImage(e.target.files[0])}
                   />
                 </>
               )}

@@ -9,6 +9,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import swal from "sweetalert";
 
 const Navbar = () => {
   const [user, setUser] = useState({});
@@ -16,7 +17,6 @@ const Navbar = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dropdownRef = useRef(null);
   const iconRef = useRef(null);
-  //Check cookies/token and decide whether loggedin or not
   const [loggedin, setLoggedin] = useState();
 
   const Navigate = useNavigate();
@@ -74,6 +74,7 @@ const Navbar = () => {
       setLoggedin(true);
       let data = await response.json();
       setUser(data);
+      console.log(data);
     }
   };
 
@@ -89,44 +90,311 @@ const Navbar = () => {
 
     if (response.status === 200) {
       setLoggedin(false);
-      alert("Logged out successfully");
+      swal("Logged Out", "You have been logged out", "success");
       handleClose();
-      Navigate("/login")
+      Navigate("/");
     }
   };
 
   return (
     <div>
-      <nav className="navbar">
-        <div className="navbar-left">
-          <a href="/">
-            <img src={Logo} alt="logo of travel buddy" width="100px" />
-          </a>
-        </div>
+      {user.role === "guide" ? (
+        <nav className="navbar">
+          <div className="navbar-left">
+            <a href="/guidehomepage">
+              <img src={Logo} alt="logo of travel buddy" width="100px" />
+            </a>
+          </div>
 
-        <div className="navbar-center">
-          <NavLink to="/place" activeclassname="active">
-            Place
-          </NavLink>
-          <NavLink to="/guide" activeclassname="active">
-            Guide
-          </NavLink>
-          <NavLink to="/product" activeclassname="active">
-            Shop
-          </NavLink>
-          <NavLink to="/feed" activeclassname="active">
-            Feed
-          </NavLink>
-        </div>
+          <div className="navbar-center">
+            <NavLink to="/guidehomepage" activeclassname="active">
+              Request
+            </NavLink>
+            <NavLink to="/ongoinghirings" activeclassname="active">
+              Ongoing
+            </NavLink>
+            <NavLink to="/guideapply" activeclassname="active">
+              Apply
+            </NavLink>
+            <NavLink to="/chat" activeclassname="active">
+              Chat
+            </NavLink>
+          </div>
 
-        <div className="navbar-right">
-          <i className="fa fa-user" ref={iconRef} onClick={toggleDropdown}></i>
-          {showDropdown && (
-            <div className="dropdown" ref={dropdownRef}>
+          <div className="navbar-right">
+            <i
+              className="fa fa-user"
+              ref={iconRef}
+              onClick={toggleDropdown}
+            ></i>
+            {showDropdown && (
+              <div className="dropdown" ref={dropdownRef}>
+                <a href="/profile">Profile</a>
+                <a href="/translation">Translation</a>
+                <a href="/currencyexchange">Currency Exchange</a>
+                <button className="logout-button" onClick={handleOpen}>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="navbar-mobile" onClick={toggleMobileMenu}>
+            <span>MENU </span>
+            <i className="fa fa-bars"></i>
+          </div>
+
+          {showMobileMenu && (
+            <div className={`mobile-menu ${showMobileMenu ? "show" : ""}`}>
+              <i
+                className="fa fa-times close-icon"
+                onClick={toggleMobileMenu}
+              ></i>
+
+              <div className="navbar-profile">
+                <i className="fa fa-user"></i>
+                <span>{user.role}</span>
+              </div>
+              <a href="/profile">Profile</a>
+              <a href="/ongoinghirings">Ongoing Hirings</a>
+              <a href="/guideapply">Apply</a>
+              <a href="/chat">Chat</a>
+              <a href="/translation">Translation</a>
+              <a href="/currencyexchange">Currency Exchange</a>
+              <button className="logout-button" onClick={handleOpen}>
+                Logout
+              </button>
+            </div>
+          )}
+        </nav>
+      ) : user.role === "seller" ? (
+        <nav className="navbar">
+          <div className="navbar-left">
+            <a href="/sellerhomepage">
+              <img src={Logo} alt="logo of travel buddy" width="100px" />
+            </a>
+          </div>
+
+          {user.type === "Hotel" ? (
+            <>
+              <div className="navbar-center">
+                <NavLink to="/sellerhomepage" activeclassname="active">
+                  Bookings
+                </NavLink>
+                <NavLink to="/ongoingbookings" activeclassname="active">
+                  Current Bookings
+                </NavLink>
+                <NavLink to="/managehotel" activeclassname="active">
+                  Manage Hotel
+                </NavLink>
+                <NavLink to="/chat" activeclassname="active">
+                  Chat
+                </NavLink>
+              </div>
+
+              <div className="navbar-right">
+                <i
+                  className="fa fa-user"
+                  ref={iconRef}
+                  onClick={toggleDropdown}
+                ></i>
+                {showDropdown && (
+                  <div className="dropdown" ref={dropdownRef}>
+                    <a href="/profile">Profile</a>
+                    <a href="/translation">Translation</a>
+                    <a href="/currencyexchange">Currency Exchange</a>
+                    <button className="logout-button" onClick={handleOpen}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="navbar-mobile" onClick={toggleMobileMenu}>
+                <span>MENU </span>
+                <i className="fa fa-bars"></i>
+              </div>
+
+              {showMobileMenu && (
+                <div className={`mobile-menu ${showMobileMenu ? "show" : ""}`}>
+                  <i
+                    className="fa fa-times close-icon"
+                    onClick={toggleMobileMenu}
+                  ></i>
+
+                  <div className="navbar-profile">
+                    <i className="fa fa-user"></i>
+                    <span>
+                      {user.role} ({user.type})
+                    </span>
+                  </div>
+                  <a href="/profile">Profile</a>
+                  <a href="/managehotel">Manage Hotel</a>
+                  <a href="/ongoingbookings">Current Bookings</a>
+                  <a href="/chat">Chat</a>
+                  <a href="/translation">Translation</a>
+                  <a href="/currencyexchange">Currency Exchange</a>
+                  <button className="logout-button" onClick={handleOpen}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="navbar-center">
+                <NavLink to="/sellerhomepage" activeclassname="active">
+                  Home
+                </NavLink>
+                <NavLink to="/addproduct" activeclassname="active">
+                  Add Product
+                </NavLink>
+                <NavLink to="/manageshop" activeclassname="active">
+                  Manage Shop
+                </NavLink>
+                <NavLink to="/chat" activeclassname="active">
+                  Chat
+                </NavLink>
+              </div>
+
+              <div className="navbar-right">
+                <i
+                  className="fa fa-user"
+                  ref={iconRef}
+                  onClick={toggleDropdown}
+                ></i>
+                {showDropdown && (
+                  <div className="dropdown" ref={dropdownRef}>
+                    <a href="/profile">Profile</a>
+                    <a href="/translation">Translation</a>
+                    <a href="/currencyexchange">Currency Exchange</a>
+                    <button className="logout-button" onClick={handleOpen}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="navbar-mobile" onClick={toggleMobileMenu}>
+                <span>MENU </span>
+                <i className="fa fa-bars"></i>
+              </div>
+
+              {showMobileMenu && (
+                <div className={`mobile-menu ${showMobileMenu ? "show" : ""}`}>
+                  <i
+                    className="fa fa-times close-icon"
+                    onClick={toggleMobileMenu}
+                  ></i>
+
+                  <div className="navbar-profile">
+                    <i className="fa fa-user"></i>
+                    <span>
+                      {user.role} ({user.type})
+                    </span>
+                  </div>
+                  <a href="/profile">Profile</a>
+                  <a href="/manageshop">Manage Shop</a>
+                  <a href="/addproduct">Add Product</a>
+                  <a href="/chat">Chat</a>
+                  <a href="/translation">Translation</a>
+                  <a href="/currencyexchange">Currency Exchange</a>
+                  <button className="logout-button" onClick={handleOpen}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </nav>
+      ) : (
+        <nav className="navbar">
+          <div className="navbar-left">
+            <a href="/">
+              <img src={Logo} alt="logo of travel buddy" width="100px" />
+            </a>
+          </div>
+
+          <div className="navbar-center">
+            <NavLink to="/place" activeclassname="active">
+              Place
+            </NavLink>
+            <NavLink to="/guide" activeclassname="active">
+              Guide
+            </NavLink>
+            <NavLink to="/product" activeclassname="active">
+              Shop
+            </NavLink>
+            <NavLink to="/hotel" activeclassname="active">
+              Hotel
+            </NavLink>
+          </div>
+
+          <div className="navbar-right">
+            <i
+              className="fa fa-user"
+              ref={iconRef}
+              onClick={toggleDropdown}
+            ></i>
+            {showDropdown && (
+              <div className="dropdown" ref={dropdownRef}>
+                {loggedin ? (
+                  <>
+                    <a href="/profile">Profile</a>
+                    <a href="/findguide">Find Guide</a>
+                    <a href="/localevents">Local Events</a>
+                    <a href="/currencyexchange">Currency Exchange</a>
+                    <a href="/translation">Translation</a>
+                    <a href="/transportation">Transportation Services</a>
+                    <a href="/traveltips">Travel Tips</a>
+                    <button className="logout-button" onClick={handleOpen}>
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a className="link-bg" href="/login">
+                      Login
+                    </a>
+                    <a className="link-bg" href="/register">
+                      Register
+                    </a>
+                    <a href="/findguide">Find Guide</a>
+                    <a href="/localevents">Local Events</a>
+                    <a href="/currencyexchange">Currency Exchange</a>
+                    <a href="/translation">Translation</a>
+                    <a href="/transportation">Transportation Services</a>
+                    <a href="/traveltips">Travel Tips</a>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="navbar-mobile" onClick={toggleMobileMenu}>
+            <span>MENU </span>
+            <i className="fa fa-bars"></i>
+          </div>
+
+          {showMobileMenu && (
+            <div className={`mobile-menu ${showMobileMenu ? "show" : ""}`}>
+              <i
+                className="fa fa-times close-icon"
+                onClick={toggleMobileMenu}
+              ></i>
+
               {loggedin ? (
                 <>
+                  <div className="navbar-profile">
+                    <i className="fa fa-user"></i>
+                    <span>{user.role}</span>
+                  </div>
                   <a href="/profile">Profile</a>
+                  <a href="/place">Place</a>
+                  <a href="/guide">Guide</a>
+                  <a href="/product">Shop</a>
                   <a href="/hotel">Hotels</a>
+                  <a href="/findguide">Find Guide</a>
                   <a href="/localevents">Local Events</a>
                   <a href="/currencyexchange">Currency Exchange</a>
                   <a href="/translation">Translation</a>
@@ -144,7 +412,11 @@ const Navbar = () => {
                   <a className="link-bg" href="/register">
                     Register
                   </a>
+                  <a href="/place">Place</a>
+                  <a href="/guide">Guide</a>
+                  <a href="/product">Shop</a>
                   <a href="/hotel">Hotels</a>
+                  <a href="/findguide">Find Guide</a>
                   <a href="/localevents">Local Events</a>
                   <a href="/currencyexchange">Currency Exchange</a>
                   <a href="/translation">Translation</a>
@@ -154,64 +426,8 @@ const Navbar = () => {
               )}
             </div>
           )}
-        </div>
-
-        <div className="navbar-mobile" onClick={toggleMobileMenu}>
-          <span>MENU </span>
-          <i className="fa fa-bars"></i>
-        </div>
-
-        {showMobileMenu && (
-          <div className={`mobile-menu ${showMobileMenu ? "show" : ""}`}>
-            <i
-              className="fa fa-times close-icon"
-              onClick={toggleMobileMenu}
-            ></i>
-
-            {loggedin ? (
-              <>
-                <div className="navbar-profile">
-                  <i className="fa fa-user"></i>
-                  <span>{user.role}</span>
-                </div>
-                <a href="/profile">Profile</a>
-                <a href="/place">Place</a>
-                <a href="/guide">Guide</a>
-                <a href="/product">Shop</a>
-                <a href="/feed">Feed</a>
-                <a href="/hotel">Hotels</a>
-                <a href="/localevents">Local Events</a>
-                <a href="/currencyexchange">Currency Exchange</a>
-                <a href="/translation">Translation</a>
-                <a href="/transportation">Transportation Services</a>
-                <a href="/traveltips">Travel Tips</a>
-                <button className="logout-button" onClick={handleOpen}>
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <a className="link-bg" href="/login">
-                  Login
-                </a>
-                <a className="link-bg" href="/register">
-                  Register
-                </a>
-                <a href="/place">Place</a>
-                <a href="/guide">Guide</a>
-                <a href="/product">Shop</a>
-                <a href="/feed">Feed</a>
-                <a href="/hotel">Hotels</a>
-                <a href="/localevents">Local Events</a>
-                <a href="/currencyexchange">Currency Exchange</a>
-                <a href="/translation">Translation</a>
-                <a href="/transportation">Transportation Services</a>
-                <a href="/traveltips">Travel Tips</a>
-              </>
-            )}
-          </div>
-        )}
-      </nav>
+        </nav>
+      )}
 
       <Fragment>
         <Dialog
