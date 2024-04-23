@@ -247,7 +247,7 @@ const Navbar = () => {
                   Home
                 </NavLink>
                 <NavLink to="/addproduct" activeclassname="active">
-                  Add Product
+                  Manage Product
                 </NavLink>
                 <NavLink to="/manageshop" activeclassname="active">
                   Manage Shop
@@ -295,7 +295,7 @@ const Navbar = () => {
                   </div>
                   <a href="/profile">Profile</a>
                   <a href="/manageshop">Manage Shop</a>
-                  <a href="/addproduct">Add Product</a>
+                  <a href="/addproduct">Manage Product</a>
                   <a href="/chat">Chat</a>
                   <a href="/translation">Translation</a>
                   <a href="/currencyexchange">Currency Exchange</a>
@@ -322,11 +322,11 @@ const Navbar = () => {
             <NavLink to="/guide" activeclassname="active">
               Guide
             </NavLink>
-            <NavLink to="/product" activeclassname="active">
-              Shop
-            </NavLink>
             <NavLink to="/hotel" activeclassname="active">
               Hotel
+            </NavLink>
+            <NavLink to="/product" activeclassname="active">
+              Shop
             </NavLink>
           </div>
 
@@ -392,8 +392,8 @@ const Navbar = () => {
                   <a href="/profile">Profile</a>
                   <a href="/place">Place</a>
                   <a href="/guide">Guide</a>
-                  <a href="/product">Shop</a>
                   <a href="/hotel">Hotels</a>
+                  <a href="/product">Shop</a>
                   <a href="/findguide">Find Guide</a>
                   <a href="/localevents">Local Events</a>
                   <a href="/currencyexchange">Currency Exchange</a>
@@ -414,8 +414,8 @@ const Navbar = () => {
                   </a>
                   <a href="/place">Place</a>
                   <a href="/guide">Guide</a>
-                  <a href="/product">Shop</a>
                   <a href="/hotel">Hotels</a>
+                  <a href="/product">Shop</a>
                   <a href="/findguide">Find Guide</a>
                   <a href="/localevents">Local Events</a>
                   <a href="/currencyexchange">Currency Exchange</a>

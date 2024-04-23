@@ -12,7 +12,6 @@ import swal from "sweetalert";
 
 const OngoingHirings = () => {
   const navigate = useNavigate();
-  const [refresh, setRefresh] = useState(false);
 
   const userCheck = async () => {
     let data = await fetch("http://127.0.1:8000/user/usercheck", {
@@ -101,7 +100,7 @@ const OngoingHirings = () => {
 
       <div className="static-container">
         <div className="static-contain">
-          <h2 className="static-heading">Current Hirings</h2>
+          <h2>Current Hirings</h2>
           <TableContainer>
             <Table>
               <TableHead>
@@ -135,7 +134,14 @@ const OngoingHirings = () => {
                       <TableCell>{item.user.email}</TableCell>
                       <TableCell>{item.status}</TableCell>
                       <TableCell>
-                        <button className="blue btn">Chat</button>
+                        <button
+                          className="blue btn"
+                          onClick={() => {
+                            navigate(`/chat/${item.user.id}/user`);
+                          }}
+                        >
+                          Chat
+                        </button>
                       </TableCell>
                     </TableRow>
                   ))
@@ -183,7 +189,14 @@ const OngoingHirings = () => {
                       <TableCell>{item.price}</TableCell>
                       <TableCell>{item.status}</TableCell>
                       <TableCell>
-                        <button className="blue btn">Chat</button>
+                        <button
+                          className="blue btn"
+                          onClick={() => {
+                            navigate(`/chat/${item.user.id}/user`);
+                          }}
+                        >
+                          Chat
+                        </button>
                       </TableCell>
                     </TableRow>
                   ))

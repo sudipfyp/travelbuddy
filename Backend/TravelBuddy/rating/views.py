@@ -20,15 +20,15 @@ class Rate(APIView):
         if verification:
             serailizer = RatingModelSerializer(data = request.data)
             guidereq = kwargs['id']
-            RatingObj = Rating.objects.filter(user_id = payload['id'], guidereq_id = guidereq)
+            RatingObj = Rating.objects.filter(user_id = payload['user_id'], guidereq_id = guidereq)
             if len(RatingObj) > 0:
                 return Response({"message": "You have already rated this guide"}, status = status.HTTP_400_BAD_REQUEST)
             if serailizer.is_valid():
-                rating = request.data.get('rate')
+                rating = request.data.get('rating')
                 guidereqObj = GuideRequirementHiring.objects.get(id = guidereq)
-                Rating.objects.create(rating = rating, user_id = payload['id'], guidereq_id = guidereq , guide_id = guidereqObj.guide_id)
+                Rating.objects.create(rating = rating, user_id = payload['user_id'], guidereq_id = guidereq , guide_id = guidereqObj.guide_id)
 
-                ratingObj = rating.objects.filter(guide_id = guidereqObj.guide_id)
+                ratingObj = Rating.objects.filter(guide_id = guidereqObj.guide_id)
                 total = 0
                 for i in ratingObj:
                     total += i.rating
@@ -44,15 +44,15 @@ class RateGuideHire(APIView):
         if verification:
             serailizer = RatingModelSerializer(data = request.data)
             guidereq = kwargs['id']
-            RatingObj = Rating.objects.filter(user_id = payload['id'], guidehire_id = guidereq)
+            RatingObj = Rating.objects.filter(user_id = payload['user_id'], guidehire_id = guidereq)
             if len(RatingObj) > 0:
                 return Response({"message": "You have already rated this guide"}, status = status.HTTP_400_BAD_REQUEST)
             if serailizer.is_valid():
-                rating = request.data.get('rate')
+                rating = request.data.get('rating')
                 guidehire = GuideHire.objects.get(id = guidereq)
-                Rating.objects.create(rating = rating, user_id = payload['id'], guidehire_id = guidereq , guide_id = guidehire.guide_id)
+                Rating.objects.create(rating = rating, user_id = payload['user_id'], guidehire_id = guidereq , guide_id = guidehire.guide_id)
 
-                ratingObj = rating.objects.filter(guide_id = guidehire.guide_id)
+                ratingObj = Rating.objects.filter(guide_id = guidehire.guide_id)
                 total = 0
                 for i in ratingObj:
                     total += i.rating

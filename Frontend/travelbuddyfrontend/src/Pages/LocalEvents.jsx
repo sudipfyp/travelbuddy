@@ -48,7 +48,9 @@ const LocalEvents = () => {
       let parsedData = await response.json();
       let currentEvents = parsedData;
 
-      setCurrentEvents(currentEvents.slice(0, 4));
+      if (currentEvents.length > 0) {
+        setCurrentEvents(currentEvents.slice(0, 4));
+      }
     };
 
     const getUpcomingEvents = async () => {
@@ -56,7 +58,9 @@ const LocalEvents = () => {
       let parsedData = await response.json();
       let upcomingEvents = parsedData;
 
-      setUpcomingEvents(upcomingEvents.slice(0, 4));
+      if (upcomingEvents.length > 0) {
+        setUpcomingEvents(upcomingEvents.slice(0, 4));
+      }
     };
 
     const getPastEvents = async () => {
@@ -64,7 +68,9 @@ const LocalEvents = () => {
       let parsedData = await response.json();
       let pastEvents = parsedData;
 
-      setPastEvents(pastEvents.slice(0, 4));
+      if (pastEvents.length > 0) {
+        setPastEvents(pastEvents.slice(0, 4));
+      }
     };
 
     const events = async () => {
@@ -72,10 +78,14 @@ const LocalEvents = () => {
       let parsedData = await response.json();
       let events = parsedData;
 
-      setEvents(events.slice(0, 4));
+      if (events.length > 0) {
+        setEvents(events.slice(0, 4));
 
-      let popularEvents = events.filter((item) => item.tag === "popular");
-      setPopularEvents(popularEvents.slice(0, 4));
+        let popularEvents = events.filter((item) => item.tag === "popular");
+        setPopularEvents(popularEvents.slice(0, 4));
+      } else {
+        swal("No Events Found", "No events found in the database", "error");
+      }
     };
 
     getCurrentEvents();
@@ -94,35 +104,45 @@ const LocalEvents = () => {
           placeholder="Search for the events"
         />
 
-        <Display
-          headerheadline="Popular"
-          data={popularEvents}
-          component={DivItem}
-        />
+        {currentEvents.length > 0 ? (
+          <Display
+            headerheadline="Happening Now"
+            data={currentEvents}
+            component={DivItem}
+          />
+        ) : null}
 
-        <Display
-          headerheadline="Happening Now"
-          data={currentEvents}
-          component={DivItem}
-        />
+        {popularEvents.length > 0 ? (
+          <Display
+            headerheadline="Popular"
+            data={popularEvents}
+            component={DivItem}
+          />
+        ) : null}
 
-        <Display
-          headerheadline="Upcoming Events"
-          data={upcomingEvents}
-          component={DivItem}
-        />
+        {upcomingEvents.length > 0 ? (
+          <Display
+            headerheadline="Upcoming Events"
+            data={upcomingEvents}
+            component={DivItem}
+          />
+        ) : null}
 
-        <Display
-          headerheadline="Past Events"
-          data={pastEvents}
-          component={DivItem}
-        />
+        {pastEvents.length > 0 ? (
+          <Display
+            headerheadline="Past Events"
+            data={pastEvents}
+            component={DivItem}
+          />
+        ) : null}
 
-        <Display
-          headerheadline="All Events"
-          data={events}
-          component={DivItem}
-        />
+        {events.length > 0 ? (
+          <Display
+            headerheadline="All Events"
+            data={events}
+            component={DivItem}
+          />
+        ) : null}
       </div>
 
       <Footer />

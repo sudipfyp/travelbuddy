@@ -1251,8 +1251,10 @@ body {
 }
 
 .profile-container .profile-header-image {
-  height: 5rem;
-  width: 5rem;
+  height: 6rem;
+  width: 6rem;
+  border: 1px solid #282c34;
+  border-radius: 50%;
 }
 
 .profile-container .profile-header-image img {
@@ -1335,7 +1337,7 @@ hr {
 .profile-details .profile-details-row input {
   padding: 0.5rem 1rem;
   border: none;
-  border-bottom: 1px solid black;
+  border-bottom: 1px dotted black;
   margin-right: 10px;
   outline: none;
 }
@@ -2321,4 +2323,48 @@ hr {
     width: 80%;
     flex-direction: column;
   }
+}
+
+.recommendation-container {
+  width: 90%;
+  margin: auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendation-container .recommendation-card {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.recommendation-container .recommendation-card > img {
+  width: 40%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.recommendation-container .recommendation-card > .recommendation-card-info {
+  width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .recommendation-container .recommendation-card {
+    flex-direction: column;
+  }
+
+  .recommendation-container .recommendation-card > img {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .recommendation-container .recommendation-card > .recommendation-card-info {
+    width: 100%;
+  }
+  
 }

@@ -42,20 +42,35 @@ class ShopEditView(APIView):
         if verification:
             if payload['role'].lower() == "seller" or payload['role'].lower() == "admin":
                 ShopObject = None
+                shopobj = None
 
                 if payload['role'].lower() == "seller":
                     ShopObject = Shop.objects.filter(
                         id=kwargs['id'], owner_id=payload['user_id'])
+                    shopobj = Shop.objects.get(id=kwargs['id'])
 
                 elif payload['role'].lower() == "admin":
                     ShopObject = Shop.objects.filter(id=kwargs['id'])
+                    shopobj = Shop.objects.get(id=kwargs['id'])
 
                 if len(ShopObject) == 0:
                     return Response({"msg": "Shop Not Found"}, status=status.HTTP_404_NOT_FOUND)
                 serializer = ShopModelSerializer(data=request.data)
 
                 if serializer.is_valid():
-                    ShopObject.update(**serializer.validated_data)
+                    name = request.data.get('name')
+                    description = request.data.get('description')
+                    latitude = request.data.get('latitude')
+                    longitude = request.data.get('longitude')
+                    address = request.data.get('address')
+                    image = request.FILES.get('image')
+
+                    Shop.objects.update(name=name, description=description, latitude=latitude, longitude=longitude,
+                                        address=address, image=image, owner_id=payload['user_id'])
+
+                    if image:
+                        shopobj.image = image
+                        shopobj.save()
                     return Response({"msg": "Shop Updated Successfully"}, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return Response({'msg': 'Non Authorized user', }, status=status.HTTP_403_FORBIDDEN)
@@ -77,13 +92,16 @@ class ShopDetailView(APIView):
 
 class ShopDetailAllView(APIView):
     def get(self, request, *args, **kwargs):
-        ShopObject = Shop.objects.filter(
-            id=kwargs['id']).select_related('owner')
-        if len(ShopObject) == 0:
-            return Response({"msg": "Shop Not Found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = ShopModelSerializer(ShopObject, many=True, context={
-                                         "request": self.request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            ShopObject = Shop.objects.filter(
+                id=kwargs['id']).select_related('owner')
+            if len(ShopObject) == 0:
+                return Response({"msg": "Shop Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            serializer = ShopModelSerializer(ShopObject, many=True, context={
+                "request": self.request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({"msg": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ShopDeleteView(APIView):
@@ -151,11 +169,12 @@ class ProductEdit(APIView):
         if verification:
             if payload['role'].lower() == "seller":
                 ProductObject = Product.objects.filter(id=kwargs['id'])
+                productobj = Product.objects.get(id=kwargs['id'])
                 if len(ProductObject) == 0:
                     return Response({"msg": "Product Not Found"}, status=status.HTTP_404_NOT_FOUND)
                 serializer = ProductModelSerializer(data=request.data)
                 if serializer.is_valid():
-                    shop = kwargs['id']
+                    shop = request.data.get('shop')
                     name = request.data.get('name')
                     description = request.data.get('description')
                     price = request.data.get('price')
@@ -163,7 +182,11 @@ class ProductEdit(APIView):
                     tag = request.data.get('tag')
 
                     ProductObject.update(
-                        name=name, description=description, price=price, image=image, shop_id=shop, tag=tag)
+                        name=name, description=description, price=price, shop_id=shop, tag=tag)
+
+                    if image:
+                        productobj.image = image
+                        productobj.save()
                     return Response({"msg": "Product Updated Successfully"}, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
             return Response({'msg': 'Only valid to specific user', }, status=status.HTTP_403_FORBIDDEN)

@@ -159,7 +159,7 @@ const FindGuideDetails = () => {
               </p>
 
               <p>
-                <i className="fa fa-dollar"></i> MONEY
+                <i className="fa fa-dollar"></i> Rs. {guideReq.budget}
               </p>
 
               <p>

@@ -96,7 +96,7 @@ const ManageHotel = () => {
     console.log(parsedData);
 
     if (data.status === 200) {
-      setHotel(parsedData);
+      setHotel(parsedData[0]);
     }
   };
 
@@ -273,6 +273,10 @@ const ManageHotel = () => {
             <p>{profile.email}</p>
           </div>
           <div className="profile-details-row">
+            <p>No. of Rooms</p>
+            <p>{hotel.noOfRoom}</p>
+          </div>
+          <div className="profile-details-row">
             <p>Description</p>
             <p style={{ width: "60%" }}>{hotel.description}</p>
           </div>
@@ -335,7 +339,7 @@ const ManageHotel = () => {
           >
             <TableHead>
               <TableRow>
-                <TableCell>Place ID</TableCell>
+                <TableCell>Room ID</TableCell>
                 <TableCell align="right">Type</TableCell>
                 <TableCell align="right">Price</TableCell>
               </TableRow>

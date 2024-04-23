@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Loader from "./Loader";
 import ProductDisplay from "./ProductDisplay";
+import swal from "sweetalert";
 
 const ShopDetails = () => {
   const navigate = useNavigate();
@@ -39,11 +40,12 @@ const ShopDetails = () => {
       credentials: "include",
     });
 
-    let parsedData = await data.json();
-    console.log(parsedData);
-
     if (data.status === 200) {
+      let parsedData = await data.json();
       setShop(parsedData[0]);
+    } else {
+      swal("Not Found", "Shop not Found", "error");
+      navigate("/");
     }
   };
 

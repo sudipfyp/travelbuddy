@@ -129,7 +129,11 @@ const GuideHire = () => {
               />
               <br />
               <label htmlFor="">Are you available in?</label>
-              <input type="date" onChange={(e) => setDate(e.target.value)} />
+              <input
+                type="date"
+                min={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setDate(e.target.value)}
+              />
               <br />
               <p>I am ready to pay Rs.{guide.charge} per Day.</p>
 

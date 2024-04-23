@@ -4,11 +4,13 @@ import Footer from "../Components/Footer";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import { Button } from "@mui/material";
+import No from "../Assets/images/no.jpg";
 
 import ProductDisplay from "../Components/ProductDisplay";
 
 const SellerHomepage = () => {
   const navigate = useNavigate();
+  const [refresh, setRefresh] = useState(false);
 
   const [user, setUser] = useState("");
 
@@ -125,7 +127,6 @@ const SellerHomepage = () => {
     });
 
     let parsedData = await data.json();
-    console.log(parsedData);
 
     if (data.status === 200) {
       setHotel(parsedData[0]);
@@ -138,59 +139,63 @@ const SellerHomepage = () => {
     }
   }, [profile]);
 
+  const [request, setRequest] = useState([]);
 
-  // const [request, setRequest] = useState([]);
+  const listRequest = async () => {
+    let response = await fetch(
+      "http://127.0.1:8000/hotel/room/booking/seller",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
 
-  // const listRequest = async () => {
-  //   let response = await fetch("http://127.0.1:8000/guide/hire/list/", {
-  //     method: "GET",
-  //     credentials: "include",
-  //   });
+    let data = await response.json();
+    console.log(data);
 
-  //   let data = await response.json();
-  //   console.log(data);
+    if (response.status === 200) {
+      const current = data.filter((req) => req.status === "pending");
+      setRequest(current);
+    }
+  };
 
-  //   if (response.status === 200) {
-  //     const current = data.filter((req) => req.status === "ongoing");
-  //     setRequest(current);
-  //   }
-  // };
+  useEffect(() => {
+    listRequest();
+  }, [refresh]);
 
-  // useEffect(() => {
-  //   listRequest();
-  // }, []);
+  const acceptRequest = async (id) => {
+    let response = await fetch(`http://127.0.1:8000/hotel/room/accept/${id}`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-  // const acceptRequest = async (id) => {
-  //   let response = await fetch(`http://127.0.1:8000/guide/hire/accept/${id}/`, {
-  //     method: "POST",
-  //     credentials: "include",
-  //   });
+    let data = await response.json();
+    console.log(data);
 
-  //   let data = await response.json();
-  //   console.log(data);
+    if (response.status === 200) {
+      swal("Success", "Request accepted Successfully", "success");
+      setRefresh((prev) => !prev);
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
+  };
 
-  //   if (response.status === 200) {
-  //     alert("Request accepted successfully");
-  //   } else {
-  //     alert("Request failed");
-  //   }
-  // };
+  const rejectRequest = async (id) => {
+    let response = await fetch(`http://127.0.1:8000/hotel/room/reject/${id}`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-  // const rejectRequest = async (id) => {
-  //   let response = await fetch(`http://127.0.1:8000/guide/hire/reject/${id}/`, {
-  //     method: "POST",
-  //     credentials: "include",
-  //   });
+    let data = await response.json();
+    console.log(data);
 
-  //   let data = await response.json();
-  //   console.log(data);
-
-  //   if (response.status === 200) {
-  //     alert("Request rejected successfully");
-  //   } else {
-  //     alert("Request failed");
-  //   }
-  // };
+    if (response.status === 200) {
+      swal("Success", "Request rejected Successfully", "success");
+      setRefresh((prev) => !prev);
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
+  };
 
   return (
     <div>
@@ -205,7 +210,19 @@ const SellerHomepage = () => {
             <div className="travel-tips">
               <div className="tips-collection" style={{ marginTop: "1rem" }}>
                 {products.length === 0 ? (
-                  <h1>No Products</h1>
+                  <>
+                    <h1 style={{ margin: "auto" }}>"No Products"</h1>
+                    <img
+                      src={No}
+                      alt=""
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        marginTop: "20px",
+                      }}
+                    />
+                  </>
                 ) : (
                   products.map((product) => (
                     <ProductDisplay
@@ -229,36 +246,49 @@ const SellerHomepage = () => {
           </div>
 
           <div className="static-container">
-            {/* <div className="guide-container">
-          {request.length === 0 ? (
-            <h1>"No pending request"</h1>
-          ) : (
-            <>
-              {request.map((req) => {
-                return (
-                  <div className="guide-hire-card">
-                    <img src={req.user.image} alt="" />
+            <div className="guide-container">
+              {request.length === 0 ? (
+                <>
+                <h1 style={{ margin: "auto" }}>"No pending bookings"</h1>
+                <img
+                  src={No}
+                  alt=""
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    marginTop: "20px",
+                  }}
+                />
+              </>
+              ) : (
+                <>
+                  {request.map((req) => {
+                    return (
+                      <div className="guide-hire-card">
+                        <img src={req.user.image} alt="" />
 
-                    <h3>Requested by: {req.user.name}</h3>
+                        <h3>Requested by: {req.user.name}</h3>
 
-                    <p>Interested Places: {req.place}</p>
-                    <p>No. of Days: {req.day}</p>
-                    <p>Amount: Rs. {req.guide.charge * req.day}</p>
+                        <p>Checkin Date: {req.checkIn}</p>
+                        <p>Checkout Date: {req.checkOut}</p>
+                        <p>Room Type: {req.room.roomType}</p>
+                        <p>Price: {req.room.roomPrice}</p>
 
-                    <div className="btn-group">
-                      <button onClick={() => acceptRequest(req.id)}>
-                        Accept
-                      </button>
-                      <button onClick={() => rejectRequest(req.id)}>
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </>
-          )}
-        </div> */}
+                        <div className="btn-group">
+                          <button onClick={() => acceptRequest(req.id)}>
+                            Accept
+                          </button>
+                          <button onClick={() => rejectRequest(req.id)}>
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
           </div>
         </>
       ) : (

@@ -13,11 +13,13 @@ function CurrencyExchangeAPI() {
 
   useEffect(() => {
     fetch(
-      "https://v6.exchangerate-api.com/v6/dae00175499cfddc7330dcec/latest/USD"
+      "https://v6.exchangerate-api.com/v6/afb3aea18871b5bf588b82eb/latest/USD"
     )
       .then((response) => response.json())
       .then((data) => setConversionRates(data.conversion_rates))
       .catch((error) => console.error("Error:", error));
+
+    document.title = "TravelBuddy ● Currency Exchange";
   }, []);
 
   const handleSourceAmountChange = (e) => {
@@ -123,6 +125,18 @@ function CurrencyExchangeAPI() {
             </h2>
           </div>
         </div>
+
+        <br />
+        <br />
+
+        <h2>Locate Nearest Exchange Center</h2>
+        <br />
+        <iframe
+          title="Currency Exchange Centers"
+          src="https://www.google.com/maps/d/u/5/embed?mid=1Kz5Ex1OG0bed49sKCHvyt5PK4TrleEc&ehbc=2E312F&noprof=1"
+          width="100%"
+          height="480"
+        ></iframe>
       </div>
 
       <Footer />

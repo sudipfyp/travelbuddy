@@ -74,7 +74,10 @@ const AdminPlace = () => {
       let response = await fetch("http://127.0.1:8000/place/list/");
       let parsedData = await response.json();
       let placeData = parsedData;
-      setPlace(placeData);
+
+      if (placeData.length > 0) {
+        setPlace(placeData);
+      }
     };
     getPlace();
   }, [refresh]);
@@ -129,6 +132,7 @@ const AdminPlace = () => {
 
     if (response.status === 200) {
       swal("Success", "Place updated successfully", "success");
+      setPlaceImage("");
       setRefresh((prev) => !prev);
       setOpen(false);
     } else {
@@ -300,6 +304,7 @@ const AdminPlace = () => {
                   <input
                     required
                     type="file"
+                    accept="image/*"
                     onChange={(e) => setPlaceImage(e.target.files[0])}
                   />
                   <br />
@@ -343,44 +348,52 @@ const AdminPlace = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {place.map((place) => (
-                  <TableRow
-                    key={place.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {place.id}
-                    </TableCell>
-                    <TableCell align="right">
-                      <img src={place.image} alt="" srcSet="" height={100} />
-                    </TableCell>
-                    <TableCell align="right">{place.name}</TableCell>
-                    <TableCell align="right">{place.description}</TableCell>
-                    <TableCell align="right">{place.location}</TableCell>
-                    <TableCell align="right">{place.district}</TableCell>
-                    <TableCell align="right">{place.latitude}</TableCell>
-                    <TableCell align="right">{place.longitude}</TableCell>
-                    <TableCell align="right">{place.tag}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        color="success"
-                        onClick={() => handleClickOpen(place)}
-                      >
-                        Edit
-                      </Button>
-                      <br />
-                      <br />
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => handleOpen(place)}
-                      >
-                        Delete
-                      </Button>
+                {place.length > 0 ? (
+                  place.map((place) => (
+                    <TableRow
+                      key={place.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {place.id}
+                      </TableCell>
+                      <TableCell align="right">
+                        <img src={place.image} alt="" srcSet="" height={100} />
+                      </TableCell>
+                      <TableCell align="right">{place.name}</TableCell>
+                      <TableCell align="right">{place.description}</TableCell>
+                      <TableCell align="right">{place.location}</TableCell>
+                      <TableCell align="right">{place.district}</TableCell>
+                      <TableCell align="right">{place.latitude}</TableCell>
+                      <TableCell align="right">{place.longitude}</TableCell>
+                      <TableCell align="right">{place.tag}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          color="success"
+                          onClick={() => handleClickOpen(place)}
+                        >
+                          Edit
+                        </Button>
+                        <br />
+                        <br />
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleOpen(place)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={10}>
+                      No Data
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -465,6 +478,7 @@ const AdminPlace = () => {
                     id="image"
                     type="file"
                     fullWidth
+                    accept="image/*"
                     onChange={(e) => setPlaceImage(e.target.files[0])}
                   />
                 </>

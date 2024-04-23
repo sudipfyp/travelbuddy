@@ -49,35 +49,40 @@ const Shop = () => {
       let parsedData = await response.json();
       let productData = parsedData;
 
-      let popularNow = productData
-        .filter((item) => item.tag === "popular")
-        .slice(0, 4);
-      setPopularNow(popularNow);
+      if (productData.length > 0) {
+        let popularNow = productData
+          .filter((item) => item.tag === "popular")
+          .slice(0, 4);
+        setPopularNow(popularNow);
 
-      let handCrafted = productData
-        .filter((item) => item.tag === "handcrafted")
-        .slice(0, 4);
-      setHandCrafted(handCrafted);
+        let handCrafted = productData
+          .filter((item) => item.tag === "handcrafted")
+          .slice(0, 4);
+        setHandCrafted(handCrafted);
 
-      let decorations = productData
-        .filter((item) => item.tag === "decoration")
-        .slice(0, 4);
-      setDecorations(decorations);
+        let decorations = productData
+          .filter((item) => item.tag === "decoration")
+          .slice(0, 4);
+        setDecorations(decorations);
 
-      let clothing = productData
-        .filter((item) => item.tag === "clothing")
-        .slice(0, 4);
-      setClothing(clothing);
+        let clothing = productData
+          .filter((item) => item.tag === "clothing")
+          .slice(0, 4);
+        setClothing(clothing);
 
-      let ornaments = productData
-        .filter((item) => item.tag === "ornament")
-        .slice(0, 4);
-      setOrnaments(ornaments);
+        let ornaments = productData
+          .filter((item) => item.tag === "ornament")
+          .slice(0, 4);
+        setOrnaments(ornaments);
 
-      let historicalItems = productData
-        .filter((item) => item.tag === "historical")
-        .slice(0, 4);
-      setHistoricalItems(historicalItems);
+        let historicalItems = productData
+          .filter((item) => item.tag === "historical")
+          .slice(0, 4);
+        setHistoricalItems(historicalItems);
+      }
+      else {
+        swal("No Products", "No products available at the moment", "info");
+      }
     };
 
     getProducts();

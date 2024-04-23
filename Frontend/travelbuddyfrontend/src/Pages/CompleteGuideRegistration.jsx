@@ -139,6 +139,7 @@ const CompleteGuideRegistration = () => {
                 type="file"
                 name="image"
                 id="image"
+                accept="image/*"
                 placeholder="Image"
                 required
                 onChange={(e) => {

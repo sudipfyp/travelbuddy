@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
-const CurrencyExchange = ({data}) => {
+const CurrencyExchange = ({ data }) => {
   document.title = "TravelBuddy ● Currency Exchange";
 
   const [sourceCurrency, setSourceCurrency] = useState("USD");
@@ -103,8 +103,20 @@ const CurrencyExchange = ({data}) => {
             </h2>
           </div>
         </div>
+
+        <br />
+        <br />
+
+        <h2>Locate Nearest Exchange Center</h2>
+        <br />
+        <iframe
+          title="Currency Exchange Centers"
+          src="https://www.google.com/maps/d/u/5/embed?mid=1Kz5Ex1OG0bed49sKCHvyt5PK4TrleEc&ehbc=2E312F&noprof=1"
+          width="100%"
+          height="480"
+        ></iframe>
       </div>
-      
+
       <Footer />
     </>
   );

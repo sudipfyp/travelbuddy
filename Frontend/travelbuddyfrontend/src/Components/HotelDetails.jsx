@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import Loader from "./Loader";
+import swal from "sweetalert";
 
 import L from "leaflet";
 import "leaflet-routing-machine";
 
 const HotelDetails = () => {
   const navigate = useNavigate();
-
 
   const userCheck = async () => {
     let data = await fetch("http://127.0.1:8000/user/usercheck", {
@@ -26,6 +27,7 @@ const HotelDetails = () => {
   };
 
   useEffect(() => {
+    document.title = "TravelBuddy ● Hotel Details ";
     userCheck();
   }, []);
 
@@ -35,9 +37,21 @@ const HotelDetails = () => {
   const [showRoute, setShowRoute] = useState(false);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/hotel/detail/${id}`)
-      .then((response) => response.json())
-      .then((data) => setHotel(data));
+    const data = async () => {
+      let response = await fetch(
+        `http://127.0.0.1:8000/hotel/detail/all/${id}`
+      );
+
+      if (response.status === 200) {
+        let parsedData = await response.json();
+        setHotel(parsedData);
+      } else {
+        swal("Not Found", "Hotel not Found", "error");
+        navigate("/");
+      }
+    };
+
+    data();
 
     // Fetch device location
     if ("geolocation" in navigator) {
@@ -48,7 +62,7 @@ const HotelDetails = () => {
         });
       });
     }
-  }, [id]);
+  }, []);
 
   const handleGetDirection = () => {
     setShowRoute(!showRoute);
@@ -81,8 +95,19 @@ const HotelDetails = () => {
     }
   }, [showRoute, hotel, deviceLocation]);
 
+  console.log(hotel);
+
   if (!hotel) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (hotel.msg) {
+    swal("Not Found", "Hotel not Found", "error");
+    navigate("/");
   }
 
   return (
@@ -108,13 +133,7 @@ const HotelDetails = () => {
             <div className="room-details">
               <p>District: {hotel.address}</p>
             </div>
-            <div className="room-details">
-              <p>Price Range</p>
-            </div>
             <div className="details-action">
-              <p>
-                <span>Min</span> - <span>Max</span>
-              </p>
               <a href={`/hotelbook/${hotel.id}`}>Book Hotel</a>
             </div>
             <div className="details-location">

@@ -53,11 +53,13 @@ const Home = () => {
       let response = await fetch("http://127.0.1:8000/place/list");
       let parsedData = await response.json();
 
-      let destinationData = parsedData
-        .filter((item) => item.tag === "recommended")
-        .slice(0, 4);
-      setTrendingDestinations(destinationData);
-      console.log(destinationData);
+      if (parsedData.length > 0) {
+        let destinationData = parsedData
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 4);
+        setTrendingDestinations(destinationData);
+      }
+      console.log(parsedData);
     };
     getDestinations();
 
@@ -65,11 +67,13 @@ const Home = () => {
       let response = await fetch("http://127.0.1:8000/shop/product/listall");
       let parsedData = await response.json();
 
-      let productData = parsedData
-        .filter((item) => item.tag === "popular")
-        .slice(0, 4);
-      setTrendingProducts(productData);
-      console.log(productData);
+      if (parsedData.length > 0) {
+        let productData = parsedData
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 4);
+        setTrendingProducts(productData);
+      }
+      console.log(parsedData);
     };
     getProducts();
 
@@ -77,11 +81,11 @@ const Home = () => {
       let response = await fetch("http://127.0.1:8000/user/guide/list");
       let parsedData = await response.json();
 
-      let guideData = parsedData.slice(0, 4);
-      // .filter((item) => item.tag === "natural")
-
-      setTrendingGuides(guideData);
-      console.log(guideData);
+      if (parsedData.length > 0) {
+        let guideData = parsedData.sort(() => 0.5 - Math.random()).slice(0, 4);
+        setTrendingGuides(guideData);
+      }
+      console.log(parsedData);
     };
     getGuides();
 
@@ -89,9 +93,12 @@ const Home = () => {
       let response = await fetch("http://127.0.1:8000/hotel/list");
       let parsedData = await response.json();
 
-      let hotelData = parsedData.filter((item) => item.rating > 3).slice(0, 4);
-      setTrendingHotels(hotelData);
-      console.log(hotelData);
+      if (parsedData.length > 0) {
+        let hotelData = parsedData.sort(() => 0.5 - Math.random()).slice(0, 4);
+
+        setTrendingHotels(hotelData);
+      }
+      console.log(parsedData);
     };
     getHotels();
 
@@ -99,11 +106,12 @@ const Home = () => {
       let response = await fetch("http://127.0.1:8000/event/list");
       let parsedData = await response.json();
 
-      let eventData = parsedData
-        .filter((item) => item.tag === "popular")
-        .slice(0, 4);
-      setLocalEvents(eventData);
-      console.log(eventData);
+      if (parsedData.length > 0) {
+        let eventData = parsedData.sort(() => 0.5 - Math.random()).slice(0, 4);
+        setLocalEvents(eventData);
+      }
+
+      console.log(parsedData);
     };
     getEvents();
   }, []);
@@ -113,28 +121,6 @@ const Home = () => {
       <Navbar />
 
       <div className="home-container">
-        <div className="home-header">
-          <div className="home-headline">
-            <h1>Find your Destination!</h1>
-          </div>
-
-          <div className="home-search">
-            <input type="text" placeholder="No. of Days" />
-            <select name="" id="">
-              <option value="" disabled>
-                Preferences
-              </option>
-              <option value="">Natural</option>
-              <option value="">Cultural</option>
-              <option value="">Historical</option>
-              <option value="">Religious</option>
-              <option value="">Adventure</option>
-              <option value="">Hills</option>
-            </select>
-            <button>Search</button>
-          </div>
-        </div>
-
         <div className="home-header-image"></div>
 
         <div className="home-header-image-section">
@@ -164,27 +150,31 @@ const Home = () => {
           <h2>Trending Destinations</h2>
 
           <div className="home-header-section">
-            {trendingDestinations.map((item) => (
-              <a href={`/placedetails/${item.id}`} key={item.id}>
-                <Card sx={{ maxWidth: 300 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={item.image}
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {item.description.slice(0, 100)}...
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </a>
-            ))}
+            {trendingDestinations.length > 0 ? (
+              trendingDestinations.map((item) => (
+                <a href={`/placedetails/${item.id}`} key={item.id}>
+                  <Card sx={{ maxWidth: 300 }}>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={item.image}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {item.description.slice(0, 100)}...
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </a>
+              ))
+            ) : (
+              <center>No Destinations Available</center>
+            )}
           </div>
 
           <p className="see-more">
@@ -196,27 +186,31 @@ const Home = () => {
           <h2>Trending Products</h2>
 
           <div className="home-header-section">
-            {trendingProducts.map((item) => (
-              <a href={`/productdetails/${item.id}`} key={item.id}>
-                <Card sx={{ maxWidth: 300 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={item.image}
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {item.description.slice(0, 100)}...
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </a>
-            ))}
+            {trendingProducts.length > 0 ? (
+              trendingProducts.map((item) => (
+                <a href={`/productdetails/${item.id}`} key={item.id}>
+                  <Card sx={{ maxWidth: 300 }}>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={item.image}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {item.description.slice(0, 100)}...
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </a>
+              ))
+            ) : (
+              <center>No Products Available</center>
+            )}
           </div>
 
           <p className="see-more">
@@ -228,27 +222,31 @@ const Home = () => {
           <h2>Trending Guides</h2>
 
           <div className="home-header-section">
-            {trendingGuides.map((item) => (
-              <a href={`/guidedetails/${item.id}`} key={item.id}>
-                <Card sx={{ maxWidth: 300 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={item.image}
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {item.phone.slice(0, 100)}...
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </a>
-            ))}
+            {trendingGuides.length > 0 ? (
+              trendingGuides.map((item) => (
+                <a href={`/guidedetails/${item.id}`} key={item.id}>
+                  <Card sx={{ maxWidth: 300 }}>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={item.image}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {item.description.slice(0, 100)}...
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </a>
+              ))
+            ) : (
+              <center>No Guides Available</center>
+            )}
           </div>
 
           <p className="see-more">
@@ -260,27 +258,31 @@ const Home = () => {
           <h2>Trending Hotels</h2>
 
           <div className="home-header-section">
-            {trendingHotels.map((item) => (
-              <a href={`/hoteldetails/${item.id}`} key={item.id}>
-                <Card sx={{ maxWidth: 300 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={item.image}
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {item.description.slice(0, 100)}...
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </a>
-            ))}
+            {trendingHotels.length > 0 ? (
+              trendingHotels.map((item) => (
+                <a href={`/hoteldetails/${item.id}`} key={item.id}>
+                  <Card sx={{ maxWidth: 300 }}>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={item.image}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {item.description.slice(0, 100)}...
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </a>
+              ))
+            ) : (
+              <center>No Hotels Available</center>
+            )}
           </div>
 
           <p className="see-more">
@@ -292,27 +294,31 @@ const Home = () => {
           <h2>Local Events</h2>
 
           <div className="home-header-section">
-            {localEvents.map((item) => (
-              <a href={`/localeventdetails/${item.id}`} key={item.id}>
-                <Card sx={{ maxWidth: 300 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={item.image}
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {item.description.slice(0, 100)}...
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </a>
-            ))}
+            {localEvents.length > 0 ? (
+              localEvents.map((item) => (
+                <a href={`/localeventdetails/${item.id}`} key={item.id}>
+                  <Card sx={{ maxWidth: 300 }}>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={item.image}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {item.description.slice(0, 100)}...
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </a>
+              ))
+            ) : (
+              <center>No Events Available</center>
+            )}
           </div>
 
           <p className="see-more">

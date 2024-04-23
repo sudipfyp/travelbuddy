@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import Search from "./Search";
 import Footer from "./Footer";
 import { useParams } from "react-router-dom";
+import swal from "sweetalert";
 
 const SeeMore = () => {
   const category = window.location.href.split("/").slice(-2)[0];
@@ -24,48 +25,50 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let placeData = parsedData;
 
-      let recommendedPlace = placeData.filter(
-        (item) =>
-          item.tag === "recommended" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setRecommendedPlace(recommendedPlace);
+      if (placeData.length > 0) {
+        let recommendedPlace = placeData.filter(
+          (item) =>
+            item.tag === "recommended" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setRecommendedPlace(recommendedPlace);
 
-      let culturalHeritagesPlace = placeData.filter(
-        (item) =>
-          item.tag === "heritage" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setCulturalHeritagesPlace(culturalHeritagesPlace);
+        let culturalHeritagesPlace = placeData.filter(
+          (item) =>
+            item.tag === "heritage" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setCulturalHeritagesPlace(culturalHeritagesPlace);
 
-      let naturalScenarioPlace = placeData.filter(
-        (item) =>
-          item.tag === "natural" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setNaturalScenarioPlace(naturalScenarioPlace);
+        let naturalScenarioPlace = placeData.filter(
+          (item) =>
+            item.tag === "natural" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setNaturalScenarioPlace(naturalScenarioPlace);
 
-      let kathmanduDistrictPlace = placeData.filter(
-        (item) =>
-          item.district === "Kathmandu" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setKathmanduDistrictPlace(kathmanduDistrictPlace);
+        let kathmanduDistrictPlace = placeData.filter(
+          (item) =>
+            item.district === "Kathmandu" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setKathmanduDistrictPlace(kathmanduDistrictPlace);
 
-      let lalitpurDistrictPlace = placeData.filter(
-        (item) =>
-          item.district === "Lalitpur" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setLalitpurDistrictPlace(lalitpurDistrictPlace);
+        let lalitpurDistrictPlace = placeData.filter(
+          (item) =>
+            item.district === "Lalitpur" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setLalitpurDistrictPlace(lalitpurDistrictPlace);
 
-      let bhaktapurDistrictPlace = placeData.filter(
-        (item) =>
-          item.district === "Bhaktapur" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setBhaktapurDistrictPlace(bhaktapurDistrictPlace);
+        let bhaktapurDistrictPlace = placeData.filter(
+          (item) =>
+            item.district === "Bhaktapur" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setBhaktapurDistrictPlace(bhaktapurDistrictPlace);
+      }
     };
     getPlaces();
   }, [searchTerm]);
@@ -83,47 +86,49 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let hotelData = parsedData;
 
-      let highRatedHotels = hotelData.filter(
-        (item) =>
-          item.noOfRoom > 30 &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setHighRatedHotels(highRatedHotels);
+      if (hotelData.length > 0) {
+        let highRatedHotels = hotelData
+          .sort(() => 0.5 - Math.random()).slice(0, 12)
+          .filter((item) =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        setHighRatedHotels(highRatedHotels);
 
-      let premiumHotels = hotelData.filter(
-        (item) =>
-          item.noOfRoom > 10 &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setPremiumHotels(premiumHotels);
+        let premiumHotels = hotelData.filter(
+          (item) =>
+            item.noOfRoom > 10 &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setPremiumHotels(premiumHotels);
 
-      let budgetHotels = hotelData.filter(
-        (item) =>
-          item.noOfRoom < 7 &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setBudgetHotels(budgetHotels);
+        let budgetHotels = hotelData.filter(
+          (item) =>
+            item.noOfRoom < 7 &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setBudgetHotels(budgetHotels);
 
-      let kathmanduHotels = hotelData.filter(
-        (item) =>
-          item.address === "Kathmandu" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setKathmanduHotels(kathmanduHotels);
+        let kathmanduHotels = hotelData.filter(
+          (item) =>
+            item.address === "Kathmandu" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setKathmanduHotels(kathmanduHotels);
 
-      let lalitpurHotels = hotelData.filter(
-        (item) =>
-          item.address === "Lalitpur" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setLalitpurHotels(lalitpurHotels);
+        let lalitpurHotels = hotelData.filter(
+          (item) =>
+            item.address === "Lalitpur" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setLalitpurHotels(lalitpurHotels);
 
-      let bhaktapurHotels = hotelData.filter(
-        (item) =>
-          item.address === "Bhaktapur" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setBhaktapurHotels(bhaktapurHotels);
+        let bhaktapurHotels = hotelData.filter(
+          (item) =>
+            item.address === "Bhaktapur" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setBhaktapurHotels(bhaktapurHotels);
+      }
     };
     getHotels();
   }, [searchTerm]);
@@ -141,47 +146,49 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let guideData = parsedData;
 
-      let highlyRatedGuides = guideData.filter(
-        (item) =>
-          item.identifier === "guide" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setHighlyRatedGuides(highlyRatedGuides);
+      if (guideData.length > 0) {
+        let highlyRatedGuides = guideData.filter(
+          (item) =>
+            item.identifier === "guide" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setHighlyRatedGuides(highlyRatedGuides);
 
-      let adventureGuides = guideData.filter(
-        (item) =>
-          item.tag === "adventure" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setAdventureGuides(adventureGuides);
+        let adventureGuides = guideData.filter(
+          (item) =>
+            item.tag === "adventure" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setAdventureGuides(adventureGuides);
 
-      let culturalExpertGuides = guideData.filter(
-        (item) =>
-          item.tag === "cultural" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setCulturalExpertGuides(culturalExpertGuides);
+        let culturalExpertGuides = guideData.filter(
+          (item) =>
+            item.tag === "cultural" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setCulturalExpertGuides(culturalExpertGuides);
 
-      let kathmanduDistrictGuides = guideData.filter(
-        (item) =>
-          item.address === "Kathmandu" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setKathmanduDistrictGuides(kathmanduDistrictGuides);
+        let kathmanduDistrictGuides = guideData.filter(
+          (item) =>
+            item.address === "Kathmandu" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setKathmanduDistrictGuides(kathmanduDistrictGuides);
 
-      let lalitpurDistrictGuides = guideData.filter(
-        (item) =>
-          item.address === "Lalitpur" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setLalitpurDistrictGuides(lalitpurDistrictGuides);
+        let lalitpurDistrictGuides = guideData.filter(
+          (item) =>
+            item.address === "Lalitpur" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setLalitpurDistrictGuides(lalitpurDistrictGuides);
 
-      let bhaktapurDistrictGuides = guideData.filter(
-        (item) =>
-          item.address === "Bhaktapur" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setBhaktapurDistrictGuides(bhaktapurDistrictGuides);
+        let bhaktapurDistrictGuides = guideData.filter(
+          (item) =>
+            item.address === "Bhaktapur" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setBhaktapurDistrictGuides(bhaktapurDistrictGuides);
+      }
     };
     getGuides();
   }, [searchTerm]);
@@ -198,11 +205,13 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let currentEvents = parsedData;
 
-      setCurrentEvents(
-        currentEvents.filter((item) =>
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
+      if (currentEvents.length > 0) {
+        setCurrentEvents(
+          currentEvents.filter((item) =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+      }
     };
 
     const getUpcomingEvents = async () => {
@@ -210,11 +219,13 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let upcomingEvents = parsedData;
 
-      setUpcomingEvents(
-        upcomingEvents.filter((item) =>
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
+      if (upcomingEvents.length > 0) {
+        setUpcomingEvents(
+          upcomingEvents.filter((item) =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+      }
     };
 
     const getPastEvents = async () => {
@@ -222,11 +233,13 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let pastEvents = parsedData;
 
-      setPastEvents(
-        pastEvents.filter((item) =>
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
+      if (pastEvents.length > 0) {
+        setPastEvents(
+          pastEvents.filter((item) =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+      }
     };
 
     const events = async () => {
@@ -234,10 +247,16 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let events = parsedData;
 
-      setEvents(events);
+      if (events.length > 0) {
+        setEvents(events);
 
-      let popularEvents = events.filter((item) => item.tag === "popular");
-      setPopularEvents(popularEvents);
+        let popularEvents = events.filter((item) => item.tag === "popular");
+        setPopularEvents(
+          popularEvents.filter((item) =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+      }
     };
 
     getCurrentEvents();
@@ -259,47 +278,49 @@ const SeeMore = () => {
       let parsedData = await response.json();
       let productData = parsedData;
 
-      let popularProducts = productData.filter(
-        (item) =>
-          item.tag === "popular" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setPopularProducts(popularProducts);
+      if (productData.length > 0) {
+        let popularProducts = productData.filter(
+          (item) =>
+            item.tag === "popular" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setPopularProducts(popularProducts);
 
-      let handCraftedProducts = productData.filter(
-        (item) =>
-          item.tag === "handcrafted" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setHandCraftedProducts(handCraftedProducts);
+        let handCraftedProducts = productData.filter(
+          (item) =>
+            item.tag === "handcrafted" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setHandCraftedProducts(handCraftedProducts);
 
-      let decorationsProducts = productData.filter(
-        (item) =>
-          item.tag === "decoration" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setDecorationsProducts(decorationsProducts);
+        let decorationsProducts = productData.filter(
+          (item) =>
+            item.tag === "decoration" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setDecorationsProducts(decorationsProducts);
 
-      let clothingProducts = productData.filter(
-        (item) =>
-          item.tag === "clothing" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setClothingProducts(clothingProducts);
+        let clothingProducts = productData.filter(
+          (item) =>
+            item.tag === "clothing" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setClothingProducts(clothingProducts);
 
-      let ornamentsProducts = productData.filter(
-        (item) =>
-          item.tag === "ornament" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setOrnamentsProducts(ornamentsProducts);
+        let ornamentsProducts = productData.filter(
+          (item) =>
+            item.tag === "ornament" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setOrnamentsProducts(ornamentsProducts);
 
-      let historicalItemsProducts = productData.filter(
-        (item) =>
-          item.tag === "historical" &&
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setHistoricalItemsProducts(historicalItemsProducts);
+        let historicalItemsProducts = productData.filter(
+          (item) =>
+            item.tag === "historical" &&
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setHistoricalItemsProducts(historicalItemsProducts);
+      }
     };
 
     getProducts();
@@ -636,9 +657,13 @@ const SeeMore = () => {
                 <>
                   <h2>Happening Now</h2>
                   <div className="common-header-section">
-                    {currentEvents.map((item, index) => (
-                      <DivItem key={index} item={item} />
-                    ))}
+                    {currentEvents.length > 0 ? (
+                      currentEvents.map((item, index) => (
+                        <DivItem key={index} item={item} />
+                      ))
+                    ) : (
+                      <h3>No events happening now</h3>
+                    )}
                   </div>
                 </>
               ) : headerheadline === "upcoming-events" ? (

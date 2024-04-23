@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Loader from "./Loader";
+import swal from "sweetalert";
 
 import L from "leaflet";
 import "leaflet-routing-machine";
@@ -38,9 +39,21 @@ const ProductDetails = () => {
   const [showRoute, setShowRoute] = useState(false);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/shop/product/detail/${id}`)
-      .then((response) => response.json())
-      .then((data) => setProduct(data[0]));
+    const data = async () => {
+      let response = await fetch(
+        `http://127.0.0.1:8000/shop/product/detail/${id}`
+      );
+
+      if (response.status === 200) {
+        let parsedData = await response.json();
+        setProduct(parsedData[0]);
+      } else {
+        swal("Not Found", "Product not Found", "error");
+        navigate("/");
+      }
+    };
+
+    data();
 
     // Fetch device location
     if ("geolocation" in navigator) {

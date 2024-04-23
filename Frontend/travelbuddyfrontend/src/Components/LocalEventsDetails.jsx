@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Loader from "./Loader";
+import swal from "sweetalert";
 
 const LocalEventsDetails = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const LocalEventsDetails = () => {
   };
 
   useEffect(() => {
+    document.title = "TravelBuddy ● Local Events Details ";
     userCheck();
   }, []);
 
@@ -30,9 +32,19 @@ const LocalEventsDetails = () => {
   const [event, setEvent] = useState(null);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/event/detail/${id}`)
-      .then((response) => response.json())
-      .then((data) => setEvent(data[0]));
+    const data = async () => {
+      let response = await fetch(`http://127.0.0.1:8000/event/detail/${id}`);
+
+      if (response.status === 200) {
+        let parsedData = await response.json();
+        setEvent(parsedData[0]);
+      } else {
+        swal("Not Found", "Event not Found", "error");
+        navigate("/");
+      }
+    };
+
+    data();
   }, []);
 
   if (!event) {

@@ -58,7 +58,10 @@ const AdminHotels = () => {
       let response = await fetch("http://127.0.1:8000/hotel/list");
       let parsedData = await response.json();
       let hotelData = parsedData;
-      setHotel(hotelData);
+
+      if (hotelData.length > 0) {
+        setHotel(hotelData);
+      }
     };
     getHotels();
   }, [refresh]);
@@ -115,6 +118,7 @@ const AdminHotels = () => {
 
     if (response.status === 200) {
       swal("Hotel Updated", "Hotel has been updated successfully", "success");
+      setHotelImage("");
       setRefresh((prev) => !prev);
       setOpen(false);
     } else {
@@ -179,45 +183,51 @@ const AdminHotels = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {hotel.map((hotel) => (
-                  <TableRow
-                    key={hotel.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {hotel.id}
-                    </TableCell>
-                    <TableCell align="right">
-                      <img src={hotel.image} alt="" height={100} />
-                    </TableCell>
-                    <TableCell align="right">{hotel.name}</TableCell>
-                    <TableCell align="right">{hotel.description}</TableCell>
-                    <TableCell align="right">{hotel.location}</TableCell>
-                    <TableCell align="right">{hotel.latitude}</TableCell>
-                    <TableCell align="right">{hotel.longitude}</TableCell>
-                    <TableCell align="right">{hotel.address}</TableCell>
-                    <TableCell align="right">{hotel.noOfRoom}</TableCell>
-                    <TableCell align="right">{hotel.owner.name}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        color="success"
-                        onClick={() => handleClickOpen(hotel)}
+                {hotel.length > 0
+                  ? hotel.map((hotel) => (
+                      <TableRow
+                        key={hotel.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
                       >
-                        Edit
-                      </Button>
-                      <br />
-                      <br />
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => handleOpen(hotel)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        <TableCell component="th" scope="row">
+                          {hotel.id}
+                        </TableCell>
+                        <TableCell align="right">
+                          <img src={hotel.image} alt="" height={100} />
+                        </TableCell>
+                        <TableCell align="right">{hotel.name}</TableCell>
+                        <TableCell align="right">{hotel.description}</TableCell>
+                        <TableCell align="right">{hotel.location}</TableCell>
+                        <TableCell align="right">{hotel.latitude}</TableCell>
+                        <TableCell align="right">{hotel.longitude}</TableCell>
+                        <TableCell align="right">{hotel.address}</TableCell>
+                        <TableCell align="right">{hotel.noOfRoom}</TableCell>
+                        <TableCell align="right">{hotel.owner.name}</TableCell>
+                        <TableCell align="center">
+                          <Button
+                            variant="outlined"
+                            color="success"
+                            onClick={() => handleClickOpen(hotel)}
+                          >
+                            Edit
+                          </Button>
+                          <br />
+                          <br />
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={() => handleOpen(hotel)}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  : <TableRow>
+                      <TableCell align="center" colSpan={11}>No Data</TableCell>
+                    </TableRow>}
               </TableBody>
             </Table>
           </TableContainer>
@@ -334,6 +344,7 @@ const AdminHotels = () => {
                     id="image"
                     type="file"
                     fullWidth
+                    accept="image/*"
                     onChange={(e) => setHotelImage(e.target.files[0])}
                   />
                 </>

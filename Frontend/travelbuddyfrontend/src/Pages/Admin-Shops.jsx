@@ -58,7 +58,10 @@ const AdminShops = () => {
       let response = await fetch("http://localhost:8000/shop/list");
       let parsedData = await response.json();
       let shopData = parsedData;
-      setShop(shopData);
+
+      if (shopData.length > 0) {
+        setShop(shopData);
+      }
     };
     getShops();
   }, [refresh]);
@@ -119,22 +122,19 @@ const AdminShops = () => {
   };
 
   const handleDelete = async (shop) => {
-    let response = await fetch(
-      `http://127.0.0.1:8000/shop/delete/${shop.id}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
+    let response = await fetch(`http://127.0.0.1:8000/shop/delete/${shop.id}`, {
+      method: "GET",
+      credentials: "include",
+    });
     let parsedData = await response.json();
     console.log(parsedData);
 
     if (response.status === 200) {
-      swal("Success","Shop Deleted Successfully", "success");
+      swal("Success", "Shop Deleted Successfully", "success");
       setRefresh((prev) => !prev);
       setOpenDel(false);
     } else {
-      swal("Error","Something went wrong", "error");
+      swal("Error", "Something went wrong", "error");
     }
   };
 
@@ -173,43 +173,51 @@ const AdminShops = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {shop.map((shop) => (
-                  <TableRow
-                    key={shop.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {shop.id}
-                    </TableCell>
-                    <TableCell align="right">
-                      <img src={shop.image} alt="" height={100} />
-                    </TableCell>
-                    <TableCell align="right">{shop.name}</TableCell>
-                    <TableCell align="right">{shop.description}</TableCell>
-                    <TableCell align="right">{shop.address}</TableCell>
-                    <TableCell align="right">{shop.latitude}</TableCell>
-                    <TableCell align="right">{shop.longitude}</TableCell>
-                    <TableCell align="right">{shop.owner.name}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        color="success"
-                        onClick={() => handleClickOpen(shop)}
-                      >
-                        Edit
-                      </Button>
-                      <br />
-                      <br />
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => handleOpen(shop)}
-                      >
-                        Delete
-                      </Button>
+                {shop.length > 0 ? (
+                  shop.map((shop) => (
+                    <TableRow
+                      key={shop.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {shop.id}
+                      </TableCell>
+                      <TableCell align="right">
+                        <img src={shop.image} alt="" height={100} />
+                      </TableCell>
+                      <TableCell align="right">{shop.name}</TableCell>
+                      <TableCell align="right">{shop.description}</TableCell>
+                      <TableCell align="right">{shop.address}</TableCell>
+                      <TableCell align="right">{shop.latitude}</TableCell>
+                      <TableCell align="right">{shop.longitude}</TableCell>
+                      <TableCell align="right">{shop.owner.name}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          color="success"
+                          onClick={() => handleClickOpen(shop)}
+                        >
+                          Edit
+                        </Button>
+                        <br />
+                        <br />
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleOpen(shop)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={9}>
+                      No Data
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -306,6 +314,7 @@ const AdminShops = () => {
                     margin="dense"
                     id="image"
                     type="file"
+                    accept="image/*"
                     fullWidth
                     onChange={(e) => setShopImage(e.target.files[0])}
                   />

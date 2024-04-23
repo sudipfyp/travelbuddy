@@ -94,9 +94,9 @@ const Login = (props) => {
 
       <div className="login-form">
         <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username/Email</label>
+          <label htmlFor="username">Email</label>
           <input
-            type="text"
+            type="email"
             name="username"
             id="username"
             placeholder="Your Email"
@@ -117,7 +117,7 @@ const Login = (props) => {
           />
 
           <div className="login-remember-forgot">
-            <a className="login-forget-password" href="/forgetpassword">
+            <a className="login-forget-password" href="/reset">
               Forget Password?
             </a>
           </div>

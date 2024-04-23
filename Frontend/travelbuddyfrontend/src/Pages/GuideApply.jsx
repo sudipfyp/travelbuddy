@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import swal from "sweetalert";
+import No from "../Assets/images/no.jpg";
 
 const GuideApply = () => {
   const navigate = useNavigate();
@@ -98,53 +99,67 @@ const GuideApply = () => {
 
       <div className="guide-apply-container">
         <div className="guide-apply-contain">
-          {requirement.length === 0
-            ? "No Requirement"
-            : requirement.map((req) => (
-                <div className="guide-apply" key={req.id}>
-                  <div className="left">
-                    <div className="title">
-                      <p>Posted by: {req.user.name}</p>
-                      <br />
-                      <b>{req.title}</b>
-                    </div>
-
-                    <div className="description">{req.description}</div>
+          {requirement.length === 0 ? (
+            <>
+              <h1 style={{ margin: "auto" }}>"No pending request"</h1>
+              <img
+                src={No}
+                alt=""
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  marginTop: "20px",
+                }}
+              />
+            </>
+          ) : (
+            requirement.map((req) => (
+              <div className="guide-apply" key={req.id}>
+                <div className="left">
+                  <div className="title">
+                    <p>Posted by: {req.user.name}</p>
+                    <br />
+                    <b>{req.title}</b>
                   </div>
 
-                  <div className="right">
-                    <p>
-                      <i className="fa fa-map-marker"></i> {req.location}
-                    </p>
+                  <div className="description">{req.description}</div>
+                </div>
 
-                    <p>
-                      <i className="fas fa-dollar"></i> Rs. {req.budget}
-                    </p>
+                <div className="right">
+                  <p>
+                    <i className="fa fa-map-marker"></i> {req.location}
+                  </p>
 
-                    <p>
-                      <i className="fa fa-calendar"></i> {req.date}
-                    </p>
+                  <p>
+                    <i className="fas fa-dollar"></i> Rs. {req.budget}
+                  </p>
 
-                    <input
-                      type="number"
-                      placeholder="Your price"
-                      name=""
-                      id="price"
-                      onChange={(e) => setMoney(e.target.value)}
-                    />
+                  <p>
+                    <i className="fa fa-calendar"></i> {req.date}
+                  </p>
 
-                    <div className="button">
-                      <button
-                        onClick={() => {
-                          handleApply(req.id);
-                        }}
-                      >
-                        Apply
-                      </button>
-                    </div>
+                  <input
+                    type="number"
+                    placeholder="Your price"
+                    name=""
+                    id="price"
+                    onChange={(e) => setMoney(e.target.value)}
+                  />
+
+                  <div className="button">
+                    <button
+                      onClick={() => {
+                        handleApply(req.id);
+                      }}
+                    >
+                      Apply
+                    </button>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))
+          )}
         </div>
       </div>
 

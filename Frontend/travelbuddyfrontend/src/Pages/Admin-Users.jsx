@@ -17,20 +17,29 @@ const AdminUsers = () => {
     const touristlist = async () => {
       const response = await fetch("http://localhost:8000/user/user-list");
       const data = await response.json();
-      setTourists(data);
+
+      if (data.length > 0) {
+        setTourists(data);
+      }
       console.log(data);
     };
 
     const guidelist = async () => {
       const response = await fetch("http://localhost:8000/user/guide-list");
       const data = await response.json();
-      setGuide(data);
+
+      if (data.length > 0) {
+        setGuide(data);
+      }
     };
 
     const sellerlist = async () => {
       const response = await fetch("http://localhost:8000/user/seller-list");
       const data = await response.json();
-      setSeller(data);
+
+      if (data.length > 0) {
+        setSeller(data);
+      }
     };
 
     touristlist();
@@ -62,19 +71,27 @@ const AdminUsers = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tourists.map((tourist) => (
-                  <TableRow key={tourist.id}>
-                    <TableCell>{tourist.id}</TableCell>
-                    <TableCell>{tourist.name}</TableCell>
-                    <TableCell>
-                      <img src={tourist.image} alt="" width={"100px"} />
+                {tourists.length > 0 ? (
+                  tourists.map((tourist) => (
+                    <TableRow key={tourist.id}>
+                      <TableCell>{tourist.id}</TableCell>
+                      <TableCell>{tourist.name}</TableCell>
+                      <TableCell>
+                        <img src={tourist.image} alt="" width={"100px"} />
+                      </TableCell>
+                      <TableCell>{tourist.email}</TableCell>
+                      <TableCell>{tourist.address}</TableCell>
+                      <TableCell>{tourist.nationality}</TableCell>
+                      <TableCell>{tourist.preferredplace}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={7}>
+                      No Data
                     </TableCell>
-                    <TableCell>{tourist.email}</TableCell>
-                    <TableCell>{tourist.address}</TableCell>
-                    <TableCell>{tourist.nationality}</TableCell>
-                    <TableCell>{tourist.preferredplace}</TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -94,6 +111,7 @@ const AdminUsers = () => {
                   <TableCell>Photo</TableCell>
                   <TableCell>Description</TableCell>
                   <TableCell>Email</TableCell>
+                  <TableCell>Phone</TableCell>
                   <TableCell>Address</TableCell>
                   <TableCell>Experience</TableCell>
                   <TableCell>Charge</TableCell>
@@ -101,21 +119,30 @@ const AdminUsers = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {guide.map((guide) => (
-                  <TableRow key={guide.id}>
-                    <TableCell>{guide.id}</TableCell>
-                    <TableCell>{guide.name}</TableCell>
-                    <TableCell>
-                      <img src={guide.image} alt="" width={"100px"} />
+                {guide.length > 0 ? (
+                  guide.map((guide) => (
+                    <TableRow key={guide.id}>
+                      <TableCell>{guide.id}</TableCell>
+                      <TableCell>{guide.name}</TableCell>
+                      <TableCell>
+                        <img src={guide.image} alt="" width={"100px"} />
+                      </TableCell>
+                      <TableCell>{guide.description}</TableCell>
+                      <TableCell>{guide.email}</TableCell>
+                      <TableCell>{guide.phone}</TableCell>
+                      <TableCell>{guide.address}</TableCell>
+                      <TableCell>{guide.tag}</TableCell>
+                      <TableCell>{guide.charge}</TableCell>
+                      <TableCell>{guide.rating}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={10}>
+                      No Data
                     </TableCell>
-                    <TableCell>{guide.description}</TableCell>
-                    <TableCell>{guide.email}</TableCell>
-                    <TableCell>{guide.address}</TableCell>
-                    <TableCell>{guide.tag}</TableCell>
-                    <TableCell>{guide.charge}</TableCell>
-                    <TableCell>{guide.rating}</TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -134,19 +161,29 @@ const AdminUsers = () => {
                   <TableCell>Name</TableCell>
                   <TableCell>Photo</TableCell>
                   <TableCell>Email</TableCell>
+                  <TableCell>Type</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {seller.map((seller) => (
-                  <TableRow key={seller.id}>
-                    <TableCell>{seller.id}</TableCell>
-                    <TableCell>{seller.name}</TableCell>
-                    <TableCell>
-                      <img src={seller.image} alt="" width={"100px"} />
+                {seller.length > 0 ? (
+                  seller.map((seller) => (
+                    <TableRow key={seller.id}>
+                      <TableCell>{seller.id}</TableCell>
+                      <TableCell>{seller.name}</TableCell>
+                      <TableCell>
+                        <img src={seller.image} alt="" width={"100px"} />
+                      </TableCell>
+                      <TableCell>{seller.email}</TableCell>
+                      <TableCell>{seller.sellertype}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={5}>
+                      No Data
                     </TableCell>
-                    <TableCell>{seller.email}</TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>

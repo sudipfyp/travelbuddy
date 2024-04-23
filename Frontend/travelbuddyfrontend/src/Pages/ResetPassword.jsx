@@ -1,56 +1,65 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
+import Loader from "../Components/Loader";
 
 const Reset = () => {
-  document.title = "TravelBuddy ● Change Password";
+  document.title = "TravelBuddy ● Reset Password";
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const send = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+
+    let formData = new FormData();
+    formData.append("email", email);
+
+    let response = await fetch("http://127.0.1:8000/user/code/resend", {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (response.status === 200) {
+      setLoading(false);
+      swal("Success", "Code Sent", "success");
+      navigate(`/resetpassword/${email}`);
+    } else {
+      setLoading(false);
+      swal("Error", "Failed to send code", "error");
+    }
+  };
 
   return (
     <div style={{ marginTop: "-100px" }}>
       <div className="static-header">
-        <h1>Reset your Password</h1>
+        <h1>Enter your Email</h1>
       </div>
 
       <div className="static-container">
         <div className="verify-container">
-          <p>Add new password!</p>
+          <p>Enter your email to receive a code to reset your password.</p>
 
           <br />
 
-          <div className="otp">
-            <form action="">
-              <input
-                type="password"
-                name="otp"
-                id="otp"
-                placeholder="Enter new Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                name="otp"
-                id="otp"
-                placeholder="Confirm new Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-
-              {password !== confirmPassword && confirmPassword.length > 0 ? (
-                <p style={{ color: "red", marginBottom: "1rem" }}>Password does not match</p>
-              ) : (
-                ""
-              )}
-              {password !== confirmPassword && password.length > 0 ? (
-                <input type="submit" value="Update" disabled style={{cursor:"not-allowed"}}/>
-              ) : (
-                <input type="submit" value="Update" />
-              )}
-            </form>
+          <div className="otp-form">
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Enter your Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button onClick={send} className="btn-primary">
+              Send Code
+            </button>
           </div>
+          {loading ? <Loader /> : ""}
         </div>
       </div>
     </div>

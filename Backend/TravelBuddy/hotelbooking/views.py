@@ -57,13 +57,15 @@ class HotelEditView(APIView):
         if verification:
             if payload['role'].lower() == "seller" or payload['role'].lower() == "admin":
                 HotelObject = None
+                hotelobj = None
 
                 if payload['role'].lower() == "seller":
-                    HotelObject = Hotel.objects.filter(
-                        id=kwargs['id'], owner_id=payload['user_id'])
+                    HotelObject = Hotel.objects.filter(id=kwargs['id'], owner_id=payload['user_id'])
+                    hotelobj = Hotel.objects.get(id=kwargs['id'], owner_id=payload['user_id'])
 
                 elif payload['role'].lower() == "admin":
                     HotelObject = Hotel.objects.filter(id=kwargs['id'])
+                    hotelobj = Hotel.objects.get(id=kwargs['id'])
 
                 if len(HotelObject) == 0:
                     return Response({"msg": "Hotel Not Found"}, status=status.HTTP_404_NOT_FOUND)
@@ -76,10 +78,13 @@ class HotelEditView(APIView):
                     longitude = request.data.get('longitude')
                     address = request.data.get('address')
                     location = request.data.get('location')
-                    image = request.data.get('image')
+                    image = request.FILES.get('image')
                     noOfRoom = request.data.get('noOfRoom')
                     HotelObject.update(name=name, description=description, latitude=latitude, longitude=longitude,
-                                       address=address, location=location, image=image, noOfRoom=noOfRoom, owner_id=payload['user_id'])
+                                       address=address, location=location, noOfRoom=noOfRoom, owner_id=payload['user_id'])
+                    if image:
+                        hotelobj.image = image
+                        hotelobj.save()
                     return Response({'msg': 'Edited'}, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return Response({'msg': 'Non Authorized user', }, status=status.HTTP_403_FORBIDDEN)
@@ -112,6 +117,18 @@ class HotelDetailView(APIView):
             return Response({'msg': 'Not Found', }, status=status.HTTP_404_NOT_FOUND)
 
 
+class HotelDetailViewAdmin(APIView):
+    def get(self, request, *args, **kwargs):
+        
+        hotelObj = Hotel.objects.filter(owner__id=kwargs['id']).select_related('owner')
+        if len(hotelObj) == 0:
+            return Response({'msg': 'Not Found', }, status=status.HTTP_404_NOT_FOUND)
+        serializer = HotelModelSerializer(
+        hotelObj, many=True,context={"request": self.request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
 class HotelRoomAddView(APIView):
     def post(self, request, *args, **kwargs):
         token = request.COOKIES.get("token", None)
@@ -119,14 +136,15 @@ class HotelRoomAddView(APIView):
         if verification:
             if payload['role'].lower() == "seller":
                 serializer = HotelRoomAddModelSerializer(data=request.data)
-                HotelObj = Hotel.objects.filter(owner_id = payload['user_id'])
+                HotelObj = Hotel.objects.filter(owner_id=payload['user_id'])
                 if len(HotelObj) == 0:
                     return Response({'msg': 'You have no hotels to add'}, status=status.HTTP_404_NOT_FOUND)
                 if serializer.is_valid():
                     hotel = HotelObj[0].id
                     roomType = request.data.get('roomType')
                     roomPrice = request.data.get('roomPrice')
-                    HotelRoom.objects.create(hotel_id=hotel, roomType=roomType, roomPrice=roomPrice, )
+                    HotelRoom.objects.create(
+                        hotel_id=hotel, roomType=roomType, roomPrice=roomPrice, )
                     return Response({'msg': 'Room Added'}, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return Response({'msg': 'Only Valid to seller'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -147,7 +165,7 @@ class HotelRoomListView(APIView):
         return Response({'msg': 'Login First'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class HotelRoomBooking(APIView):
+class HotelBooking(APIView):
     def post(self, request, *args, **kwargs):
         token = request.COOKIES.get("token", None)
         verification, payload = verify_access_token(token)
@@ -167,15 +185,12 @@ class HotelRoomBooking(APIView):
                     check_out = datetime.strptime(checkOut, '%Y-%m-%d').date()
                     HotelRoomBookingObj = HotelRoomBooking.objects.filter(
                         room_id=hotelRoomId)
-                    if len(HotelRoomBookingObj) > 0:
-                        for i in HotelRoomBookingObj:
-                            if check_in <= i.checkOut and check_out >= i.checkIn and i.status == "accept":
-                                return Response({'msg': 'Room Already Booked'}, status=status.HTTP_400_BAD_REQUEST)
+
                     HotelRoomBooking.objects.create(
-                        user_id=payload['user_id'], room_id=hotelRoomId, checkIn=check_in, checkOut=check_out, amount=request.data.get('amount'))
+                        user_id=payload['user_id'], room_id=hotelRoomId, checkIn=check_in, checkOut=check_out)
                     return Response({'msg': 'Room Booked'}, status=status.HTTP_200_OK)
-                return Response({'msg': 'Invalid Data'}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({'msg': 'Only Valid to client'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'Only Valid to User'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({'msg': ' Login First'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -223,5 +238,39 @@ class UserHotelRoomCancel(APIView):
                     return Response({'msg': 'Room Booking Not Found'}, status=status.HTTP_404_NOT_FOUND)
                 hotelRoomBookingObj.update(status="cancel")
                 return Response({'msg': 'Room Booking Cancelled'}, status=status.HTTP_200_OK)
+            return Response({'msg': 'Only Valid to client'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'msg': 'Login First'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class RoomBookingUser(APIView):
+    def get(self, request):
+        token = request.COOKIES.get("token", None)
+        verification, payload = verify_access_token(token)
+        if verification:
+            if payload['role'].lower() == "user":
+                HotelRoomBookingObj = HotelRoomBooking.objects.filter(
+                    user_id=payload['user_id'])
+                if len(HotelRoomBookingObj) == 0:
+                    return Response({"msg": "Room Not Found"}, status=status.HTTP_404_NOT_FOUND)
+                serializer = HotelRoomBookingModelSerializer(
+                    HotelRoomBookingObj, many=True, context={"request": self.request})
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({'msg': 'Only Valid to client'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'msg': 'Login First'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class RoomBookingSeller(APIView):
+    def get(self, request):
+        token = request.COOKIES.get("token", None)
+        verification, payload = verify_access_token(token)
+        if verification:
+            if payload['role'].lower() == "seller":
+                HotelRoomBookingObj = HotelRoomBooking.objects.filter(
+                    room__hotel__owner_id=payload['user_id'])
+                if len(HotelRoomBookingObj) == 0:
+                    return Response({"msg": "Room Not Found"}, status=status.HTTP_404_NOT_FOUND)
+                serializer = HotelRoomBookingModelSerializer(
+                    HotelRoomBookingObj, many=True, context={"request": self.request})
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({'msg': 'Only Valid to client'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({'msg': 'Login First'}, status=status.HTTP_401_UNAUTHORIZED)

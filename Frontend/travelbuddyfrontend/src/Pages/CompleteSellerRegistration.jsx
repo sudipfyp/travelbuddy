@@ -336,6 +336,7 @@ const CompleteSellerRegistration = () => {
                     id="image"
                     placeholder="Image"
                     required
+                    accept="image/*"
                     onChange={(e) => {
                       setImage(e.target.files[0]);
                     }}
@@ -451,6 +452,7 @@ const CompleteSellerRegistration = () => {
                     name="shopLogo"
                     id="shopLogo"
                     placeholder="Image"
+                    accept="image/*"
                     required
                     onChange={(e) => {
                       setShopLogo(e.target.files[0]);

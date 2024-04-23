@@ -143,6 +143,7 @@ const AddProduct = () => {
       setProductDescription("");
       setProductPrice("");
       setProductCategory("");
+      setProductImage("");
       setRefresh((prev) => !prev);
     } else {
       swal("Failed to add", "", "error");
@@ -150,7 +151,7 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
-    if (shop.id) {
+    if (shop && shop.id) {   
       const fetchProducts = async () => {
         let response = await fetch(
           `http://127.0.1:8000/shop/product/list/${shop.id}`
@@ -212,6 +213,7 @@ const AddProduct = () => {
       setProductDescription("");
       setProductPrice("");
       setProductCategory("");
+      setProductImage("");
       setRefresh((prev) => !prev);
       setOpen(false);
     } else {
@@ -302,6 +304,7 @@ const AddProduct = () => {
                 <br />
                 <input
                   type="file"
+                  accept="image/*"
                   onChange={(e) => setProductImage(e.target.files[0])}
                 />
                 <br />
@@ -442,11 +445,12 @@ const AddProduct = () => {
                   onChange={(e) => setProductDescription(e.target.value)}
                 />
                 Image
-                <TextField
+                <TextField 
                   margin="dense"
                   id="image"
                   type="file"
                   fullWidth
+                  accept="image/*"
                   onChange={(e) => setProductImage(e.target.files[0])}
                 />
               </>

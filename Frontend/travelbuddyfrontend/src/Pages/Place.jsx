@@ -10,6 +10,8 @@ import swal from "sweetalert";
 const Place = () => {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState("");
+
   const userCheck = async () => {
     let data = await fetch("http://127.0.1:8000/user/usercheck", {
       method: "GET",
@@ -28,6 +30,7 @@ const Place = () => {
 
         navigate("/login");
       }
+      setUser(parsedData);
     }
   };
 
@@ -49,35 +52,39 @@ const Place = () => {
       let parsedData = await response.json();
       let placeData = parsedData;
 
-      let recommended = placeData
-        .filter((item) => item.tag === "recommended")
-        .slice(0, 4);
-      setRecommended(recommended);
+      if (placeData.length > 0) {
+        let recommended = placeData
+          .filter((item) => item.tag === "recommended")
+          .slice(0, 4);
+        setRecommended(recommended);
 
-      let culturalHeritages = placeData
-        .filter((item) => item.tag === "heritage")
-        .slice(0, 4);
-      setCulturalHeritages(culturalHeritages);
+        let culturalHeritages = placeData
+          .filter((item) => item.tag === "heritage")
+          .slice(0, 4);
+        setCulturalHeritages(culturalHeritages);
 
-      let naturalScenario = placeData
-        .filter((item) => item.tag === "natural")
-        .slice(0, 4);
-      setNaturalScenario(naturalScenario);
+        let naturalScenario = placeData
+          .filter((item) => item.tag === "natural")
+          .slice(0, 4);
+        setNaturalScenario(naturalScenario);
 
-      let kathmanduDistrict = placeData
-        .filter((item) => item.district === "Kathmandu")
-        .slice(0, 4);
-      setKathmanduDistrict(kathmanduDistrict);
+        let kathmanduDistrict = placeData
+          .filter((item) => item.district === "Kathmandu")
+          .slice(0, 4);
+        setKathmanduDistrict(kathmanduDistrict);
 
-      let lalitpurDistrict = placeData
-        .filter((item) => item.district === "Lalitpur")
-        .slice(0, 4);
-      setLalitpurDistrict(lalitpurDistrict);
+        let lalitpurDistrict = placeData
+          .filter((item) => item.district === "Lalitpur")
+          .slice(0, 4);
+        setLalitpurDistrict(lalitpurDistrict);
 
-      let bhaktapurDistrict = placeData
-        .filter((item) => item.district === "Bhaktapur")
-        .slice(0, 4);
-      setBhaktapurDistrict(bhaktapurDistrict);
+        let bhaktapurDistrict = placeData
+          .filter((item) => item.district === "Bhaktapur")
+          .slice(0, 4);
+        setBhaktapurDistrict(bhaktapurDistrict);
+      } else {
+        swal("No Data Found", "No places found in the database", "error");
+      }
     };
     getPlaces();
   }, []);
@@ -128,6 +135,12 @@ const Place = () => {
           component={DivItem}
         />
       </div>
+
+      {user.role === "user" ? (
+        <div className="floating">
+          <a href="/recommendation">Recommendation</a>
+        </div>
+      ) : null}
 
       <Footer />
     </>

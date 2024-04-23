@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Loader from "./Loader";
+import swal from "sweetalert";
 
 import L from "leaflet";
 import "leaflet-routing-machine";
@@ -26,6 +27,7 @@ const PlaceDetails = () => {
   };
 
   useEffect(() => {
+    document.title = "TravelBuddy ● Place Details ";
     userCheck();
   }, []);
 
@@ -35,9 +37,19 @@ const PlaceDetails = () => {
   const [showRoute, setShowRoute] = useState(false);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/place/detail/${id}`)
-      .then((response) => response.json())
-      .then((data) => setPlace(data[0]));
+    const data = async () => {
+      let response = await fetch(`http://127.0.0.1:8000/place/detail/${id}`);
+
+      if (response.status === 200) {
+        let parsedData = await response.json();
+        setPlace(parsedData[0]);
+      } else {
+        swal("Not Found", "Place not Found", "error");
+        navigate("/");
+      }
+    };
+
+    data();
 
     // Fetch device location
     if ("geolocation" in navigator) {
@@ -106,7 +118,7 @@ const PlaceDetails = () => {
             <div className="details-tags">
               <p>
                 <i className="fas fa-tag"></i>
-              </p> 
+              </p>
               <p>{place.tag}</p>
             </div>
 

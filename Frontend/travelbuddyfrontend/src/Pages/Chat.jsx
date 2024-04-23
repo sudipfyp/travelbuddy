@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -7,56 +7,86 @@ import {
   Typography,
   Grid,
   Avatar,
-  Divider,
 } from "@mui/material";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import Navbar from "../Components/Navbar";
-import { NavLink } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const Chat = () => {
+  const { senderId } = useParams();
+  const { senderRole } = useParams();
+
+  const [user, setUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  const handleSend = () => {
-    if (input.trim() !== "") {
-      setMessages([...messages, { text: input, sender: "user" }]);
-      setInput("");
-    }
+  // Current Logged In User Details
+  const fetchData = async () => {
+    let api = "http://127.0.1:8000/user/profile";
+    let data = await fetch(api, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+    console.log(parsedData);
+
+    setUser(parsedData[0]);
   };
 
-  const handleReceive = () => {
-    setMessages([
-      ...messages,
-      { text: "Hello from the other side!", sender: "other" },
-    ]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSend = async (e) => {
+    e.preventDefault();
+
+    let formData = new FormData();
+    formData.append("message", input);
+    formData.append("receiver_id", senderId);
+    formData.append("receiver_role", senderRole);
+
+    let api = "http://127.0.0.1:8000/chat/chat";
+
+    let data = fetch(api, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
   };
+
+  const handleReceive = async () => {
+    let api = "http://127.0.0.1:8000/chat/chatview";
+
+    let formData = new FormData();
+    formData.append("receiver_id", senderId);
+    formData.append("receiver_role", senderRole);
+
+    let data = await fetch(api, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    let parsedData = await data.json();
+    console.log(parsedData);
+    setMessages(parsedData);
+  };
+
+  useEffect(() => {
+    handleReceive();
+  }, []);
 
   return (
     <>
       <Navbar />
 
       <div className="admin-container">
-        <div className="admin-left">
-          <div className="sidebar" style={{ marginTop: "4rem" }}>
-            <div className="sidebar-bottom">
-              <div className="sidebar-bottom-menu">
-                <ul>
-                  <li>
-                    <NavLink to="/admin-dashboard">
-                      <i className="fa-solid fa-home" /> Dashboard
-                    </NavLink>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="admin-right">
           <Grid container sx={{ height: "auto" }}>
             <Grid
               item
-              xs={12}
+              xs={10}
               sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -72,10 +102,10 @@ const Chat = () => {
                   borderColor: "divider",
                 }}
               >
-                <Typography variant="h5">Chat</Typography>
+                <Typography variant="h5">Person 1</Typography>
               </Box>
 
-              <Box sx={{ flexGrow: 1, overflow: "auto", p: 2, height: "60vh" }}>
+              {/* <Box sx={{ flexGrow: 1, overflow: "auto", p: 2, height: "60vh" }}>
                 {messages.map((message, index) => (
                   <Box
                     key={index}
@@ -119,7 +149,7 @@ const Chat = () => {
                     </Paper>
                   </Box>
                 ))}
-              </Box>
+              </Box> */}
               <Box
                 sx={{
                   p: 3,
@@ -130,7 +160,7 @@ const Chat = () => {
                 }}
               >
                 <Grid container spacing={1} style={{ alignItems: "center" }}>
-                  <Grid item xs={7}>
+                  <Grid item xs={9}>
                     <TextField
                       fullWidth
                       placeholder="Type a message"

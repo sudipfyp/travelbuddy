@@ -11,7 +11,7 @@ class AdminModelSerializer(serializers.ModelSerializer):
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = user
-        fields = ['name', 'email', 'address', 'password',
+        fields = ['id','name', 'email', 'address', 'password',
                   'nationality', 'preferredplace', 'image']
         
 class UserDataModelSerializer(serializers.ModelSerializer):
@@ -23,7 +23,7 @@ class UserDataModelSerializer(serializers.ModelSerializer):
 class GuideModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = guide
-        fields = ['name', 'email', 'address', 'phone',
+        fields = ['id','name', 'email', 'address', 'phone',
                   'tag', 'password', 'image', 'charge']
 
 
@@ -31,13 +31,13 @@ class GuideDataModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = guide
         fields = ['id', 'name', 'email', 'description', 'address', 'phone',
-                  'tag',  'charge', 'image', 'identifier']
+                  'tag',  'charge', 'image', 'identifier', 'rating']
 
 
 class SellerModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = seller
-        fields = ['name', 'email', 'password', 'image']
+        fields = ['id', 'name', 'email', 'password', 'image']
 
 class SellerDataModelSerializer(serializers.ModelSerializer):
     class Meta:

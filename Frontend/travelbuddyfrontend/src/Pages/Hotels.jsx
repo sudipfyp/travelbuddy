@@ -38,7 +38,7 @@ const Hotels = () => {
     document.title = "TravelBuddy ● Hotels";
   }, []);
 
-  const [highratedhotels, setHighRatedHotels] = useState([]);
+  const [popularhotels, setPopularHotels] = useState([]);
   const [premiumhotels, setPremiumHotels] = useState([]);
   const [budgethotels, setBudgetHotels] = useState([]);
   const [kathmanduhotels, setKathmanduHotels] = useState([]);
@@ -53,30 +53,35 @@ const Hotels = () => {
       let parsedData = await response.json();
       let hotelData = parsedData;
 
-      console.log(hotelData);
-      let highrated = hotelData.filter((item) => item.noOfRoom > 30).slice(0, 4);
-      setHighRatedHotels(highrated);
+      if (hotelData.length > 0) {
+        let popular = hotelData.sort(() => 0.5 - Math.random()).slice(0, 4);
+        setPopularHotels(popular);
 
-      let premium = hotelData.filter((item) => item.noOfRoom > 10).slice(0, 4);
-      setPremiumHotels(premium);
+        let premium = hotelData
+          .filter((item) => item.noOfRoom > 10)
+          .slice(0, 4);
+        setPremiumHotels(premium);
 
-      let budget = hotelData.filter((item) => item.noOfRoom < 7).slice(0, 4);
-      setBudgetHotels(budget);
+        let budget = hotelData.filter((item) => item.noOfRoom < 7).slice(0, 4);
+        setBudgetHotels(budget);
 
-      let kathmandu = hotelData
-        .filter((item) => item.address === "Kathmandu")
-        .slice(0, 4);
-      setKathmanduHotels(kathmandu);
+        let kathmandu = hotelData
+          .filter((item) => item.address === "Kathmandu")
+          .slice(0, 4);
+        setKathmanduHotels(kathmandu);
 
-      let lalitpur = hotelData
-        .filter((item) => item.address === "Lalitpur")
-        .slice(0, 4);
-      setLalitpurHotels(lalitpur);
+        let lalitpur = hotelData
+          .filter((item) => item.address === "Lalitpur")
+          .slice(0, 4);
+        setLalitpurHotels(lalitpur);
 
-      let bhaktapur = hotelData
-        .filter((item) => item.address === "Bhaktapur")
-        .slice(0, 4);
-      setBhaktapurHotels(bhaktapur);
+        let bhaktapur = hotelData
+          .filter((item) => item.address === "Bhaktapur")
+          .slice(0, 4);
+        setBhaktapurHotels(bhaktapur);
+      } else {
+        swal("No Hotels Found", "No hotels found in the database", "error");
+      }
     };
     getHotels();
   }, []);
@@ -93,7 +98,7 @@ const Hotels = () => {
 
         <Display
           headerheadline="Popular"
-          data={highratedhotels}
+          data={popularhotels}
           component={DivItem}
         />
 

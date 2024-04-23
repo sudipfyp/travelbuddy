@@ -17,7 +17,7 @@ const transportData = [
     startpoint: "Thankot",
     endpoint: "RNAC",
     stops: "Kalanki, Kalimati, Tripureshwor",
-    vehicle: "Chandragiri Yatayat",
+    vehicle: "चन्द्रागिरि यातायात",
     vehicletype: "Bus",
   },
   {
@@ -33,7 +33,7 @@ const transportData = [
     startpoint: "Kritipur",
     endpoint: "RNAC",
     stops: "Balkhu, Kalimati, Tripureshwor",
-    vehicle: "Kritipur Yatayat",
+    vehicle: "कीर्तिपुर यातायात",
     vehicletype: "Bus, Micro",
   },
   {
@@ -41,10 +41,43 @@ const transportData = [
     startpoint: "Chabahil",
     endpoint: "Chabahil",
     stops:
-      "Balaju, Swayambhu, Kalanki, Kalimati, Tripureshwor, RNAC, Jamal, Kamalpokhari, Kalopul, Gaushala",
-    vehicle: "Samyukta Yatayat",
+      "Sukedhara, Balaju, Swayambhu, Kalanki, Kalimati, Tripureshwor, RNAC, Jamal, Kamalpokhari, Kalopul, Gaushala",
+    vehicle: "संयुक्त यातायात",
     vehicletype: "Bus",
   },
+  {
+    id: 5,
+    startpoint: "RNAC",
+    endpoint: "Sundarijal",
+    stops:
+      "Jamal, Kamalpokhari, Gyaneshwor, Kalopul, Gaushala, Chabahil, Boudhha, Jorpati, Gokarna",
+    vehicle: "सिटी यातायात",
+    vehicletype: "Bus",
+  },
+  {
+    id: 6,
+    startpoint: "RNAC",
+    endpoint: "Bhaktapur",
+    stops: "Maitighar, Bijuli Bazar, Baneshwor, Tinkune, Koteshwor, Jadibuti, Lokanthali, Kausaltar, Sallaghari",
+    vehicle: "नेपाल यातायात",
+    vehicletype: "Bus",
+  },
+  {
+    id: 7,
+    startpoint: "Balkhu",
+    endpoint: "Bhaktapur",
+    stops: "Kuleshwor, Kalimati, Tripureshwor, Maitighar, Bijuli Bazar, Baneshwor, Tinkune, Koteshwor, Jadibuti, Lokanthali, Kausaltar, Sallaghari",
+    vehicle: "नेपाल यातायात",
+    vehicletype: "Bus",
+  },
+  {
+    id: 8,
+    startpoint: "Thankot",
+    endpoint: "Har Har Mahadev",
+    stops: "Kalanki, Kalimati, Tripureshwor, Maitighar, Bijuli Bazar, Baneshwor, Tinkune, Koteshwor, Jadibuti, Pepsicola",
+    vehicle: "रिद्धि सिद्धि यातायात",
+    vehicletype: "Bus, Micro",
+  }
 ];
 
 const Transportation = () => {
@@ -86,8 +119,8 @@ const Transportation = () => {
       </div>
 
       <div className="common-container">
-        <div className="common-header" style={{marginBottom: '0px'}}>
-          <div className="common-headline" >
+        <div className="common-header" style={{ marginBottom: "0px" }}>
+          <div className="common-headline">
             <h1>Search your destination!</h1>
           </div>
         </div>
@@ -107,7 +140,7 @@ const Transportation = () => {
             onChange={(e) => setSearchTerm2(e.target.value)}
           />
         </div>
-        
+
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 500 }} aria-label="simple table">
             <TableHead>
@@ -132,12 +165,26 @@ const Transportation = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell align="center" colSpan={5}>No Such Route Found</TableCell>
+                  <TableCell align="center" colSpan={5}>
+                    No Such Route Found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
+
+        <br />
+        <br />
+
+        <h2>Locate Nearest Bus Stand</h2>
+        <br />
+        <iframe
+        title="Bus Stops"
+          src="https://www.google.com/maps/d/u/5/embed?mid=1XyHTqd381J_ZQfx2BnYfLgs7wJdu8dc&ehbc=2E312F"
+          width="100%"
+          height="480"
+        ></iframe>
       </div>
 
       <Footer />

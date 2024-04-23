@@ -1,18 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Loader from "./Loader";
+import swal from "sweetalert";
 
 const GuideDetails = () => {
+  const navigate = useNavigate();
+
+  const userCheck = async () => {
+    let data = await fetch("http://127.0.1:8000/user/usercheck", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    let parsedData = await data.json();
+
+    if (data.status === 200) {
+      if (parsedData.role !== "user") {
+        navigate("/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.title = "TravelBuddy ● Guide Details ";
+    userCheck();
+  }, []);
+
   const { id } = useParams();
   const [guide, setGuide] = useState(null);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/user/guide/detail/${id}`)
-      .then((response) => response.json())
-      .then((data) => setGuide(data[0]));
+    const data = async () => {
+      let response = await fetch(
+        `http://127.0.0.1:8000/user/guide/detail/${id}`
+      );
+
+      if (response.status === 200) {
+        let parsedData = await response.json();
+        setGuide(parsedData[0]);
+      } else {
+        swal("Not Found", "Guide not Found", "error");
+        navigate("/");
+      }
+    };
+
+    data();
   }, []);
+
+  if (guide === undefined) {
+    swal("Not Found", "Guide not Found", "error");
+    navigate("/");
+  }
 
   if (!guide) {
     return (
@@ -49,24 +89,23 @@ const GuideDetails = () => {
               <p>{guide.tag}</p>
             </div>
             <div className="details-rating">
-              <p>Rating: {guide.rating}</p>
+              <p><i className="fa fa-star"  style={{color:'gold'}}></i> {guide.rating}</p>
             </div>
             <div className="guide-price">
               <p>
                 <i className="fa fa-money"></i> Per Day Charges: {guide.charge}
               </p>
             </div>
+
             <div className="details-action">
-              <a href="/">Call</a>
-              <a href="/">Chat</a>
+              <a href={`tel:${guide.phone}`}>
+                <i className="fa fa-phone"  style={{color:'white'}}></i> {guide.phone}
+              </a>
+              <a href={`/chat/${guide.id}/guide`}>Chat</a>
               <a href={`/guidehire/${guide.id}`}>Hire Guide</a>
             </div>
           </div>
         </div>
-        {/* <div className="details-bottom">
-          <div className="details-bottom-title">Popular Guides</div>
-          
-        </div> */}
       </div>
 
       <Footer />

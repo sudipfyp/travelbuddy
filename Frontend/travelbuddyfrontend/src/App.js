@@ -9,7 +9,6 @@ import Terms from "./Pages/Terms";
 import Aboutus from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Profile from "./Pages/Profile";
-import EditProfile from "./Pages/EditProfile";
 import Place from "./Pages/Place";
 import Guide from "./Pages/Guide";
 import Shop from "./Pages/Shop";
@@ -39,7 +38,9 @@ import SellerHomepage from "./Pages/SellerHomepage";
 import Hirings from "./Pages/GuideHirings";
 import Bookings from "./Pages/HotelBookings";
 import Verify from "./Pages/Verify";
+import Change from "./Pages/ChangePassword";
 import Reset from "./Pages/ResetPassword";
+import ResetPassword from "./Pages/ResetPasswordCode";
 import CompleteGuideRegistration from "./Pages/CompleteGuideRegistration";
 import CompleteSellerRegistration from "./Pages/CompleteSellerRegistration";
 import OngoingHirings from "./Pages/OngoingHirings";
@@ -53,6 +54,8 @@ import FindGuideDetails from "./Pages/FindGuideDetails";
 import Chat from "./Pages/Chat";
 import ShopDetails from "./Components/ShopDetails";
 import HotelBook from "./Pages/HotelBook";
+import Recommendation from "./Pages/Recommendation";
+import Page404 from "./Pages/404";
 
 import CurrencyExchangeAPI from "./Pages/CurrencyExchangeAPI";
 
@@ -69,14 +72,14 @@ const App = () => {
         <Route path="/aboutus" element={<Aboutus />} />
         <Route path="/contactus" element={<Contact />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/editprofile" element={<EditProfile />} />
         <Route path="/place" element={<Place />} />
         <Route path="/guide" element={<Guide />} />
         <Route path="/product" element={<Shop />} />
         <Route path="/hotel" element={<Hotels />} />
         <Route path="/localevents" element={<LocalEvents />} />
+        <Route path="/currencyexchange" element={<CurrencyExchangeAPI />} />
         <Route
-          path="/currencyexchange"
+          path="/currencyexchangebackup"
           element={<CurrencyExchange data={Rates} />}
         />
         <Route path="/translation" element={<Translation />} />
@@ -105,6 +108,8 @@ const App = () => {
         <Route path="/bookingdata" element={<Bookings />} />
         <Route path="/verify/:email" element={<Verify />} />
         <Route path="/reset" element={<Reset />} />
+        <Route path="/resetpassword/:email" element={<ResetPassword />} />
+        <Route path="/change/:token" element={<Change />} />
         <Route path="/guide/complete" element={<CompleteGuideRegistration />} />
         <Route
           path="/seller/complete"
@@ -118,14 +123,11 @@ const App = () => {
         <Route path="/guideapply" element={<GuideApply />} />
         <Route path="/findguide" element={<FindGuide />} />
         <Route path="/findguide/:id" element={<FindGuideDetails />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:senderId/:senderRole" element={<Chat />} />
         <Route path="/shopdetails/:id" element={<ShopDetails />} />
         <Route path="/hotelbook/:id" element={<HotelBook />} />
-
-        <Route
-          path="/currencyexchangeapi"
-          element={<CurrencyExchangeAPI data={Rates} />}
-        />
+        <Route path="/recommendation" element={<Recommendation />} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </Router>
   );

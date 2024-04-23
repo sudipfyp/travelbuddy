@@ -25,8 +25,6 @@ class EventAddView(APIView):
                     tag = request.data.get('tag')
                     image = request.data.get('image')
 
-                    print("Image", image)
-
                     Event.objects.create(name=name, description=description, startdate=start, enddate = end, location=location, tag=tag, image=image)
 
                     return Response({"msg": "Event Registered Successfully"}, status=status.HTTP_200_OK)
@@ -42,6 +40,7 @@ class EventUpdateView(APIView):
         if verification:
             if payload['role'].lower() == "admin":
                 EventObject = Event.objects.filter(id=kwargs['id'])
+                eventgetobj = Event.objects.get(id=kwargs['id'])
                 if len(EventObject) == 0:
                     return Response({"msg": "Event Not Found"}, status=status.HTTP_404_NOT_FOUND)
                 serializer = EventSerializer(data=request.data)
@@ -52,11 +51,15 @@ class EventUpdateView(APIView):
                     end = request.data.get('enddate')
                     location = request.data.get('location')
                     tag = request.data.get('tag')
-                    image = request.data.get('image')
+                    image = request.FILES.get('image')
 
-                    print("Image", image)
+                    EventObject.update(name=name, description=description, startdate=start, enddate = end, location=location, tag=tag)
+                    if image:
+                        eventgetobj.image = image
+                        eventgetobj.save()
+                    return Response({"msg": "Event Updated Successfully"}, status=status.HTTP_200_OK)
+                    
 
-                    EventObject.update(name=name, description=description, startdate=start, enddate = end, location=location, tag=tag, image=image)
 
                     return Response({"msg": "Event Updated Successfully"}, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
@@ -79,11 +82,14 @@ class EventDeleteView(APIView):
 
 class EventDetailView(APIView):
     def get(self, request, *args, **kwargs):
-        EventObject = Event.objects.filter(id=kwargs['id'])
-        if len(EventObject) == 0:
+        try:
+            EventObject = Event.objects.filter(id=kwargs['id'])
+            if len(EventObject) == 0:
+                return Response({"msg": "Event Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            serializer = EventSerializer(EventObject, many=True, context={"request": self.request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
             return Response({"msg": "Event Not Found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = EventSerializer(EventObject, many=True, context={"request": self.request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class EventListView(APIView):
     def get(self, request):
@@ -93,7 +99,6 @@ class EventListView(APIView):
         serializer = EventSerializer(EventDataObject, many=True, context={"request": self.request})
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
     
 class CurrentEvent(APIView):
     def get(self, request):

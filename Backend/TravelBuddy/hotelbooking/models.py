@@ -1,5 +1,5 @@
 from django.db import models
-from registration.models import seller
+from registration.models import seller, user
 
 # Create your models here.
 
@@ -21,11 +21,10 @@ class HotelRoom(models.Model):
     roomPrice = models.IntegerField()
     
 class HotelRoomBooking(models.Model):
-    user = models.ForeignKey(seller, on_delete=models.CASCADE, related_name = "hotel_booking_user_hb")
+    user = models.ForeignKey(user, on_delete=models.CASCADE, related_name = "hotel_booking_user_hb")
     room = models.ForeignKey(HotelRoom, on_delete=models.CASCADE, related_name = "hotel_booking_room_hb")
     checkIn = models.DateField()
     checkOut = models.DateField()
-    amount = models.IntegerField( null=True)
     status = models.CharField(max_length = 50, default = "pending")
 
 

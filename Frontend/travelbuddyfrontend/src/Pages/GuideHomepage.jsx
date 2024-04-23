@@ -3,6 +3,7 @@ import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
+import No from "../Assets/images/no.jpg";
 
 const GuideHomepage = () => {
   const navigate = useNavigate();
@@ -110,7 +111,19 @@ const GuideHomepage = () => {
       <div className="static-container">
         <div className="guide-container">
           {request.length === 0 ? (
-            <h1 style={{ margin: "auto" }}>"No pending request"</h1>
+            <>
+              <h1 style={{ margin: "auto" }}>"No pending request"</h1>
+              <img
+                src={No}
+                alt=""
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  marginTop: "20px",
+                }}
+              />
+            </>
           ) : (
             <>
               {request.map((req) => {

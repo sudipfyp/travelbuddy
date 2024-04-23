@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import AdminRegisteration, UserRegistration, GuideRegistration, SellerRegistration, loginUser, profileView, UserCheck, LogoutView, GuideDataView, GuideDetailView, ProfileView, UserList, GuideList, SellerList, CompleteGuideRegistration, CompleteSellerRegistration
-from .views import CodeVerification, ResendCode
+from .views import CodeVerification, ResendCode, EditProfile, passwordChange, passwordReset, NoOfUsers, NoOfGuides, NoOfSellers
 urlpatterns = [
     path('adminregister', AdminRegisteration.as_view()),
     path('userregister', UserRegistration.as_view()),
@@ -19,5 +19,11 @@ urlpatterns = [
     path('complete/seller', CompleteSellerRegistration.as_view()),
     path('code/verify', CodeVerification.as_view()),
     path('code/resend', ResendCode.as_view()),
+    path('edit/profile', EditProfile.as_view()),
+    path('password/change', passwordChange.as_view()),
+    path('password/reset', passwordReset.as_view()),
+    path('countusers', NoOfUsers.as_view()),
+    path('countguides', NoOfGuides.as_view()),
+    path('countsellers', NoOfSellers.as_view())
 
 ]

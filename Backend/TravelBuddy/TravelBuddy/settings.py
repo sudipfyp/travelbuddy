@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-PROJECT_APPS = ['registration', 'hotelbooking', 'place', 'guidehire', 'shop', 'event', 'guidefind', 'transportation', 'rating']
+PROJECT_APPS = ['registration', 'hotelbooking', 'place', 'guidehire', 'shop', 'event', 'guidefind', 'rating', 'chat']
 THIRD_PARTY_APPS = ['corsheaders', 'rest_framework']
 INSTALLED_APPS += PROJECT_APPS + THIRD_PARTY_APPS
 

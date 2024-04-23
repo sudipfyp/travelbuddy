@@ -3,8 +3,11 @@ import Logo from "../Assets/images/logo-text.png";
 import "../Assets/styles/Styles.css";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
+import Loader from "../Components/Loader";
 
 const Register = () => {
+  const [loading, setLoading] = useState(false);
+
   const userCheck = async () => {
     let data = await fetch("http://127.0.1:8000/user/usercheck", {
       method: "GET",
@@ -45,6 +48,7 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     let formData = new FormData();
@@ -79,8 +83,8 @@ const Register = () => {
     console.log(parsedData);
 
     if (data.status === 201) {
-      // swal(`${role.toUpperCase()} registered successfully`, "", "success");
-      navigate(`/verify/${email}`)
+      setLoading(false);
+      navigate(`/verify/${email}`);
 
       setName("");
       setEmail("");
@@ -91,6 +95,7 @@ const Register = () => {
       setPhone("");
       setImage("");
     } else {
+      setLoading(false);
       if (parsedData.msg) {
         swal(`${parsedData.msg}`, "", "error");
         return;
@@ -143,6 +148,7 @@ const Register = () => {
                   <br />
                   <input
                     type="file"
+                    accept="image/*"
                     onChange={(e) => setImage(e.target.files[0])}
                     required
                   />
@@ -227,11 +233,8 @@ const Register = () => {
                     onChange={(e) => setPlace(e.target.value)}
                   >
                     <option disabled>Select your preferred place</option>
-                    <option value="Natural">Natural</option>
-                    <option value="Historical">Historical</option>
-                    <option value="Religious">Religious</option>
-                    <option value="Adventure">Adventure</option>
-                    <option value="City">City</option>
+                    <option value="natural">Natural</option>
+                    <option value="heritage">Heritage</option>
                   </select>
                 </div>
 
@@ -305,13 +308,19 @@ const Register = () => {
                   <label htmlFor="phone">Phone</label>
                   <br />
                   <input
-                    type="number"
+                    type="text"
                     name="phone"
                     id="phone"
                     placeholder="Your Phone Number"
+                    pattern="[0-9]{10}"
                     required
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                      const inputPhone = e.target.value.replace(/\D/g, ""); // Remove non-digit characters
+                      if (inputPhone.length <= 10) {
+                        setPhone(inputPhone);
+                      }
+                    }}
                   />
                 </div>
 
@@ -403,6 +412,7 @@ const Register = () => {
                   <input
                     type="file"
                     name="image"
+                    accept="image/*"
                     id="image"
                     onChange={(e) => setImage(e.target.files[0])}
                     required
@@ -429,6 +439,7 @@ const Register = () => {
             <input type="submit" value="Sign up" />
           </div>
         </form>
+        {loading ? <Loader /> : ""}
       </div>
 
       <div className="register-bottom">

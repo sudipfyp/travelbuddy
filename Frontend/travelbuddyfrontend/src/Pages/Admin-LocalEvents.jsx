@@ -15,6 +15,7 @@ import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import DialogContentText from "@mui/material/DialogContentText";
 import swal from "sweetalert";
+import { MenuItem, Select } from "@mui/material";
 
 const AdminLocalEvents = () => {
   const [eventName, setEventName] = useState("");
@@ -70,7 +71,10 @@ const AdminLocalEvents = () => {
       let response = await fetch("http://127.0.1:8000/event/list");
       let parsedData = await response.json();
       let eventData = parsedData;
-      setEvent(eventData);
+
+      if (eventData.length > 0) {
+        setEvent(eventData);
+      }
     };
     getEvent();
   }, [refresh]);
@@ -121,6 +125,7 @@ const AdminLocalEvents = () => {
 
     if (response.status === 200) {
       swal("Event Updated Successfully!", "", "success");
+      setEventImage("");
       setRefresh((prev) => !prev);
       setOpen(false);
     } else {
@@ -228,9 +233,8 @@ const AdminLocalEvents = () => {
                     onChange={(e) => setEventTag(e.target.value)}
                   >
                     <option disabled>Select tag</option>
-                    <option value="recommended">Popular</option>
-                    <option value="heritage">Heritage</option>
-                    <option value="natural">Natural</option>
+                    <option value="popular">Popular</option>
+                    <option value="cultural">Cultural</option>
                   </select>
                 </div>
 
@@ -239,6 +243,7 @@ const AdminLocalEvents = () => {
                   <br />
                   <input
                     type="file"
+                    accept="image/*"
                     onChange={(e) => setEventImage(e.target.files[0])}
                     required
                   />
@@ -282,45 +287,53 @@ const AdminLocalEvents = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {event.map((event) => (
-                  <TableRow
-                    key={event.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {event.id}
-                    </TableCell>
-                    <TableCell align="right">
-                      <img src={event.image} alt="" srcset="" height={100} />
-                    </TableCell>
-                    <TableCell align="right">{event.name}</TableCell>
-                    <TableCell align="right">{event.location}</TableCell>
-                    <TableCell align="right">{event.startdate}</TableCell>
-                    <TableCell align="right">{event.enddate}</TableCell>
-                    <TableCell align="right">{event.tag}</TableCell>
-                    <TableCell align="right">{event.description}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        color="success"
-                        onClick={() => {
-                          handleClickOpen(event);
-                        }}
-                      >
-                        Edit
-                      </Button>
-                      <br />
-                      <br />
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => handleOpen(event)}
-                      >
-                        Delete
-                      </Button>
+                {event.length > 0 ? (
+                  event.map((event) => (
+                    <TableRow
+                      key={event.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {event.id}
+                      </TableCell>
+                      <TableCell align="right">
+                        <img src={event.image} alt="" srcSet="" height={100} />
+                      </TableCell>
+                      <TableCell align="right">{event.name}</TableCell>
+                      <TableCell align="right">{event.location}</TableCell>
+                      <TableCell align="right">{event.startdate}</TableCell>
+                      <TableCell align="right">{event.enddate}</TableCell>
+                      <TableCell align="right">{event.tag}</TableCell>
+                      <TableCell align="right">{event.description}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          color="success"
+                          onClick={() => {
+                            handleClickOpen(event);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <br />
+                        <br />
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleOpen(event)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={9}>
+                      No Data
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -381,21 +394,24 @@ const AdminLocalEvents = () => {
                     value={eventEndDate}
                     onChange={(e) => setEventEndDate(e.target.value)}
                   />
-                  <TextField
+                  Tag
+                  <Select
                     margin="dense"
                     id="tag"
-                    label="Tag"
-                    type="text"
-                    fullWidth
                     value={eventTag}
+                    fullWidth
                     onChange={(e) => setEventTag(e.target.value)}
-                  />
+                  >
+                    <MenuItem value="popular">Popular</MenuItem>
+                    <MenuItem value="cultural">Cultural</MenuItem>
+                  </Select>
                   Image
                   <TextField
                     margin="dense"
                     id="image"
                     type="file"
                     fullWidth
+                    accept="image/*"
                     onChange={(e) => setEventImage(e.target.files[0])}
                   />
                 </>

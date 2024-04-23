@@ -8,6 +8,7 @@ import swal from "sweetalert";
 const HotelBook = () => {
   const { id } = useParams();
   const [hotel, setHotel] = useState(null);
+  const [room, setRoom] = useState([]);
 
   const navigate = useNavigate();
 
@@ -48,28 +49,43 @@ const HotelBook = () => {
   }, []);
 
   const fetchHotel = async () => {
-    let api = `http://127.0.0.1:8000/hotel/detail/${id}`;
+    let api = `http://127.0.0.1:8000/hotel/detail/all/${id}`;
     let data = await fetch(api, {
       method: "GET",
       credentials: "include",
     });
 
-    let parsedData = await data.json();
+    if (data.status === 200) {
+      let parsedData = await data.json();
+      console.log(parsedData);
+      setHotel(parsedData);
+    }
+  };
+
+  const fetchRoom = async () => {
+    let api = `http://127.0.0.1:8000/hotel/room/list/${id}`;
+    let data = await fetch(api, {
+      method: "GET",
+      credentials: "include",
+    });
 
     if (data.status === 200) {
-      setHotel(parsedData);
+      let parsedData = await data.json();
+      console.log(parsedData);
+      setRoom(parsedData);
     }
   };
 
   useEffect(() => {
     if (id) {
       fetchHotel();
+      fetchRoom();
     }
-  }, [id]);
+  }, []);
 
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
-  const [amount, setAmount] = useState("");
+  const [roomType, setRoomType] = useState([]);
 
   const handleHotelBook = async (e) => {
     e.preventDefault();
@@ -77,14 +93,16 @@ const HotelBook = () => {
     let form = new FormData();
     form.append("checkIn", checkIn);
     form.append("checkOut", checkOut);
-    form.append("amount", amount);
-    form.append("");
+    form.append("roomType", roomType);
 
-    let response = await fetch(`http://127.0.1:8000/hotel/room/book/${id}/`, {
-      method: "POST",
-      body: form,
-      credentials: "include",
-    });
+    let response = await fetch(
+      `http://127.0.1:8000/hotel/room/book/${roomType}`,
+      {
+        method: "POST",
+        body: form,
+        credentials: "include",
+      }
+    );
 
     let data = await response.json();
     console.log(data);
@@ -103,17 +121,6 @@ const HotelBook = () => {
         <Loader />
       </div>
     );
-  }
-
-  const checkInDate = new Date(checkIn);
-  const checkOutDate = new Date(checkOut);
-
-  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-
-  let  diffDays = Math.round(Math.abs((checkOutDate - checkInDate) / oneDay));
-
-  if (diffDays === 0) {
-    diffDays = 1;
   }
 
   return (
@@ -142,6 +149,7 @@ const HotelBook = () => {
               <input
                 type="date"
                 id="checkin"
+                min={new Date().toISOString().split("T")[0]}
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
               />
@@ -150,21 +158,21 @@ const HotelBook = () => {
               <input
                 type="date"
                 id="checkout"
+                min={new Date().toISOString().split("T")[0]}
                 value={checkOut}
                 onChange={(e) => setCheckOut(e.target.value)}
               />
               <br />
               <label htmlFor="type">Room Type</label>
-              <select id="type">
-                <option disabled>Select room type</option>
-                <option value="single">Single</option>
-                <option value="double">Double</option>
-                <option value="suite">Suite</option>
+              <select id="type" onChange={(e) => setRoomType(e.target.value)}>
+                <option default>Select room type</option>
+                {room.map((room) => (
+                  <option key={room.id} value={room.id}>
+                    {room.roomType} (Rs. {room.roomPrice})
+                  </option>
+                ))}
               </select>
               <br />
-              {diffDays > 0 ? (
-                <p>Total Amount: Rs. {diffDays * hotel.price}</p>
-              ) : null}
               <button type="submit">Send Request</button>
             </form>
           </div>

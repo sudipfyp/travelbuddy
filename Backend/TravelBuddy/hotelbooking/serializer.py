@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Hotel, HotelRoom, HotelRoomBooking
-from registration.serializer import SellerDataModelSerializer
+from registration.serializer import SellerDataModelSerializer, UserDataModelSerializer
 
 class HotelAddModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,13 +38,13 @@ class HotelRoomAddModelSerializer(serializers.ModelSerializer):
 class HotelRoomBookingModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotelRoomBooking
-        fields = ['room','checkIn','checkOut','status','amount']
+        fields = ['id','checkIn','checkOut','status']
     
     def get_fields(self):
         fields = super().get_fields()
         request = self.context.get("request")
         if request and request.method == "GET":
-            fields['user'] = SellerDataModelSerializer()
+            fields['user'] = UserDataModelSerializer()
             fields['room'] = HotelRoomModelSerializer()
         return fields
 

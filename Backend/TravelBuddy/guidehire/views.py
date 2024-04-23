@@ -137,17 +137,17 @@ class pay(APIView):
         amount = int(request.data.get("amount"))*100
         jobtype = request.data.get("jobtype")
         jobId = request.data.get("jobid")
-        k = 0
+        key = 0
         if jobtype == "hiring":
             key = 1
 
         return_url = "http://localhost:8000/guide/pay/" + \
-            str(jobId)+"/"+str(key)+"/"
+            str(jobId)+"/"+str(key)
         purchase_order_id = "111111111"
         purchase_name = "test"
 
         headers = {
-            'Authorization': 'key 74a324b745f74fa8aa2d8be8128e5ede',
+            'Authorization': 'key live_secret_key_68791341fdd94846a146f0457ff7b455',
             'Content-Type': 'application/json',
         }
 
@@ -177,7 +177,7 @@ class payverify(APIView):
 
         if request.method == 'GET':
             headers = {
-                'Authorization': 'key 74a324b745f74fa8aa2d8be8128e5ede',
+                'Authorization': 'key live_secret_key_68791341fdd94846a146f0457ff7b455',
                 'Content-Type': 'application/json',
             }
             pidx = request.GET.get('pidx')
@@ -191,11 +191,11 @@ class payverify(APIView):
                 amount = new_res['total_amount']/100
                 if key == 1:
                     proposalId = GuideHire.objects.filter(
-                        id=jobid).update(status="payed")
-                    return HttpResponseRedirect('http://localhost:3000/login')
+                        id=jobid).update(status="paid")
+                    return HttpResponseRedirect('http://localhost:3000/hiringdata')
                 else:
                     GuideRequirementHiring.objects.filter(
-                        id=jobid).update(status="payed")
-                    return HttpResponseRedirect('http://localhost:3000/login')
+                        id=jobid).update(status="paid")
+                    return HttpResponseRedirect('http://localhost:3000/hiringdata')
 
             return Response({'msg': 'Payment Not Completed'}, status=status.HTTP_400_BAD_REQUEST)

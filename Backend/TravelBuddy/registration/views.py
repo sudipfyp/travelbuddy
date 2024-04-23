@@ -8,7 +8,7 @@ from .models import guide, seller, user, admin, Code
 from .code import sendVerificationEmail
 
 from .utils import verify_access_token
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Create your views here.
 
@@ -170,11 +170,14 @@ class GuideDataView(APIView):
 
 class GuideDetailView(APIView):
     def get(self, request, *args, **kwargs):
-        guideObj = guide.objects.filter(id=kwargs['id'])
-        if len(guideObj) == 0:
-            return Response({"msg": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = GuideDataModelSerializer(guideObj, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            guideObj = guide.objects.filter(id=kwargs['id'])
+            if len(guideObj) == 0:
+                return Response({"msg": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            serializer = GuideDataModelSerializer(guideObj, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'msg': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ProfileView(APIView):
@@ -269,18 +272,37 @@ class CodeVerification(APIView):
         elif len(sellerdata) > 0:
             codeObj = Code.objects.filter(
                 seller_id=sellerdata[0].id, code=code)
-        if len(codeObj) == 0:
-            return Response({'msg': 'Invalid Code'}, status=status.HTTP_400_BAD_REQUEST)
 
+        if not codeObj:
+            return Response({'msg': 'Invalid Code'}, status=status.HTTP_400_BAD_REQUEST)
         if codeObj[0].code == code:
+            access_token = ""
             if codeObj[0].expiry.replace(tzinfo=None) > datetime.now():
                 if len(userData) > 0:
                     user.objects.filter(email=email).update(verify=True)
+
+                    refresh = RefreshToken.for_user(user=userData[0])
+                    refresh["role"] = "user"
+                    refresh['time'] = str(datetime.now()+timedelta(days=5))
+                    access_token = str(refresh.access_token)
+
                 elif len(guideData) > 0:
                     guide.objects.filter(email=email).update(verify=True)
+
+                    refresh = RefreshToken.for_user(user=userData[0])
+                    refresh["role"] = "guide"
+                    refresh['time'] = str(datetime.now()+timedelta(days=5))
+                    access_token = str(refresh.access_token)
+
                 elif len(sellerdata) > 0:
                     seller.objects.filter(email=email).update(verify=True)
-                return Response({'msg': 'Verified Successfully'}, status=status.HTTP_200_OK)
+
+                    refresh = RefreshToken.for_user(user=userData[0])
+                    refresh["role"] = "seller"
+                    refresh['time'] = str(datetime.now()+timedelta(days=5))
+                    access_token = str(refresh.access_token)
+
+                return Response({'msg': 'Verified Successfully', 'token': access_token}, status=status.HTTP_200_OK)
             return Response({'msg': 'Code Expired'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'msg': 'Invalid Code'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -291,4 +313,122 @@ class ResendCode(APIView):
         data = sendVerificationEmail(email)
         if data:
             return Response({'msg': 'Code Sent'}, status=status.HTTP_200_OK)
-        return Response({'msg': 'Code not Sent'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'msg': 'Code not  Sent'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EditProfile(APIView):
+    def post(self, request):
+        token = request.COOKIES.get("token", None)
+        verification, payload = verify_access_token(token)
+        if verification:
+            if payload['role'].lower() == "seller":
+                sellerObj = seller.objects.filter(id=payload['user_id'])
+                sellerObjGet = seller.objects.get(id=payload['user_id'])
+
+                name = request.data.get('name')
+                image = request.FILES.get('image')
+                if image:
+                    sellerObjGet.image = image
+                    sellerObjGet.save()
+                sellerObj.update(name=name)
+                return Response({'msg': 'Data Updated Successfully'}, status=status.HTTP_200_OK)
+
+            elif payload['role'].lower() == "guide":
+                guideObj = guide.objects.filter(id=payload['user_id'])
+                guideObjGet = guide.objects.get(id=payload['user_id'])
+
+                name = request.data.get('name')
+                phone = request.data.get('phone')
+                description = request.data.get('description')
+                tag = request.data.get('tag')
+                charge = request.data.get('charge')
+                address = request.data.get('address')
+                image = request.FILES.get('image')
+                if image:
+                    guideObjGet.image = image
+                    guideObjGet.save()
+                guideObj.update(name=name, phone=phone, description=description,
+                                tag=tag, charge=charge, address=address)
+                return Response({'msg': 'Data Updated Successfully'}, status=status.HTTP_200_OK)
+
+            elif payload['role'].lower() == "user":
+                userObj = user.objects.filter(id=payload['user_id'])
+                userObjGet = user.objects.get(id=payload['user_id'])
+
+                name = request.data.get('name')
+                preferredplace = request.data.get('preferredplace')
+                nationality = request.data.get('nationality')
+                address = request.data.get('address')
+                image = request.FILES.get('image')
+                if image:
+                    userObjGet.image = image
+                    userObjGet.save()
+
+                userObj.update(
+                    name=name, preferredplace=preferredplace, nationality=nationality, address=address)
+                return Response({'msg': 'Data Updated Successfully'}, status=status.HTTP_200_OK)
+            return Response({'msg': 'Invalid User'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'msg': 'Login First'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class passwordReset(APIView):
+    def post(self, request):
+        token = request.data.get('token')
+        verification, payload = verify_access_token(token)
+        if verification:
+            if payload['role'].lower() == "seller":
+                sellerObj = seller.objects.filter(id=payload['user_id'])
+                sellerObj.update(password=request.data.get('password'))
+                return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+            elif payload['role'].lower() == "guide":
+                guideObj = guide.objects.filter(id=payload['user_id'])
+                guideObj.update(password=request.data.get('password'))
+                return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+            elif payload['role'].lower() == "user":
+                userObj = user.objects.filter(id=payload['user_id'])
+                userObj.update(password=request.data.get('password'))
+                return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+            return Response({'msg': 'Invalid User'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class passwordChange(APIView):
+    def post(self, request):
+        token = request.COOKIES.get("token", None)
+        verification, payload = verify_access_token(token)
+        if verification:
+            if payload['role'].lower() == "seller":
+                sellerObj = seller.objects.filter(id=payload['user_id'])
+                if sellerObj[0].password == request.data.get('oldpassword'):
+                    sellerObj.update(password=request.data.get('newpassword'))
+                    return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+                return Response({'msg': 'Invalid Password'}, status=status.HTTP_400_BAD_REQUEST)
+            elif payload['role'].lower() == "guide":
+                guideObj = guide.objects.filter(id=payload['user_id'])
+                if guideObj[0].password == request.data.get('oldpassword'):
+                    guideObj.update(password=request.data.get('newpassword'))
+                    return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+                return Response({'msg': 'Invalid Password'}, status=status.HTTP_400_BAD_REQUEST)
+            elif payload['role'].lower() == "user":
+                userObj = user.objects.filter(id=payload['user_id'])
+                if userObj[0].password == request.data.get('oldpassword'):
+                    userObj.update(password=request.data.get('newpassword'))
+                    return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+                return Response({'msg': 'Invalid Password'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'Invalid User'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'msg': 'Login First'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class NoOfUsers(APIView):
+    def get(self, request):
+        userObj = user.objects.all()
+        return Response({'count': len(userObj)}, status=status.HTTP_200_OK)
+
+class NoOfGuides(APIView):
+    def get(self, request):
+        guideObj = guide.objects.all()
+        return Response({'count': len(guideObj)}, status=status.HTTP_200_OK)
+
+class NoOfSellers(APIView):
+    def get(self, request):
+        sellerObj = seller.objects.all()
+        return Response({'count': len(sellerObj)}, status=status.HTTP_200_OK)
