@@ -31,8 +31,8 @@ const Contact = () => {
             <i className="fa fa-envelope"> Email</i>
           </h2>
           <p style={{ marginLeft: "2.5rem", marginBottom: "3rem" }}>
-            <a href="mailto:support@travelbuddy.com.np">
-              support@travelbuddy.com.np
+            <a href="mailto:travelbuddy.np@gmail.com">
+              travelbuddy.np@gmail.com
             </a>
           </p>
 

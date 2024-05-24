@@ -47,7 +47,8 @@ class ShopEditView(APIView):
                 if payload['role'].lower() == "seller":
                     ShopObject = Shop.objects.filter(
                         id=kwargs['id'], owner_id=payload['user_id'])
-                    shopobj = Shop.objects.get(id=kwargs['id'])
+                    shopobj = Shop.objects.get(
+                        id=kwargs['id'], owner_id=payload['user_id'])
 
                 elif payload['role'].lower() == "admin":
                     ShopObject = Shop.objects.filter(id=kwargs['id'])
@@ -65,7 +66,7 @@ class ShopEditView(APIView):
                     address = request.data.get('address')
                     image = request.FILES.get('image')
 
-                    Shop.objects.update(name=name, description=description, latitude=latitude, longitude=longitude,
+                    ShopObject.update(name=name, description=description, latitude=latitude, longitude=longitude,
                                         address=address, image=image, owner_id=payload['user_id'])
 
                     if image:

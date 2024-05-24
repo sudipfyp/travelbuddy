@@ -2079,8 +2079,9 @@ hr {
 
 .guide-hire-card img {
   width: 100%;
-  height: 200px;
+  max-height: 20rem;
   border-radius: 5px;
+  object-fit: cover;
 }
 
 .guide-hire-card > h3 {
@@ -2366,5 +2367,62 @@ hr {
   .recommendation-container .recommendation-card > .recommendation-card-info {
     width: 100%;
   }
-  
+}
+
+/* Message */
+.message-container {
+  width: 80%;
+  margin: auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-container {
+  width: 100%;
+  margin: auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: 65vh;
+  overflow-y: scroll;
+}
+
+.msg-container .sender {
+  float: left;
+  background-color: #02cea4;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+  max-width: 60%;
+  word-wrap: break-word;
+}
+
+.msg-container .receiver {
+  float: right;
+  background-color: #f1f0f0;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+  margin-right: 2rem;
+  max-width: 60%;
+  word-wrap: break-word;
+}
+
+.send-container {
+  width: 80%;
+  margin: auto;
+  margin-top: 1rem;
+  display: flex;
+}
+
+.send-container .send-msg {
+  width: 90%;
+}
+
+.send-container .send-btn {
+  width: 10%;
+  padding: 8px 0 8px 8px;
 }

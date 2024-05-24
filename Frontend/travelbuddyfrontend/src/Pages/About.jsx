@@ -55,8 +55,8 @@ const About = () => {
           <p className="static-p">
             If you have any questions or feedback, please feel free to contact
             us at:&nbsp;
-            <a href="mailto:support@travelbuddy.com.np">
-              support@travelbuddy.com.np
+            <a href="mailto:travelbuddy.np@gmail.com">
+              travelbuddy.np@gmail.com
             </a>
           </p>
         </div>

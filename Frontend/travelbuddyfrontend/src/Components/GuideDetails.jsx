@@ -93,7 +93,7 @@ const GuideDetails = () => {
             </div>
             <div className="guide-price">
               <p>
-                <i className="fa fa-money"></i> Per Day Charges: {guide.charge}
+                <i className="fa fa-money"></i> Per Day Charges: Rs. {guide.charge}
               </p>
             </div>
 
@@ -101,7 +101,6 @@ const GuideDetails = () => {
               <a href={`tel:${guide.phone}`}>
                 <i className="fa fa-phone"  style={{color:'white'}}></i> {guide.phone}
               </a>
-              <a href={`/chat/${guide.id}/guide`}>Chat</a>
               <a href={`/guidehire/${guide.id}`}>Hire Guide</a>
             </div>
           </div>

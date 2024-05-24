@@ -12,9 +12,10 @@ urlpatterns = [
     path('job/accept/<int:id>',GuideRequestAccept.as_view()),
     path('job/reject/<int:id>',GuideRequestReject.as_view()),
     path('job/list/user',GuideRequirementListViewFilter.as_view()),
-    path('job/current/worker/<int:id>',CurrentGuideRequirementWorker.as_view()), #id is the id of the job requirement
-    path('job/current/guide/',CurrentWorkerListView.as_view()), #id is the id of the job requirement
     path('user/total/current/job',UserTotalCurrentJob.as_view()), #id is the id of the job requirement
     path('guide/total/current/job',GuideTotalCurrentJob.as_view()), #id is the id of the job requirement
 
+    ##
+    path('job/current/worker/<int:id>',CurrentGuideRequirementWorker.as_view()), #id is the id of the job requirement
+    path('job/current/guide/',CurrentWorkerListView.as_view()), #id is the id of the job requirement
 ]

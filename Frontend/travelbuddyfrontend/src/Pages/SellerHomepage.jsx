@@ -249,23 +249,23 @@ const SellerHomepage = () => {
             <div className="guide-container">
               {request.length === 0 ? (
                 <>
-                <h1 style={{ margin: "auto" }}>"No pending bookings"</h1>
-                <img
-                  src={No}
-                  alt=""
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    marginTop: "20px",
-                  }}
-                />
-              </>
+                  <h1 style={{ margin: "auto" }}>"No pending bookings"</h1>
+                  <img
+                    src={No}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      marginTop: "20px",
+                    }}
+                  />
+                </>
               ) : (
                 <>
                   {request.map((req) => {
                     return (
-                      <div className="guide-hire-card">
+                      <div className="guide-hire-card" key={req.id}>
                         <img src={req.user.image} alt="" />
 
                         <h3>Requested by: {req.user.name}</h3>
@@ -281,6 +281,14 @@ const SellerHomepage = () => {
                           </button>
                           <button onClick={() => rejectRequest(req.id)}>
                             Reject
+                          </button>
+                          <button
+                            style={{ backgroundColor: "#1976d2" }}
+                            onClick={() =>
+                              navigate(`/chat/${req.user.id}/user`)
+                            }
+                          >
+                            Chat
                           </button>
                         </div>
                       </div>

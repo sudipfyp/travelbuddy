@@ -109,21 +109,6 @@ class GuideRequirementListViewFilter(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class CurrentGuideRequirementWorker(APIView):
-    def get(self, request, *args, **kwargs):
-        token = request.COOKIES.get("token", None)
-        verification, payload = verify_access_token(token)
-        if verification:
-            GuideRequirementHiringObject = GuideRequirementHiring.objects.filter(
-                guidereq_id=kwargs['id'], status='accepted')
-            if len(GuideRequirementHiringObject) == 0:
-                return Response({"msg": "Guide Requirement Hiring Not Found"}, status=status.HTTP_404_NOT_FOUND)
-            serializer = GuideHiringModelSerializer(
-                GuideRequirementHiringObject, many=True, context={"request": self.request})
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'msg': 'Login First ', }, status=status.HTTP_403_FORBIDDEN)
-
-
 class GuideRequestApply(APIView):
     def post(self, request, *args, **kwargs):
         token = request.COOKIES.get("token", None)
@@ -143,9 +128,9 @@ class GuideRequestApply(APIView):
 
                     return Response({"msg": "Guide Requirement Hiring Registered Successfully"}, status=status.HTTP_200_OK)
 
-                return Response(serailizer.errors, status=status.HTTP_403_FORBIDDEN)
-            return Response({'msg': 'Valid to guide ', }, status=status.HTTP_403_FORBIDDEN)
-        return Response({'msg': 'Login First ', }, status=status.HTTP_403_FORBIDDEN)
+                return Response(serailizer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'Valid to guide ', }, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'msg': 'Login First ', }, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class GuideRequestAccept(APIView):
@@ -201,23 +186,6 @@ class ProposalList(APIView):
         return Response({'msg': 'Login First ', }, status=status.HTTP_403_FORBIDDEN)
 
 
-class CurrentWorkerListView(APIView):
-    def get(self, request, *args, **kwargs):
-        token = request.COOKIES.get("token", None)
-        verification, payload = verify_access_token(token)
-        if verification:
-            if payload['role'].lower() == "guide":
-                GuideRequirementHiringObject = GuideRequirementHiring.objects.filter(
-                    guide_id=payload['user_id'], status='accepted')
-                if len(GuideRequirementHiringObject) == 0:
-                    return Response({"msg": "Guide Requirement Hiring Not Found"}, status=status.HTTP_404_NOT_FOUND)
-                serializer = GuideHiringModelSerializer(
-                    GuideRequirementHiringObject, many=True, context={"request": self.request})
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response({'msg': 'Valid to guide ', }, status=status.HTTP_403_FORBIDDEN)
-        return Response({'msg': 'Login First ', }, status=status.HTTP_403_FORBIDDEN)
-
-
 class UserTotalCurrentJob(APIView):
     def get(self, request):
         token = request.COOKIES.get("token", None)
@@ -249,4 +217,36 @@ class GuideTotalCurrentJob(APIView):
                     GuideRequirementHiringObject, many=True, context={"request": self.request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({'msg': 'Valid to guide ', }, status=status.HTTP_403_FORBIDDEN)
+        return Response({'msg': 'Login First ', }, status=status.HTTP_403_FORBIDDEN)
+
+##
+
+class CurrentWorkerListView(APIView):
+    def get(self, request, *args, **kwargs):
+        token = request.COOKIES.get("token", None)
+        verification, payload = verify_access_token(token)
+        if verification:
+            if payload['role'].lower() == "guide":
+                GuideRequirementHiringObject = GuideRequirementHiring.objects.filter(
+                    guide_id=payload['user_id'], status='accepted')
+                if len(GuideRequirementHiringObject) == 0:
+                    return Response({"msg": "Guide Requirement Hiring Not Found"}, status=status.HTTP_404_NOT_FOUND)
+                serializer = GuideHiringModelSerializer(
+                    GuideRequirementHiringObject, many=True, context={"request": self.request})
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({'msg': 'Valid to guide ', }, status=status.HTTP_403_FORBIDDEN)
+        return Response({'msg': 'Login First ', }, status=status.HTTP_403_FORBIDDEN)
+
+class CurrentGuideRequirementWorker(APIView):
+    def get(self, request, *args, **kwargs):
+        token = request.COOKIES.get("token", None)
+        verification, payload = verify_access_token(token)
+        if verification:
+            GuideRequirementHiringObject = GuideRequirementHiring.objects.filter(
+                guidereq_id=kwargs['id'], status='accepted')
+            if len(GuideRequirementHiringObject) == 0:
+                return Response({"msg": "Guide Requirement Hiring Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            serializer = GuideHiringModelSerializer(
+                GuideRequirementHiringObject, many=True, context={"request": self.request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({'msg': 'Login First ', }, status=status.HTTP_403_FORBIDDEN)

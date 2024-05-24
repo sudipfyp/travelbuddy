@@ -82,7 +82,8 @@ const Home = () => {
       let parsedData = await response.json();
 
       if (parsedData.length > 0) {
-        let guideData = parsedData.sort(() => 0.5 - Math.random()).slice(0, 4);
+        // let guideData = parsedData.sort(() => 0.5 - Math.random()).slice(0, 4);
+        let guideData = parsedData.filter((item) => item.rating !== null && item.rating >= 3).slice(0, 4);
         setTrendingGuides(guideData);
       }
       console.log(parsedData);
@@ -222,7 +223,7 @@ const Home = () => {
           <h2>Trending Guides</h2>
 
           <div className="home-header-section">
-            {trendingGuides.length > 0 ? (
+            {trendingGuides.length > 0 && trendingGuides.description !== null ? (
               trendingGuides.map((item) => (
                 <a href={`/guidedetails/${item.id}`} key={item.id}>
                   <Card sx={{ maxWidth: 300 }}>

@@ -82,6 +82,7 @@ const Hotels = () => {
       } else {
         swal("No Hotels Found", "No hotels found in the database", "error");
       }
+      console.log(hotelData)
     };
     getHotels();
   }, []);

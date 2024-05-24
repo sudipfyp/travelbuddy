@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import guide, seller, user, admin, Code
 from .code import sendVerificationEmail
 
-from .utils import verify_access_token
+from .utils import verify_access_token, hashPassword
 from datetime import datetime, timedelta
 
 # Create your views here.
@@ -32,7 +32,16 @@ class UserRegistration(CreateAPIView):
             return Response({'msg': 'Email already Exist'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = UserModelSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            name = request.data.get('name')
+            email = request.data.get('email')
+            password = hashPassword(request.data.get('password'))
+            address = request.data.get('address')
+            nationality = request.data.get('nationality')
+            preferredplace = request.data.get('preferredplace')
+            image = request.data.get('image')
+            user.objects.create(name=name, email=email, address=address, password=password,
+                                nationality=nationality, preferredplace=preferredplace, image=image)
+
             sendVerificationEmail(email)
             return Response({'msg': 'Data Registered Successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -50,7 +59,7 @@ class SellerRegistration(CreateAPIView):
         if serializer.is_valid():
             name = request.data.get('name')
             email = request.data.get('email')
-            password = request.data.get('password')
+            password = hashPassword(request.data.get('password'))
             image = request.data.get('image')
             seller.objects.create(name=name, email=email,
                                   password=password, image=image)
@@ -69,7 +78,13 @@ class GuideRegistration(CreateAPIView):
             return Response({'msg': 'Email already Exist'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = GuideModelSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            name = request.data.get('name')
+            email = request.data.get('email')
+            address = request.data.get('address')
+            phone = request.data.get('phone')
+            password = hashPassword(request.data.get('password'))
+            guide.objects.create(name=name, email=email,
+                                 address=address, phone=phone, password=password)
             sendVerificationEmail(email)
             return Response({'msg': 'Data Registered Successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -81,7 +96,7 @@ class loginUser(APIView):
 
         if serializer.is_valid():
             emailid = request.data.get('email')
-            password = request.data.get('password')
+            password = hashPassword(request.data.get('password'))
             role = ""
             adminData = admin.objects.filter(email=emailid, password=password)
             userData = user.objects.filter(email=emailid, password=password)
@@ -201,7 +216,7 @@ class ProfileView(APIView):
             return Response({"msg": "Un-authorized user"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({"msg": "Login first"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
+# For admin
 class GuideList(APIView):
     def get(self, request):
         guideObj = guide.objects.all()
@@ -283,23 +298,23 @@ class CodeVerification(APIView):
 
                     refresh = RefreshToken.for_user(user=userData[0])
                     refresh["role"] = "user"
-                    refresh['time'] = str(datetime.now()+timedelta(days=5))
+                    refresh['time'] = str(datetime.now()+timedelta(minutes=5))
                     access_token = str(refresh.access_token)
 
                 elif len(guideData) > 0:
                     guide.objects.filter(email=email).update(verify=True)
 
-                    refresh = RefreshToken.for_user(user=userData[0])
+                    refresh = RefreshToken.for_user(user=guideData[0])
                     refresh["role"] = "guide"
-                    refresh['time'] = str(datetime.now()+timedelta(days=5))
+                    refresh['time'] = str(datetime.now()+timedelta(minutes=5))
                     access_token = str(refresh.access_token)
 
                 elif len(sellerdata) > 0:
                     seller.objects.filter(email=email).update(verify=True)
 
-                    refresh = RefreshToken.for_user(user=userData[0])
+                    refresh = RefreshToken.for_user(user=sellerdata[0])
                     refresh["role"] = "seller"
-                    refresh['time'] = str(datetime.now()+timedelta(days=5))
+                    refresh['time'] = str(datetime.now()+timedelta(minutes=5))
                     access_token = str(refresh.access_token)
 
                 return Response({'msg': 'Verified Successfully', 'token': access_token}, status=status.HTTP_200_OK)
@@ -376,19 +391,24 @@ class passwordReset(APIView):
         token = request.data.get('token')
         verification, payload = verify_access_token(token)
         if verification:
-            if payload['role'].lower() == "seller":
-                sellerObj = seller.objects.filter(id=payload['user_id'])
-                sellerObj.update(password=request.data.get('password'))
-                return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
-            elif payload['role'].lower() == "guide":
-                guideObj = guide.objects.filter(id=payload['user_id'])
-                guideObj.update(password=request.data.get('password'))
-                return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
-            elif payload['role'].lower() == "user":
-                userObj = user.objects.filter(id=payload['user_id'])
-                userObj.update(password=request.data.get('password'))
-                return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
-            return Response({'msg': 'Invalid User'}, status=status.HTTP_401_UNAUTHORIZED)
+            if datetime.strptime(payload['time'], '%Y-%m-%d %H:%M:%S') < datetime.now(): 
+                if payload['role'].lower() == "seller":
+                    sellerObj = seller.objects.filter(id=payload['user_id'])
+                    sellerObj.update(password=hashPassword(
+                        request.data.get('password')))
+                    return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+                elif payload['role'].lower() == "guide":
+                    guideObj = guide.objects.filter(id=payload['user_id'])
+                    guideObj.update(password=hashPassword(
+                        request.data.get('password')))
+                    return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+                elif payload['role'].lower() == "user":
+                    userObj = user.objects.filter(id=payload['user_id'])
+                    userObj.update(password=hashPassword(
+                        request.data.get('password')))
+                    return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
+                return Response({'msg': 'Invalid User'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'msg': 'Link Expired'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class passwordChange(APIView):
@@ -398,20 +418,23 @@ class passwordChange(APIView):
         if verification:
             if payload['role'].lower() == "seller":
                 sellerObj = seller.objects.filter(id=payload['user_id'])
-                if sellerObj[0].password == request.data.get('oldpassword'):
-                    sellerObj.update(password=request.data.get('newpassword'))
+                if sellerObj[0].password == hashPassword(request.data.get('oldpassword')):
+                    sellerObj.update(password=hashPassword(
+                        request.data.get('newpassword')))
                     return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
                 return Response({'msg': 'Invalid Password'}, status=status.HTTP_400_BAD_REQUEST)
             elif payload['role'].lower() == "guide":
                 guideObj = guide.objects.filter(id=payload['user_id'])
-                if guideObj[0].password == request.data.get('oldpassword'):
-                    guideObj.update(password=request.data.get('newpassword'))
+                if guideObj[0].password == hashPassword(request.data.get('oldpassword')):
+                    guideObj.update(password=hashPassword(
+                        request.data.get('newpassword')))
                     return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
                 return Response({'msg': 'Invalid Password'}, status=status.HTTP_400_BAD_REQUEST)
             elif payload['role'].lower() == "user":
                 userObj = user.objects.filter(id=payload['user_id'])
-                if userObj[0].password == request.data.get('oldpassword'):
-                    userObj.update(password=request.data.get('newpassword'))
+                if userObj[0].password == hashPassword(request.data.get('oldpassword')):
+                    userObj.update(password=hashPassword(
+                        request.data.get('newpassword')))
                     return Response({'msg': 'Password Updated Successfully'}, status=status.HTTP_200_OK)
                 return Response({'msg': 'Invalid Password'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({'msg': 'Invalid User'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -423,10 +446,12 @@ class NoOfUsers(APIView):
         userObj = user.objects.all()
         return Response({'count': len(userObj)}, status=status.HTTP_200_OK)
 
+
 class NoOfGuides(APIView):
     def get(self, request):
         guideObj = guide.objects.all()
         return Response({'count': len(guideObj)}, status=status.HTTP_200_OK)
+
 
 class NoOfSellers(APIView):
     def get(self, request):

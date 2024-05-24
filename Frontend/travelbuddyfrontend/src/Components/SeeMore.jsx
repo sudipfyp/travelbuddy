@@ -496,9 +496,9 @@ const SeeMore = () => {
                 </div>
               </div>
 
-              {headerheadline === "highly-rated" ? (
+              {headerheadline === "all-guides" ? (
                 <>
-                  <h2>Highly Rated</h2>
+                  <h2>All Guides</h2>
                   <div className="common-header-section">
                     {highlyRatedGuides.map((item, index) => (
                       <DivItem key={index} item={item} />

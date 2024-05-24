@@ -104,6 +104,7 @@ const ProductDetails = () => {
       </div>
     );
   }
+  console.log(product);
 
   return (
     <>
@@ -129,11 +130,7 @@ const ProductDetails = () => {
                 <i className="fas fa-tag" /> {product.tag}
               </p>
             </div>
-            {user !== "seller" ? (
-              <div className="details-action">
-                <a href="/">Chat with Seller</a>
-              </div>
-            ) : null}
+            
             <div className="details-location">
               <p>
                 <i className="fas fa-map"> </i>

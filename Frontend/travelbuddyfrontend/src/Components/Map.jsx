@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
-  Marker,
-  Popup
 } from "react-leaflet";
 import Icon from "../Assets/images/map.png" 
 
@@ -48,15 +46,6 @@ function Map({ onLocationChange, onPositionChange, onDistrictChange }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      {/* {position && (
-        <Marker position={position}>
-          <Popup>
-            Latitude: {position[0]} <br />
-            Longitude: {position[1]} <br />
-            Location: {location}
-          </Popup>
-        </Marker>
-      )} */}
     </MapContainer>
 
     <div style={

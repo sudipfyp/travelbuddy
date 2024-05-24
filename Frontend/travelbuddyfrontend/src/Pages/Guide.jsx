@@ -96,7 +96,7 @@ const Guide = () => {
         />
 
         <Display
-          headerheadline="Highly Rated"
+          headerheadline="All Guides"
           data={highlyrated}
           component={DivItem}
         />

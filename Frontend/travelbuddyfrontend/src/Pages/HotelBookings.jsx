@@ -160,7 +160,7 @@ const Bookings = () => {
                         <button
                           className="blue btn"
                           onClick={() => {
-                            navigate(`/chat/${item.seller.id}/seller`);
+                            navigate(`/chat/${item.room.hotel.owner.id}/seller`);
                           }}
                         >
                           Chat

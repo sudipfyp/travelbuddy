@@ -1,5 +1,7 @@
 from rest_framework_simplejwt.tokens import AccessToken
 import rest_framework_simplejwt.exceptions as exceptions
+from django.contrib.auth.hashers import make_password
+from django.utils.crypto import constant_time_compare
 
 def verify_access_token(token):
     if not token:
@@ -11,3 +13,6 @@ def verify_access_token(token):
         return True, payload_data
     except Exception as e:
         return False, None
+
+def hashPassword(password):
+    return make_password(password, "hakjhfeihakwhdhfipq")

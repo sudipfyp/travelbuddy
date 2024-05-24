@@ -1,3 +1,5 @@
+//guide will apply in the requiremnt posted by tourist
+ 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
@@ -80,10 +82,10 @@ const GuideApply = () => {
     } else if (response.status === 403) {
       swal(
         "Already Applied",
-        "You have already applied for this. You will be notify via mail about the status.",
+        "You have already applied for this.",
         "error"
       );
-      navigate("/login");
+      // navigate("/login");
     } else {
       swal("Error", "Failed to apply", "error");
     }
@@ -155,6 +157,9 @@ const GuideApply = () => {
                     >
                       Apply
                     </button>
+                    <button style={{backgroundColor: "#1976d2", marginLeft: "4rem"}} onClick={() =>  navigate(`/chat/${req.user.id}/user`)}>
+                        Chat
+                      </button>
                   </div>
                 </div>
               </div>

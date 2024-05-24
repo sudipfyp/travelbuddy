@@ -124,9 +124,6 @@ const HotelDetails = () => {
           <div className="details-container-right">
             <div className="details-title">{hotel.name}</div>
             <div className="details-description">{hotel.description}</div>
-            <div className="details-rating">
-              <p>Rating: {hotel.rating}</p>
-            </div>
             <div className="room-details">
               <p>No of Rooms: {hotel.noOfRoom}</p>
             </div>

@@ -60,8 +60,10 @@ class HotelEditView(APIView):
                 hotelobj = None
 
                 if payload['role'].lower() == "seller":
-                    HotelObject = Hotel.objects.filter(id=kwargs['id'], owner_id=payload['user_id'])
-                    hotelobj = Hotel.objects.get(id=kwargs['id'], owner_id=payload['user_id'])
+                    HotelObject = Hotel.objects.filter(
+                        id=kwargs['id'], owner_id=payload['user_id'])
+                    hotelobj = Hotel.objects.get(
+                        id=kwargs['id'], owner_id=payload['user_id'])
 
                 elif payload['role'].lower() == "admin":
                     HotelObject = Hotel.objects.filter(id=kwargs['id'])
@@ -119,14 +121,14 @@ class HotelDetailView(APIView):
 
 class HotelDetailViewAdmin(APIView):
     def get(self, request, *args, **kwargs):
-        
-        hotelObj = Hotel.objects.filter(owner__id=kwargs['id']).select_related('owner')
+
+        hotelObj = Hotel.objects.filter(
+            owner__id=kwargs['id']).select_related('owner')
         if len(hotelObj) == 0:
             return Response({'msg': 'Not Found', }, status=status.HTTP_404_NOT_FOUND)
         serializer = HotelModelSerializer(
-        hotelObj, many=True,context={"request": self.request})
+            hotelObj, many=True, context={"request": self.request})
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 class HotelRoomAddView(APIView):

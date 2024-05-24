@@ -144,6 +144,9 @@ const GuideHomepage = () => {
                       <button onClick={() => rejectRequest(req.id)}>
                         Reject
                       </button>
+                      <button style={{backgroundColor: "#1976d2"}} onClick={() =>  navigate(`/chat/${req.user.id}/user`)}>
+                        Chat
+                      </button>
                     </div>
                   </div>
                 );

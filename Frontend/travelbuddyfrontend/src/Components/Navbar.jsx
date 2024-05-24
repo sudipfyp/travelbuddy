@@ -116,9 +116,6 @@ const Navbar = () => {
             <NavLink to="/guideapply" activeclassname="active">
               Apply
             </NavLink>
-            <NavLink to="/chat" activeclassname="active">
-              Chat
-            </NavLink>
           </div>
 
           <div className="navbar-right">
@@ -158,7 +155,6 @@ const Navbar = () => {
               <a href="/profile">Profile</a>
               <a href="/ongoinghirings">Ongoing Hirings</a>
               <a href="/guideapply">Apply</a>
-              <a href="/chat">Chat</a>
               <a href="/translation">Translation</a>
               <a href="/currencyexchange">Currency Exchange</a>
               <button className="logout-button" onClick={handleOpen}>
@@ -186,9 +182,6 @@ const Navbar = () => {
                 </NavLink>
                 <NavLink to="/managehotel" activeclassname="active">
                   Manage Hotel
-                </NavLink>
-                <NavLink to="/chat" activeclassname="active">
-                  Chat
                 </NavLink>
               </div>
 
@@ -231,7 +224,6 @@ const Navbar = () => {
                   <a href="/profile">Profile</a>
                   <a href="/managehotel">Manage Hotel</a>
                   <a href="/ongoingbookings">Current Bookings</a>
-                  <a href="/chat">Chat</a>
                   <a href="/translation">Translation</a>
                   <a href="/currencyexchange">Currency Exchange</a>
                   <button className="logout-button" onClick={handleOpen}>
@@ -251,9 +243,6 @@ const Navbar = () => {
                 </NavLink>
                 <NavLink to="/manageshop" activeclassname="active">
                   Manage Shop
-                </NavLink>
-                <NavLink to="/chat" activeclassname="active">
-                  Chat
                 </NavLink>
               </div>
 
@@ -296,7 +285,6 @@ const Navbar = () => {
                   <a href="/profile">Profile</a>
                   <a href="/manageshop">Manage Shop</a>
                   <a href="/addproduct">Manage Product</a>
-                  <a href="/chat">Chat</a>
                   <a href="/translation">Translation</a>
                   <a href="/currencyexchange">Currency Exchange</a>
                   <button className="logout-button" onClick={handleOpen}>
